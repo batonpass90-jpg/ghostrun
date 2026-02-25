@@ -2,12 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<!-- 진짜 앱처럼 보이게 만드는 마법의 태그들 -->
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="GhostRun">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>GhostRun</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Sans+KR:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
@@ -52,9 +47,9 @@ body{background:var(--bg);color:var(--hi);font-family:var(--fb);
 .btab.on{color:var(--hi)}
 .btab-dot{width:4px;height:4px;border-radius:50%;background:var(--acc);opacity:0;transition:opacity .2s}
 .btab.on .btab-dot{opacity:1}
-.btab-run-wrap{width:42px;height:42px;border-radius:50%;background:var(--hi);display:flex;align-items:center;justify-content:center;margin-bottom:1px;transition:transform .15s,background .2s}
+.btab-run-wrap{width:42px;height:42px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;margin-bottom:1px;transition:transform .15s,background .2s}
 .btab-run-wrap svg{stroke:var(--bg);fill:var(--bg);width:18px;height:18px}
-.btab.on .btab-run-wrap{background:var(--acc);transform:scale(.94)}
+.btab.on .btab-run-wrap{background:var(--hi);transform:scale(.94)}
 .btab[data-v="run"] .btab-dot{display:none}
 
 /* VIEWS */
@@ -493,6 +488,56 @@ body{background:var(--bg);color:var(--hi);font-family:var(--fb);
 #flash{position:fixed;inset:0;z-index:300;background:rgba(255,255,255,.1);opacity:0;pointer-events:none;transition:opacity .08s}
 #flash.on{opacity:1}
 input[type=file]{display:none}
+
+/* ══ LOGIN SCREEN ══ */
+#login-screen{position:fixed;inset:0;z-index:998;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 28px;transition:opacity .5s,transform .5s}
+#login-screen.out{opacity:0;transform:scale(1.04);pointer-events:none}
+.ls-logo{font-family:var(--fd);font-style:italic;font-size:36px;font-weight:300;margin-bottom:6px;text-align:center}
+.ls-sub{font-size:11px;font-weight:200;color:var(--dim);text-align:center;letter-spacing:.06em;margin-bottom:36px}
+.ls-form{width:100%;display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.ls-input{width:100%;background:var(--sf);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;font-family:var(--fb);font-size:14px;font-weight:200;color:var(--hi);outline:none;caret-color:var(--acc);transition:border-color .2s}
+.ls-input:focus{border-color:rgba(200,240,80,.4)}
+.ls-input::placeholder{color:rgba(255,255,255,.2)}
+.ls-btn{width:100%;background:var(--acc);border:none;border-radius:14px;padding:16px;font-family:var(--fb);font-size:14px;font-weight:400;color:var(--bg);cursor:pointer;transition:opacity .2s;letter-spacing:.03em}
+.ls-btn:active{opacity:.85}
+.ls-err{font-size:11px;font-weight:200;color:rgba(255,100,100,.8);text-align:center;min-height:16px;margin-top:-2px}
+.ls-switch{font-size:11px;font-weight:200;color:var(--dim);text-align:center;cursor:pointer;margin-top:4px}
+.ls-switch span{color:var(--acc);opacity:.85;text-decoration:underline;text-underline-offset:2px}
+.ls-divider{display:flex;align-items:center;gap:10px;margin:14px 0}
+.ls-divider::before,.ls-divider::after{content:'';flex:1;height:1px;background:var(--ln)}
+.ls-divider span{font-size:10px;font-weight:200;color:rgba(255,255,255,.2)}
+.ls-social{display:flex;gap:10px;width:100%}
+.ls-social-btn{flex:1;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:12px 8px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-family:var(--fb);font-size:12px;font-weight:200;color:var(--mid);transition:all .2s}
+.ls-social-btn:active{background:var(--sf2)}
+.ls-social-em{font-size:16px}
+.ls-mode-title{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300;margin-bottom:4px;align-self:flex-start}
+.ls-mode-sub{font-size:11px;font-weight:200;color:var(--dim);margin-bottom:28px;align-self:flex-start}
+/* profile badge in nav */
+#nav-profile{width:28px;height:28px;border-radius:50%;background:var(--sf2);border:1px solid rgba(200,240,80,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all .2s}
+#nav-profile:active{transform:scale(.9)}
+/* user profile modal */
+.prof-hd{padding:22px 20px 16px;border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:14px}
+.prof-avatar{width:52px;height:52px;border-radius:50%;background:var(--sf2);border:1px solid rgba(200,240,80,.25);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.prof-name{font-family:var(--fd);font-style:italic;font-size:20px;font-weight:300}
+.prof-email{font-size:10px;font-weight:200;color:var(--dim);margin-top:2px}
+.prof-joined{font-size:9px;font-weight:200;color:rgba(200,240,80,.6);margin-top:3px}
+.prof-stats-row{display:flex;padding:16px 20px;border-bottom:1px solid var(--ln)}
+.prof-st{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.prof-st+.prof-st{border-left:1px solid var(--ln)}
+.prof-sl{font-size:8px;font-weight:200;letter-spacing:.1em;color:var(--dim)}
+.prof-sv{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300}
+.prof-menu-item{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--ln);cursor:pointer;transition:background .15s}
+.prof-menu-item:active{background:rgba(255,255,255,.03)}
+.prof-menu-em{font-size:16px;width:22px;text-align:center}
+.prof-menu-txt{flex:1;font-size:13px;font-weight:200}
+.prof-menu-arrow{font-size:11px;color:var(--dim)}
+.prof-logout{width:calc(100% - 40px);margin:14px 20px;background:rgba(255,70,70,.08);border:1px solid rgba(255,70,70,.18);border-radius:14px;padding:13px;font-family:var(--fb);font-size:13px;font-weight:300;color:rgba(255,110,110,.85);cursor:pointer;transition:all .2s}
+.prof-logout:active{background:rgba(255,70,70,.15)}
+/* server status badge */
+.srv-badge{position:fixed;top:56px;right:10px;z-index:80;display:flex;align-items:center;gap:5px;background:rgba(10,10,13,.88);border:1px solid var(--ln);border-radius:99px;padding:4px 10px;font-size:9px;font-weight:200;color:var(--dim);backdrop-filter:blur(8px);pointer-events:none;transition:opacity .3s}
+.srv-dot{width:6px;height:6px;border-radius:50%;background:var(--dim);flex-shrink:0}
+.srv-badge.online .srv-dot{background:var(--acc);box-shadow:0 0 5px rgba(200,240,80,.5)}
+.srv-badge.online{color:rgba(200,240,80,.7);border-color:rgba(200,240,80,.15)}
 </style>
 </head>
 <body>
@@ -508,7 +553,35 @@ input[type=file]{display:none}
   <span class="sp-ver">v2.0 · 2025</span>
 </div>
 
-<div id="nav"><span class="logo">GhostRun</span><span id="clock"></span></div>
+<!-- LOGIN SCREEN -->
+<div id="login-screen" style="display:none">
+  <div class="ls-logo">👻 GhostRun</div>
+  <div class="ls-sub" id="ls-sub-txt">함께 달리는 사람들</div>
+  <div class="ls-mode-title" id="ls-mode-title">로그인</div>
+  <div class="ls-mode-sub" id="ls-mode-sub">계속하려면 로그인하세요</div>
+  <div class="ls-form">
+    <input class="ls-input" id="ls-email" type="email" placeholder="이메일" autocomplete="email">
+    <input class="ls-input" id="ls-pw" type="password" placeholder="비밀번호" autocomplete="current-password">
+    <input class="ls-input" id="ls-nick" type="text" placeholder="닉네임 (회원가입 시)" style="display:none" autocomplete="nickname" maxlength="12">
+    <div class="ls-err" id="ls-err"></div>
+    <button class="ls-btn" id="ls-submit" onclick="submitAuth()">로그인</button>
+  </div>
+  <div class="ls-switch" id="ls-switch" onclick="toggleAuthMode()">계정이 없으신가요? <span>회원가입</span></div>
+  <div class="ls-divider"><span>또는</span></div>
+  <div class="ls-social">
+    <button class="ls-social-btn" onclick="socialLogin('kakao')"><span class="ls-social-em">💛</span>카카오</button>
+    <button class="ls-social-btn" onclick="socialLogin('naver')"><span class="ls-social-em">🟢</span>네이버</button>
+    <button class="ls-social-btn" onclick="socialLogin('google')"><span class="ls-social-em">🔵</span>구글</button>
+  </div>
+</div>
+
+<!-- SERVER STATUS -->
+<div class="srv-badge" id="srv-badge"><div class="srv-dot"></div><span id="srv-txt">서버 연결 중...</span></div>
+
+<!-- PROFILE MODAL -->
+<div id="m-profile" class="modal"><div class="m-box" id="prof-box"></div></div>
+
+<div id="nav"><span class="logo">GhostRun</span><div style="display:flex;align-items:center;gap:10px"><span id="clock"></span><div id="nav-profile" onclick="openProfile()" title="프로필">👤</div></div></div>
 
 <div id="main">
 
@@ -798,11 +871,11 @@ input[type=file]{display:none}
   <button class="btab on" data-v="home">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>홈<div class="btab-dot"></div>
   </button>
-  <button class="btab" data-v="run">
-    <div class="btab-run-wrap"><svg viewBox="0 0 24 24" style="width:18px;height:18px"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/></svg></div>시작
-  </button>
   <button class="btab" data-v="crew">
     <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>크루<div class="btab-dot"></div>
+  </button>
+  <button class="btab btab-start" data-v="run">
+    <div class="btab-run-wrap"><svg viewBox="0 0 24 24" style="width:18px;height:18px"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/></svg></div>시작
   </button>
   <button class="btab" data-v="shot">
     <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>인증샷<div class="btab-dot"></div>
@@ -867,12 +940,12 @@ input[type=file]{display:none}
 'use strict';
 
 // DATA
-const CREW=[
-  {e:'👻',n:'유령1',d:8.40,me:false},{e:'👻',n:'유령2',d:7.85,me:false},
-  {e:'👻',n:'유령3',d:5.20,me:true},{e:'👻',n:'유령4',d:4.90,me:false},
-  {e:'👻',n:'유령5',d:4.10,me:false},{e:'👻',n:'유령6',d:3.80,me:false},
-  {e:'👻',n:'유령7',d:2.40,me:false},{e:'👻',n:'유령8',d:1.20,me:false},
-];
+// 크루원 이름은 크루명 기반으로 동적 생성
+function makeCrewMembers(crewName, emoji, myIdx=2){
+  const base=crewName.replace(' 크루','');
+  return Array.from({length:8},(_, i)=>({e:emoji,n:base+(i+1),d:[8.40,7.85,5.20,4.90,4.10,3.80,2.40,1.20][i],me:i===myIdx}));
+}
+let CREW=makeCrewMembers('유령','👻',2);
 const GOAL=100,MI=CREW.findIndex(c=>c.me),MR=MI+1,N=CREW.length;
 const TKM=parseFloat(CREW.reduce((s,c)=>s+c.d,0).toFixed(2));
 const PCT=Math.round(TKM/GOAL*100);
@@ -899,15 +972,18 @@ const LOGS=[
   {date:'01.28',mo:'Jan',d:9.80,pace:"5'01\"",time:"49'10\"",cal:588,crew:'좀비 크루',rank:1,ri:1},
   {date:'01.21',mo:'Jan',d:8.40,pace:"5'14\"",time:"43'58\"",cal:504,crew:'좀비 크루',rank:2,ri:2},
 ];
-const MEMBER_RUNS={
-  '유령1':[{d:'02.17',km:2.50,p:"5'20\""},{d:'02.13',km:3.10,p:"5'15\""}],
-  '유령2':[{d:'02.16',km:3.20,p:"5'10\""},{d:'02.12',km:2.60,p:"5'18\""}],
-  '유령4':[{d:'02.15',km:2.10,p:"5'30\""}],
-  '유령5':[{d:'02.14',km:1.50,p:"5'45\""}],
-  '유령6':[{d:'02.13',km:1.20,p:"5'50\""},{d:'02.09',km:1.30,p:"5'48\""}],
-  '유령7':[{d:'02.12',km:0.90,p:"6'00\""}],
-  '유령8':[{d:'02.18',km:0.60,p:"6'10\""}],
-};
+function getMemberRuns(crewName){
+  const base=crewName.replace(' 크루','');
+  return {
+    [base+'1']:[{d:'02.17',km:2.50,p:"5'20\""},{d:'02.13',km:3.10,p:"5'15\""}],
+    [base+'2']:[{d:'02.16',km:3.20,p:"5'10\""},{d:'02.12',km:2.60,p:"5'18\""}],
+    [base+'4']:[{d:'02.15',km:2.10,p:"5'30\""}],
+    [base+'5']:[{d:'02.14',km:1.50,p:"5'45\""}],
+    [base+'6']:[{d:'02.13',km:1.20,p:"5'50\""},{d:'02.09',km:1.30,p:"5'48\""}],
+    [base+'7']:[{d:'02.12',km:0.90,p:"6'00\""}],
+    [base+'8']:[{d:'02.18',km:0.60,p:"6'10\""}],
+  };
+}
 const CODEMAP={
   'GR-2847':{n:'유령 크루',e:'👻',meta:'마포구 · 8명 · #GR-2847',pct:38},
   'GR-1138':{n:'드라큘라 크루',e:'🧛',meta:'마포구 · 8명 · #GR-1138',pct:62},
@@ -928,7 +1004,14 @@ const ROUTE=[[37.5665,126.978],[37.567,126.979],[37.5676,126.9796],[37.5682,126.
 const ROUTES=[ROUTE,ROUTE.map(p=>[p[0]+.003,p[1]-.002]),ROUTE.map(p=>[p[0]-.002,p[1]+.003])];
 
 // SPLASH
-function hideSplash(){document.getElementById('splash').classList.add('out');setTimeout(()=>document.getElementById('splash').remove(),800);}
+function hideSplash(){
+  document.getElementById('splash').classList.add('out');
+  setTimeout(()=>{
+    const sp=document.getElementById('splash');if(sp)sp.remove();
+    // Show login if not logged in
+    if(!GR_API.currentUser()){showLoginScreen();}
+  },800);
+}
 
 // CLOCK
 function tick(){
@@ -1112,6 +1195,7 @@ function showCrewView(){
 }
 function quickJoin(name,em){
   hasCrew=true;
+  CREW=makeCrewMembers(name,em,2);
   document.getElementById('ch-name').textContent=em+' '+name;
   showCrewView();crewInited=false;nearInited=false;pastInited=false;
   initCrew();initNear();initPast();
@@ -1166,7 +1250,7 @@ function initPast(){
 
 // MEMBER MODAL
 function openMemberModal(c,rank){
-  const k=RC(rank);const runs=MEMBER_RUNS[c.n]||[];
+  const k=RC(rank);const crewNameForRuns=document.getElementById('ch-name').textContent.replace(/^./,'').trim();const runs=getMemberRuns(crewNameForRuns)[c.n]||[];
   const box=document.getElementById('mm-box');
   box.innerHTML=`<div class="mm-hd"><span class="mm-em">${c.e}</span><div><div class="mm-name">${c.n}</div><div class="mm-cl">유령 크루</div></div><span class="mm-rank ${k}">${rank}등</span></div><div class="mm-stats"><div class="mm-st"><span class="mm-sl">이번 달</span><span class="mm-sv">${c.d.toFixed(1)}<span style="font-family:var(--fb);font-size:13px;color:var(--dim)"> km</span></span></div><div class="mm-st"><span class="mm-sl">최근 런</span><span class="mm-sv">${runs.length}<span style="font-family:var(--fb);font-size:13px;color:var(--dim)"> 회</span></span></div><div class="mm-st"><span class="mm-sl">현재 순위</span><span class="mm-rank ${k}" style="font-size:22px">${rank}</span></div></div><div class="mm-rl">최근 러닝</div>${runs.map(r=>`<div class="mm-rr"><span class="mm-rd">${r.d}</span><span class="mm-rk">${r.km.toFixed(2)} km</span><span class="mm-rp">${r.p}</span></div>`).join('')}<button class="mm-close" onclick="closeModal('m-member')">닫기</button>`;
   openModal('m-member');
@@ -1290,6 +1374,7 @@ function onJoinInput(v){
 function confirmJoin(){
   if(!joinTarget)return;
   hasCrew=true;
+  CREW=makeCrewMembers(joinTarget.n,joinTarget.e,2);
   document.getElementById('ch-name').textContent=joinTarget.e+' '+joinTarget.n;
   document.getElementById('ch-sub').textContent=Object.keys(CODEMAP).find(k=>CODEMAP[k]===joinTarget)+' · 2월 · 8명';
   showCrewView();crewInited=false;nearInited=false;pastInited=false;
@@ -1313,6 +1398,7 @@ document.getElementById('g-row').addEventListener('click',e=>{
 function confirmCreate(){
   const name=document.getElementById('cn-inp').value.trim()||'새 크루';
   hasCrew=true;
+  CREW=makeCrewMembers(name,selEm,0);
   document.getElementById('ch-name').textContent=selEm+' '+name;
   document.getElementById('ch-sub').textContent='#GR-NEW · 2월 · 1명';
   showCrewView();crewInited=false;nearInited=false;pastInited=false;
@@ -1341,6 +1427,315 @@ function showToast(msg){
 
 // init shot rank
 applyRank();
+
+
+// ══════════════════════════
+// GHOSTRUN MEMBER SERVER (localStorage mock + API-ready)
+// ══════════════════════════
+const GR_API = {
+  _DB_KEY: 'ghostrun_users',
+  _SESSION_KEY: 'ghostrun_session',
+  _SRV_URL: null, // Set to real API endpoint e.g. 'https://api.ghostrun.kr/v1'
+
+  // DB helpers (localStorage as mock server)
+  _getDB(){ try{return JSON.parse(localStorage.getItem(this._DB_KEY)||'{}')}catch{return{}} },
+  _saveDB(db){ localStorage.setItem(this._DB_KEY, JSON.stringify(db)) },
+  _getSession(){ try{return JSON.parse(localStorage.getItem(this._SESSION_KEY)||'null')}catch{return null} },
+  _saveSession(s){ localStorage.setItem(this._SESSION_KEY, JSON.stringify(s)) },
+  _clearSession(){ localStorage.removeItem(this._SESSION_KEY) },
+
+  // Simulate network delay
+  _delay(ms=320){ return new Promise(r=>setTimeout(r,ms)) },
+
+  // REGISTER
+  async register(email, password, nickname){
+    await this._delay();
+    if(this._SRV_URL){
+      const res = await fetch(this._SRV_URL+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,nickname})});
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.message||'서버 오류');
+      this._saveSession(data.user);
+      return data.user;
+    }
+    // Local mock
+    const db = this._getDB();
+    if(db[email]) throw new Error('이미 사용 중인 이메일이에요');
+    if(password.length < 6) throw new Error('비밀번호는 6자 이상이어야 해요');
+    if(nickname.trim().length < 2) throw new Error('닉네임은 2자 이상이어야 해요');
+    const user = {
+      id: 'GR_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
+      email, nickname: nickname.trim(),
+      avatar: '👻', crewId: null, crewName: null,
+      totalKm: 0, runCount: 0,
+      joinedAt: new Date().toISOString(),
+      _pw: btoa(password) // NOT real security — mock only
+    };
+    db[email] = user;
+    this._saveDB(db);
+    const session = {...user};delete session._pw;
+    this._saveSession(session);
+    return session;
+  },
+
+  // LOGIN
+  async login(email, password){
+    await this._delay();
+    if(this._SRV_URL){
+      const res = await fetch(this._SRV_URL+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.message||'로그인 실패');
+      this._saveSession(data.user);
+      return data.user;
+    }
+    // Local mock
+    const db = this._getDB();
+    const user = db[email];
+    if(!user) throw new Error('등록된 이메일이 없어요');
+    if(atob(user._pw||'')!==password) throw new Error('비밀번호가 맞지 않아요');
+    const session = {...user};delete session._pw;
+    this._saveSession(session);
+    return session;
+  },
+
+  // LOGOUT
+  async logout(){
+    await this._delay(100);
+    this._clearSession();
+  },
+
+  // SOCIAL LOGIN (mock)
+  async socialLogin(provider){
+    await this._delay(500);
+    const mockNames = {kakao:'카카오러너',naver:'네이버러너',google:'구글러너'};
+    const mockEmail = `${provider}_${Date.now()}@ghostrun.mock`;
+    const db = this._getDB();
+    if(!db[mockEmail]){
+      const user = {
+        id:'GR_'+provider+'_'+Date.now(),
+        email:mockEmail, nickname:mockNames[provider]||provider,
+        avatar:'👻', crewId:null, crewName:null,
+        totalKm:0, runCount:0,
+        joinedAt:new Date().toISOString(),
+        provider
+      };
+      db[mockEmail]=user;this._saveDB(db);
+    }
+    const session={...db[mockEmail]};delete session._pw;
+    this._saveSession(session);
+    return session;
+  },
+
+  // UPDATE USER
+  async updateUser(fields){
+    await this._delay(200);
+    const session=this._getSession();if(!session)return;
+    const db=this._getDB();
+    if(db[session.email])Object.assign(db[session.email],fields);
+    this._saveDB(db);
+    const updated={...session,...fields};
+    this._saveSession(updated);
+    return updated;
+  },
+
+  // GET CURRENT USER
+  currentUser(){ return this._getSession(); },
+
+  // PING (server status)
+  async ping(){
+    if(this._SRV_URL){
+      try{const r=await fetch(this._SRV_URL+'/ping',{signal:AbortSignal.timeout(3000)});return r.ok;}catch{return false;}
+    }
+    return true; // local mock always online
+  }
+};
+
+// ══════════════════════════
+// AUTH UI
+// ══════════════════════════
+let authMode = 'login'; // 'login' | 'register'
+let currentUser = null;
+
+function showLoginScreen(){
+  const ls = document.getElementById('login-screen');
+  ls.style.display = 'flex';
+  ls.classList.remove('out');
+}
+function hideLoginScreen(){
+  const ls = document.getElementById('login-screen');
+  ls.classList.add('out');
+  setTimeout(()=>{ls.style.display='none';},600);
+}
+
+function toggleAuthMode(){
+  authMode = authMode==='login' ? 'register' : 'login';
+  const isReg = authMode==='register';
+  document.getElementById('ls-mode-title').textContent = isReg ? '회원가입' : '로그인';
+  document.getElementById('ls-mode-sub').textContent = isReg ? '새 계정을 만들어보세요' : '계속하려면 로그인하세요';
+  document.getElementById('ls-nick').style.display = isReg ? 'block' : 'none';
+  document.getElementById('ls-submit').textContent = isReg ? '가입하기' : '로그인';
+  document.getElementById('ls-switch').innerHTML = isReg
+    ? '이미 계정이 있으신가요? <span>로그인</span>'
+    : '계정이 없으신가요? <span>회원가입</span>';
+  document.getElementById('ls-err').textContent = '';
+  document.getElementById('ls-pw').setAttribute('autocomplete', isReg ? 'new-password' : 'current-password');
+}
+
+async function submitAuth(){
+  const email = document.getElementById('ls-email').value.trim();
+  const pw = document.getElementById('ls-pw').value;
+  const nick = document.getElementById('ls-nick').value.trim();
+  const errEl = document.getElementById('ls-err');
+  const btn = document.getElementById('ls-submit');
+
+  errEl.textContent = '';
+  if(!email){errEl.textContent='이메일을 입력해주세요';return;}
+  if(!pw){errEl.textContent='비밀번호를 입력해주세요';return;}
+
+  btn.textContent = '처리 중...';btn.style.opacity='.6';btn.disabled=true;
+
+  try{
+    let user;
+    if(authMode==='register'){
+      if(!nick){errEl.textContent='닉네임을 입력해주세요';return;}
+      user = await GR_API.register(email, pw, nick);
+      showToast('🎉 회원가입이 완료됐어요!');
+    } else {
+      user = await GR_API.login(email, pw);
+      showToast('👻 어서오세요, '+user.nickname+'님!');
+    }
+    onLoginSuccess(user);
+  } catch(e){
+    errEl.textContent = e.message;
+  } finally{
+    btn.textContent = authMode==='register'?'가입하기':'로그인';
+    btn.style.opacity='1';btn.disabled=false;
+  }
+}
+
+async function socialLogin(provider){
+  const errEl = document.getElementById('ls-err');
+  errEl.textContent = provider+' 로그인 처리 중...';
+  try{
+    const user = await GR_API.socialLogin(provider);
+    showToast('👻 어서오세요, '+user.nickname+'님!');
+    onLoginSuccess(user);
+  }catch(e){errEl.textContent=e.message;}
+}
+
+function onLoginSuccess(user){
+  currentUser = user;
+  // Update avatar in nav
+  document.getElementById('nav-profile').textContent = user.avatar||'👻';
+  // Update shot view names
+  ['nm-g','nm-p','nm-s'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=user.nickname;});
+  // Update hero subtitle if in crew
+  if(user.crewName){
+    hasCrew=true;
+    CREW=makeCrewMembers(user.crewName, user.avatar||'👻', 2);
+  }
+  hideLoginScreen();
+  setSrvBadge(true);
+}
+
+function openProfile(){
+  if(!currentUser){showLoginScreen();return;}
+  const u=currentUser;
+  const box=document.getElementById('prof-box');
+  box.innerHTML=`
+    <div class="prof-hd">
+      <div class="prof-avatar">${u.avatar||'👻'}</div>
+      <div>
+        <div class="prof-name">${u.nickname}</div>
+        <div class="prof-email">${u.email}</div>
+        <div class="prof-joined">가입일 ${new Date(u.joinedAt).toLocaleDateString('ko-KR')}</div>
+      </div>
+    </div>
+    <div class="prof-stats-row">
+      <div class="prof-st"><span class="prof-sl">총 거리</span><span class="prof-sv">${(u.totalKm||312.4).toFixed(1)}<span style="font-family:var(--fb);font-size:12px;color:var(--dim)"> km</span></span></div>
+      <div class="prof-st"><span class="prof-sl">런 횟수</span><span class="prof-sv">${u.runCount||62}<span style="font-family:var(--fb);font-size:12px;color:var(--dim)"> 회</span></span></div>
+      <div class="prof-st"><span class="prof-sl">크루</span><span class="prof-sv">${u.crewName?'1':'0'}<span style="font-family:var(--fb);font-size:12px;color:var(--dim)"> 개</span></span></div>
+    </div>
+    <div class="prof-menu-item" onclick="editNickname()"><span class="prof-menu-em">✏️</span><span class="prof-menu-txt">닉네임 변경</span><span class="prof-menu-arrow">›</span></div>
+    <div class="prof-menu-item" onclick="editAvatar()"><span class="prof-menu-em">👻</span><span class="prof-menu-txt">아바타 변경</span><span class="prof-menu-arrow">›</span></div>
+    <div class="prof-menu-item" onclick="showToast('준비 중인 기능이에요')"><span class="prof-menu-em">🔔</span><span class="prof-menu-txt">알림 설정</span><span class="prof-menu-arrow">›</span></div>
+    <div class="prof-menu-item" onclick="showToast('준비 중인 기능이에요')"><span class="prof-menu-em">🔒</span><span class="prof-menu-txt">비밀번호 변경</span><span class="prof-menu-arrow">›</span></div>
+    <button class="prof-logout" onclick="doLogout()">로그아웃</button>
+  `;
+  openModal('m-profile');
+}
+
+async function doLogout(){
+  await GR_API.logout();
+  currentUser=null;
+  hasCrew=false;crewInited=false;nearInited=false;pastInited=false;
+  document.getElementById('nav-profile').textContent='👤';
+  closeModal('m-profile');
+  showLoginScreen();
+  showToast('로그아웃됐어요');
+}
+
+function editNickname(){
+  const newNick = prompt('새 닉네임을 입력하세요 (최대 12자)','');
+  if(!newNick||newNick.trim().length<2){showToast('닉네임은 2자 이상이어야 해요');return;}
+  GR_API.updateUser({nickname:newNick.trim()}).then(u=>{
+    currentUser=u;
+    closeModal('m-profile');
+    setTimeout(openProfile,200);
+    showToast('닉네임이 변경됐어요');
+  });
+}
+
+function editAvatar(){
+  closeModal('m-profile');
+  openAv();
+  // Override avc click to also update user
+  document.querySelectorAll('.avc').forEach(c=>{
+    c.addEventListener('click',()=>{
+      const em=c.querySelector('.ave').textContent;
+      GR_API.updateUser({avatar:em}).then(u=>{
+        currentUser=u;
+        document.getElementById('nav-profile').textContent=em;
+      });
+    },{once:true});
+  });
+}
+
+// SERVER STATUS
+function setSrvBadge(online){
+  const badge=document.getElementById('srv-badge');
+  const txt=document.getElementById('srv-txt');
+  badge.classList.toggle('online',online);
+  txt.textContent=online?'서버 연결됨':'서버 오프라인';
+  setTimeout(()=>{badge.style.opacity='0';},3000);
+}
+
+async function checkServer(){
+  const online=await GR_API.ping();
+  setSrvBadge(online);
+}
+
+// ══════════════════════════
+// INIT: Check session on load
+// ══════════════════════════
+(function initApp(){
+  document.getElementById('srv-badge').style.opacity='1';
+  checkServer();
+  const session = GR_API.currentUser();
+  if(session){
+    // Auto-login from stored session
+    currentUser=session;
+    document.getElementById('nav-profile').textContent=session.avatar||'👻';
+    ['nm-g','nm-p','nm-s'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=session.nickname;});
+    if(session.crewName){
+      hasCrew=true;
+      CREW=makeCrewMembers(session.crewName,session.avatar||'👻',2);
+    }
+  } else {
+    // Show login after splash
+    // We'll show it when splash hides
+  }
+})();
+
 </script>
 </body>
 </html>
