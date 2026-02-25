@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <!-- 진짜 앱처럼 보이게 만드는 마법의 태그들 -->
+<!-- 진짜 앱처럼 보이게 만드는 마법의 태그들 -->
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="GhostRun">
@@ -14,66 +14,324 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
 :root{
-  --bg:#0c0c0e;--sf:#141416;--sf2:#1a1a1d;
-  --ln:rgba(255,255,255,.07);--dim:rgba(255,255,255,.22);--mid:rgba(255,255,255,.48);
-  --hi:#ede9e1;--acc:#c8f050;--acc2:rgba(200,240,80,.12);
-  --gold:#d4b54a;--silver:#a8b0b8;--bronze:#b07444;
+  --bg:#0a0a0d;--sf:#131316;--sf2:#1a1a1e;
+  --ln:rgba(255,255,255,.07);--dim:rgba(255,255,255,.28);--mid:rgba(255,255,255,.52);
+  --hi:#ede9e1;--acc:#c8f050;
+  --gold:#d4b54a;--silver:#a0aab4;--bronze:#b07444;
   --fd:"Cormorant Garamond",Georgia,serif;
   --fb:"Noto Sans KR",system-ui,sans-serif;
 }
-body{background:var(--bg);color:var(--hi);font-family:var(--fb);display:flex;flex-direction:column;height:100dvh;max-width:430px;margin:0 auto;position:relative}
+body{background:var(--bg);color:var(--hi);font-family:var(--fb);
+  display:flex;flex-direction:column;height:100dvh;max-width:430px;margin:0 auto;position:relative}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 36px;text-align:center;transition:opacity .7s,transform .7s}
+#splash.out{opacity:0;transform:scale(1.04);pointer-events:none}
+.sp-grain{position:absolute;inset:0;opacity:.2;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23f)' opacity='.07'/%3E%3C/svg%3E")}
+.sp-glow{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(200,240,80,.07) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-55%);animation:spPulse 4s ease-in-out infinite}
+@keyframes spPulse{0%,100%{transform:translate(-50%,-55%) scale(1)}50%{transform:translate(-50%,-55%) scale(1.15)}}
+.sp-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:38px 38px;mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black 40%,transparent 80%)}
+.sp-em{font-size:62px;margin-bottom:24px;position:relative;animation:floatGhost 3.5s ease-in-out infinite}
+@keyframes floatGhost{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+.sp-logo{font-family:var(--fd);font-style:italic;font-size:46px;font-weight:300;letter-spacing:-.01em;margin-bottom:14px;position:relative}
+.sp-sub{font-size:15px;font-weight:300;color:var(--mid);letter-spacing:.04em;margin-bottom:8px;position:relative}
+.sp-desc{font-size:12px;font-weight:200;color:var(--dim);letter-spacing:.07em;line-height:1.9;margin-bottom:54px;position:relative}
+.sp-btn{background:var(--hi);border:none;border-radius:99px;padding:17px 58px;font-family:var(--fb);font-size:15px;font-weight:300;color:var(--bg);cursor:pointer;letter-spacing:.04em;transition:all .2s;position:relative;box-shadow:0 8px 30px rgba(237,233,225,.1)}
+.sp-btn:active{transform:scale(.96)}
+.sp-ver{position:absolute;bottom:30px;font-size:10px;font-weight:200;letter-spacing:.14em;color:rgba(255,255,255,.12)}
 
 /* NAV */
-#nav{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:16px 20px 0;min-height:50px}
+#nav{flex-shrink:0;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--ln)}
 .logo{font-family:var(--fd);font-style:italic;font-size:20px;font-weight:300}
 #clock{font-size:11px;font-weight:200;color:var(--dim);font-variant-numeric:tabular-nums}
 
-/* BOTTOM TAB BAR */
-#btabs{flex-shrink:0;display:flex;align-items:stretch;background:rgba(14,14,16,.97);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px);z-index:50}
-.btab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:9px 4px 8px;background:none;border:none;cursor:pointer;font-family:var(--fb);font-size:9px;font-weight:200;letter-spacing:.06em;color:var(--dim);transition:color .2s}
-.btab svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+/* BOTTOM TABS */
+#btabs{flex-shrink:0;display:flex;align-items:stretch;background:rgba(10,10,13,.97);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px);z-index:50}
+.btab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:7px 2px 6px;background:none;border:none;cursor:pointer;font-family:var(--fb);font-size:9px;font-weight:200;letter-spacing:.04em;color:var(--dim);transition:color .2s;min-width:0}
+.btab svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .btab.on{color:var(--hi)}
 .btab-dot{width:4px;height:4px;border-radius:50%;background:var(--acc);opacity:0;transition:opacity .2s}
 .btab.on .btab-dot{opacity:1}
+.btab-run-wrap{width:42px;height:42px;border-radius:50%;background:var(--hi);display:flex;align-items:center;justify-content:center;margin-bottom:1px;transition:transform .15s,background .2s}
+.btab-run-wrap svg{stroke:var(--bg);fill:var(--bg);width:18px;height:18px}
+.btab.on .btab-run-wrap{background:var(--acc);transform:scale(.94)}
+.btab[data-v="run"] .btab-dot{display:none}
 
-/* MAIN VIEWS */
+/* VIEWS */
 #main{flex:1;min-height:0;overflow:hidden;position:relative}
-.mview{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .2s;overflow:hidden}
+.mview{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .22s;overflow:hidden}
 .mview.on{opacity:1;pointer-events:all}
 
-/* === SHOT VIEW === */
+/* ══ HOME ══ */
+#v-home{background:var(--bg);overflow-y:auto;scrollbar-width:none}
+#v-home::-webkit-scrollbar{display:none}
+.hm-hero{position:relative;height:272px;flex-shrink:0;overflow:hidden}
+.hm-hero-bg{position:absolute;inset:0;background:linear-gradient(145deg,#0d0d1a 0%,#111128 60%,#0a0a0d 100%)}
+.hm-hero-pattern{position:absolute;inset:0;opacity:.05;background-image:repeating-linear-gradient(45deg,var(--hi) 0,var(--hi) 1px,transparent 0,transparent 50%);background-size:22px 22px;mask-image:radial-gradient(ellipse at 50% 50%,black 50%,transparent 80%)}
+.hm-hero-glow{position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(200,240,80,.1) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%)}
+.hm-hero-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px}
+.hm-tag{font-size:9px;font-weight:200;letter-spacing:.18em;color:rgba(200,240,80,.65);background:rgba(200,240,80,.07);border:1px solid rgba(200,240,80,.14);border-radius:99px;padding:4px 14px;margin-bottom:16px}
+.hm-hero-title{font-family:var(--fd);font-style:italic;font-size:32px;font-weight:300;text-align:center;line-height:1.1;margin-bottom:10px}
+.hm-hero-sub{font-size:11px;font-weight:200;color:var(--dim);text-align:center;letter-spacing:.06em;margin-bottom:20px}
+.hm-hero-stats{display:flex;gap:28px}
+.hm-hs{display:flex;flex-direction:column;align-items:center;gap:2px}
+.hm-hsv{font-family:var(--fd);font-style:italic;font-size:24px;font-weight:300;color:var(--acc);line-height:1}
+.hm-hsl{font-size:8px;font-weight:200;letter-spacing:.1em;color:var(--dim)}
+
+.hm-today{margin:16px 16px 0;padding:16px;background:var(--sf2);border:1px solid rgba(200,240,80,.13);border-radius:18px}
+.hm-today-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.hm-today-lbl{font-size:9px;font-weight:200;letter-spacing:.14em;color:rgba(200,240,80,.7)}
+.hm-today-btn{background:var(--acc);border:none;border-radius:99px;padding:7px 16px;font-family:var(--fb);font-size:10px;font-weight:300;color:var(--bg);cursor:pointer;transition:opacity .2s}
+.hm-today-btn:active{opacity:.8}
+.hm-today-row{display:flex}
+.hm-ts{flex:1;display:flex;flex-direction:column;gap:3px}
+.hm-ts+.hm-ts{border-left:1px solid var(--ln);padding-left:16px}
+.hm-tsl{font-size:8px;font-weight:200;letter-spacing:.1em;color:var(--dim)}
+.hm-tsv{font-family:var(--fd);font-style:italic;font-size:24px;font-weight:300;line-height:1}
+
+.hm-sec{padding:22px 16px 0}
+.hm-sec-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.hm-sec-title{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300}
+.hm-sec-more{font-size:10px;font-weight:200;color:var(--dim);cursor:pointer}
+.hm-cbar{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--ln)}
+.hm-cb-rk{font-family:var(--fd);font-style:italic;font-size:18px;font-weight:300;width:20px;flex-shrink:0;text-align:right}
+.hm-cb-rk.g{color:var(--gold)}.hm-cb-rk.s{color:var(--silver)}.hm-cb-rk.b{color:var(--bronze)}.hm-cb-rk.o{color:var(--dim)}
+.hm-cb-em{font-size:15px;flex-shrink:0}
+.hm-cb-info{flex:1;min-width:0}
+.hm-cb-name{font-size:13px;font-weight:300;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hm-cb-dist{font-size:10px;font-weight:200;color:var(--dim)}
+.hm-cb-bar{width:50px;flex-shrink:0}
+.hm-cb-bg{height:2px;background:rgba(255,255,255,.07);border-radius:2px}
+.hm-cb-fill{height:2px;border-radius:2px}
+
+.hm-feat{background:var(--sf);border:1px solid var(--ln);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .15s;margin-bottom:12px}
+.hm-feat:active{transform:scale(.985)}
+.hm-feat-img{height:140px;background:linear-gradient(145deg,#14142a,#0d0d1a);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.hm-feat-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(200,240,80,.1),transparent 55%)}
+.hm-feat-em{font-size:56px;position:relative;filter:drop-shadow(0 0 20px rgba(200,240,80,.18))}
+.hm-feat-body{padding:16px 18px 18px}
+.hm-feat-tag{font-size:9px;font-weight:200;letter-spacing:.14em;color:rgba(200,240,80,.7);margin-bottom:7px}
+.hm-feat-title{font-family:var(--fd);font-style:italic;font-size:20px;font-weight:300;line-height:1.25;margin-bottom:7px}
+.hm-feat-desc{font-size:11px;font-weight:200;color:var(--dim);line-height:1.65}
+.hm-feat-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.hm-feat-by{font-size:9px;font-weight:200;color:rgba(255,255,255,.2)}
+.hm-feat-cta{font-size:9px;font-weight:200;color:var(--acc);opacity:.8}
+
+.hm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hm-card{background:var(--sf);border:1px solid var(--ln);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .15s}
+.hm-card:active{transform:scale(.97)}
+.hm-card-top{height:82px;background:linear-gradient(145deg,#161620,#0e0e18);display:flex;align-items:center;justify-content:center;font-size:32px;position:relative}
+.hm-card-glow{position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(200,240,80,.07),transparent 60%)}
+.hm-card-body{padding:10px 12px 12px}
+.hm-card-tag{font-size:8px;font-weight:200;letter-spacing:.12em;color:var(--acc);opacity:.7;margin-bottom:4px}
+.hm-card-title{font-size:11px;font-weight:300;line-height:1.4}
+.hm-card-time{font-size:9px;font-weight:200;color:var(--dim);margin-top:4px}
+
+/* ══ RUN ══ */
+#v-run{background:var(--bg)}
+.rstate{display:none;flex-direction:column;height:100%;overflow-y:auto;scrollbar-width:none}
+.rstate::-webkit-scrollbar{display:none}
+.rstate.on{display:flex}
+
+.rs-top{padding:20px 18px 16px;border-bottom:1px solid var(--ln);flex-shrink:0}
+.rs-title{font-family:var(--fd);font-style:italic;font-size:26px;font-weight:300;margin-bottom:4px}
+.rs-sub{font-size:11px;font-weight:200;color:var(--dim)}
+
+#map-wrap{flex-shrink:0;height:220px;margin:16px 16px 0;border-radius:18px;border:1px solid var(--ln);overflow:hidden;position:relative;background:var(--sf2)}
+#gmap{width:100%;height:100%}
+.map-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(ellipse at 50% 40%,#111124,#0a0a0d);pointer-events:none}
+.map-ph.hide{display:none}
+.map-ph-em{font-size:32px;opacity:.35}
+.map-ph-txt{font-size:11px;font-weight:200;color:var(--dim);text-align:center;padding:0 20px;line-height:1.7}
+.loc-btn{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;background:rgba(10,10,13,.88);border:1px solid rgba(255,255,255,.12);border-radius:99px;padding:9px 18px;cursor:pointer;backdrop-filter:blur(12px);font-family:var(--fb);font-size:11px;font-weight:200;color:var(--hi);transition:all .2s;white-space:nowrap}
+.loc-btn.on{border-color:rgba(200,240,80,.4);color:var(--acc)}
+.loc-dot{width:8px;height:8px;border-radius:50%;background:var(--dim);flex-shrink:0;transition:all .3s}
+.loc-btn.on .loc-dot{background:var(--acc);box-shadow:0 0 8px rgba(200,240,80,.6)}
+
+.rs-body{padding:16px 16px 0;flex:1}
+.rs-lbl{font-size:9px;font-weight:200;letter-spacing:.14em;color:var(--dim);margin-bottom:10px}
+.gt-row{display:flex;gap:8px;margin-bottom:18px}
+.gt{flex:1;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:12px 4px;text-align:center;cursor:pointer;transition:all .2s}
+.gt.on{border-color:rgba(200,240,80,.4);background:rgba(200,240,80,.06)}
+.gt-em{font-size:18px;margin-bottom:4px}
+.gt-nm{font-size:10px;font-weight:200;color:var(--mid)}
+.gt.on .gt-nm{color:var(--hi)}
+.gv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.gv{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:11px 4px;text-align:center;cursor:pointer;transition:all .2s}
+.gv.on{border-color:rgba(200,240,80,.35);background:rgba(200,240,80,.06)}
+.gv-n{font-family:var(--fd);font-style:italic;font-size:20px;font-weight:300;display:block}
+.gv-u{font-size:9px;font-weight:200;color:var(--dim)}
+.rs-start{margin:0 16px 16px;background:var(--hi);border:none;border-radius:18px;padding:17px;font-family:var(--fb);font-size:15px;font-weight:300;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity .2s;flex-shrink:0;letter-spacing:.03em}
+.rs-start:active{opacity:.85}
+
+/* active run */
+.ra-map-big{flex-shrink:0;height:300px;position:relative;overflow:hidden;background:var(--sf2)}
+#gmap-active{width:100%;height:100%}
+.ra-map-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(ellipse at 50% 40%,#111124,#0a0a0d)}
+.ra-map-ph.hide{display:none}
+.ra-stats{display:flex;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);flex-shrink:0}
+.ra-st{flex:1;display:flex;flex-direction:column;align-items:center;padding:16px 4px;gap:4px;position:relative}
+.ra-st+.ra-st::before{content:'';position:absolute;left:0;top:15%;height:70%;width:1px;background:var(--ln)}
+.ra-sl{font-size:8px;font-weight:200;letter-spacing:.1em;color:var(--dim)}
+.ra-sv{font-family:var(--fd);font-style:italic;font-size:30px;font-weight:300;line-height:1}
+.ra-su{font-size:9px;font-weight:200;color:var(--dim)}
+.ra-goal{padding:14px 18px;background:var(--sf);border-bottom:1px solid var(--ln);flex-shrink:0}
+.ra-gl{font-size:9px;font-weight:200;letter-spacing:.1em;color:var(--dim);margin-bottom:7px;display:flex;justify-content:space-between}
+.ra-bar{height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:visible;position:relative}
+.ra-fill{height:3px;border-radius:2px;background:var(--acc);transition:width .5s}
+.ra-ctrl{display:flex;gap:10px;padding:18px 16px 20px;flex-shrink:0}
+.ra-stop{flex:1;background:rgba(255,70,70,.1);border:1px solid rgba(255,70,70,.22);border-radius:16px;padding:16px;font-family:var(--fb);font-size:14px;font-weight:300;color:rgba(255,110,110,.9);cursor:pointer;transition:all .2s}
+.ra-stop:active{background:rgba(255,70,70,.2)}
+.ra-pause{width:56px;height:56px;background:var(--sf);border:1px solid var(--ln);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s}
+.ra-pause:active{background:rgba(255,255,255,.07)}
+
+/* finish */
+#rfinish{overflow-y:auto;scrollbar-width:none}
+#rfinish::-webkit-scrollbar{display:none}
+.rf-top{padding:30px 20px 22px;text-align:center;border-bottom:1px solid var(--ln)}
+.rf-em{font-size:52px;margin-bottom:14px}
+.rf-title{font-family:var(--fd);font-style:italic;font-size:28px;font-weight:300;margin-bottom:5px}
+.rf-msg{font-size:12px;font-weight:200;color:var(--dim)}
+.rf-grid{display:grid;grid-template-columns:1fr 1fr}
+.rf-cell{padding:20px 18px;display:flex;flex-direction:column;gap:4px;border-bottom:1px solid var(--ln)}
+.rf-cell:nth-child(odd){border-right:1px solid var(--ln)}
+.rf-cl{font-size:9px;font-weight:200;letter-spacing:.1em;color:var(--dim)}
+.rf-cv{font-family:var(--fd);font-style:italic;font-size:34px;font-weight:300;line-height:1}
+.rf-cu{font-size:11px;font-weight:200;color:var(--dim)}
+.rf-acts{display:flex;gap:10px;padding:20px 16px 28px}
+.rf-shot{flex:1;background:var(--hi);border:none;border-radius:16px;padding:16px;font-family:var(--fb);font-size:13px;font-weight:300;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .2s}
+.rf-shot:active{opacity:.85}
+.rf-done{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:16px 20px;font-family:var(--fb);font-size:13px;font-weight:200;color:var(--mid);cursor:pointer}
+
+/* ══ CREW ══ */
+#v-crew{background:var(--bg)}
+#no-crew{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 28px 80px;text-align:center;overflow-y:auto;scrollbar-width:none}
+#no-crew::-webkit-scrollbar{display:none}
+.nc-em{font-size:54px;margin-bottom:20px;animation:floatGhost 3.5s ease-in-out infinite}
+.nc-title{font-family:var(--fd);font-style:italic;font-size:26px;font-weight:300;margin-bottom:8px}
+.nc-sub{font-size:12px;font-weight:200;color:var(--dim);line-height:1.75;margin-bottom:32px}
+.nc-actions{display:flex;flex-direction:column;gap:10px;width:100%}
+.nc-primary{background:var(--hi);border:none;border-radius:16px;padding:15px 20px;font-family:var(--fb);font-size:13px;font-weight:300;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s}
+.nc-primary:active{opacity:.85}
+.nc-sec{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:15px 20px;font-family:var(--fb);font-size:13px;font-weight:200;color:var(--mid);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.nc-divider{display:flex;align-items:center;gap:10px;padding:2px 0}
+.nc-divider::before,.nc-divider::after{content:'';flex:1;height:1px;background:var(--ln)}
+.nc-divider span{font-size:10px;font-weight:200;color:rgba(255,255,255,.15)}
+.nc-nearby{width:100%;background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:14px 16px}
+.nc-nl{font-size:9px;font-weight:200;letter-spacing:.12em;color:var(--dim);margin-bottom:10px}
+.nc-nr{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ln)}
+.nc-nr:last-child{border-bottom:none;padding-bottom:0}
+.nc-nem{font-size:15px;flex-shrink:0}
+.nc-ni{flex:1;min-width:0}
+.nc-nn{font-size:12px;font-weight:300}
+.nc-nm{font-size:9px;font-weight:200;color:var(--dim);margin-top:1px}
+.nc-npct{font-family:var(--fd);font-style:italic;font-size:15px;color:var(--acc);opacity:.8;flex-shrink:0}
+.nc-njoin{background:rgba(200,240,80,.1);border:1px solid rgba(200,240,80,.22);border-radius:99px;padding:5px 13px;font-family:var(--fb);font-size:10px;font-weight:300;color:rgba(200,240,80,.85);cursor:pointer;flex-shrink:0}
+
+#crew-content{display:none;flex-direction:column;flex:1;overflow:hidden}
+#ctabs{flex-shrink:0;display:flex;padding:0 18px;border-bottom:1px solid var(--ln);overflow-x:auto;scrollbar-width:none;background:var(--bg)}
+#ctabs::-webkit-scrollbar{display:none}
+.ctab{flex-shrink:0;background:none;border:none;border-bottom:1.5px solid transparent;padding:12px 12px 9px;font-family:var(--fb);font-size:10px;font-weight:200;letter-spacing:.07em;color:var(--dim);cursor:pointer;transition:all .25s;white-space:nowrap}
+.ctab.on{color:var(--hi);border-bottom-color:var(--hi)}
+.cpane{flex:1;display:none;flex-direction:column;overflow-y:auto;scrollbar-width:none;padding:0 18px 100px}
+.cpane::-webkit-scrollbar{display:none}
+.cpane.on{display:flex}
+.crew-hdr{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 0 14px;border-bottom:1px solid var(--ln)}
+.crew-hdr-name{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300}
+.crew-hdr-sub{font-size:10px;font-weight:200;color:var(--dim);margin-top:2px}
+.crew-hdr-loc{font-size:10px;font-weight:200;color:rgba(200,240,80,.7);margin-top:2px}
+.crew-expert{background:linear-gradient(135deg,rgba(212,181,74,.14),rgba(200,240,80,.07));border:1px solid rgba(212,181,74,.28);border-radius:99px;padding:5px 11px;font-size:10px;font-weight:300;color:rgba(212,181,74,.9);flex-shrink:0;margin-top:4px}
+.gc-card{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:16px;margin:14px 0}
+.gc-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px}
+.gc-lbl{font-size:9px;font-weight:200;letter-spacing:.12em;color:var(--dim);margin-bottom:5px}
+.gc-nums{display:flex;align-items:baseline;gap:3px}
+.gc-cur{font-family:var(--fd);font-style:italic;font-size:36px;font-weight:300;line-height:1}
+.gc-sep,.gc-tot{font-size:14px;font-weight:200;color:var(--dim)}
+.gc-unit{font-size:10px;font-weight:200;color:var(--dim);opacity:.5;margin-left:2px}
+.gc-pct{font-family:var(--fd);font-style:italic;font-size:26px;font-weight:300;color:var(--acc);opacity:.85}
+.prog{height:1px;background:rgba(255,255,255,.08);position:relative;overflow:visible;margin-bottom:12px}
+.pf{height:1px;background:var(--acc);transition:width 1.4s cubic-bezier(.4,0,.2,1);position:relative}
+.pd{position:absolute;right:-3px;top:-2.5px;width:6px;height:6px;border-radius:50%;background:var(--acc);box-shadow:0 0 8px rgba(200,240,80,.5)}
+.gc-meta{display:flex}
+.gm{flex:1;display:flex;flex-direction:column;gap:2px}
+.gm+.gm{border-left:1px solid var(--ln);padding-left:12px}
+.gm-l{font-size:8px;font-weight:200;letter-spacing:.1em;color:var(--dim)}
+.gm-v{font-size:13px;font-weight:300;color:var(--mid)}
+.gm-v.a{color:var(--acc);opacity:.85}
+.lb-hdr{display:flex;justify-content:space-between;padding-top:4px;margin-bottom:10px}
+.lb-ttl{font-size:9px;font-weight:200;letter-spacing:.12em;color:var(--dim)}
+.lb-cnt{font-size:9px;font-weight:200;color:rgba(255,255,255,.15)}
+.lbrow{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--ln)}
+.lbrow.click{cursor:pointer;border-radius:8px;padding:10px 6px;margin:0 -6px;transition:background .15s}
+.lbrow.click:active{background:rgba(255,255,255,.04)}
+.lbrow.me .lb-nm{color:var(--hi)}.lbrow.me .lb-d{color:var(--acc)}
+.lbpos{width:17px;font-size:11px;font-weight:300;text-align:center;color:var(--dim);flex-shrink:0}
+.lbpos.g{color:var(--gold)}.lbpos.s{color:var(--silver)}.lbpos.b{color:var(--bronze)}
+.lbem{font-size:15px;flex-shrink:0}
+.lb-nc{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.lb-nm{font-size:12px;font-weight:200;color:var(--mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-hint{font-size:9px;font-weight:200;color:rgba(255,255,255,.2)}
+.lb-rt{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.lb-d{font-size:12px;font-weight:300;color:var(--mid)}
+.lb-bg{width:40px;height:1px;background:rgba(255,255,255,.07)}
+.lb-bar{height:1px}.lb-bar.me{background:var(--acc)}.lb-bar.g{background:var(--gold)}.lb-bar.s{background:var(--silver)}.lb-bar.b{background:var(--bronze)}.lb-bar.o{background:rgba(255,255,255,.18)}
+.nb-hdr{padding:18px 0 10px;border-bottom:1px solid var(--ln)}
+.nb-area{font-family:var(--fd);font-style:italic;font-size:20px;font-weight:300}
+.nb-desc{font-size:10px;font-weight:200;color:var(--dim);margin-top:3px}
+.nb-row{padding:14px 0;border-bottom:1px solid var(--ln)}
+.nb-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.nb-rn{font-family:var(--fd);font-style:italic;font-size:18px;flex-shrink:0}
+.nb-rn.g{color:var(--gold)}.nb-rn.s{color:var(--silver)}.nb-rn.b{color:var(--bronze)}.nb-rn.o{color:var(--acc)}
+.nb-cname{font-size:14px;font-weight:300}.nb-mine{font-size:8px;background:rgba(200,240,80,.1);border:1px solid rgba(200,240,80,.2);border-radius:99px;padding:2px 7px;color:rgba(200,240,80,.8)}
+.nb-cmeta{font-size:9px;font-weight:200;color:var(--dim)}.nb-pct{font-family:var(--fd);font-style:italic;font-size:22px;color:var(--acc);opacity:.85}
+.nb-prog{height:1px;background:rgba(255,255,255,.08);position:relative;overflow:visible;margin-bottom:10px}
+.nb-pf{height:1px;background:rgba(200,240,80,.5);position:relative}
+.nb-pd{position:absolute;right:-2px;top:-2px;width:5px;height:5px;border-radius:50%;background:rgba(200,240,80,.7)}
+.nb-bot{display:flex;justify-content:space-between;align-items:center}
+.nb-ghosts{font-size:14px;letter-spacing:.02em}.nb-nums{display:flex;gap:14px}
+.nbn{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+.nbn-l{font-size:8px;font-weight:200;letter-spacing:.1em;color:var(--dim)}.nbn-v{font-family:var(--fd);font-style:italic;font-size:14px}
+.past-hdr{display:flex;justify-content:space-between;align-items:center;padding:18px 0 12px;border-bottom:1px solid var(--ln)}
+.past-title{font-family:var(--fd);font-style:italic;font-size:18px;font-weight:300}
+.expert-btn{display:flex;align-items:center;gap:5px;background:rgba(200,240,80,.1);border:1px solid rgba(200,240,80,.22);border-radius:99px;padding:6px 12px;font-family:var(--fb);font-size:10px;font-weight:300;color:rgba(200,240,80,.85);cursor:pointer}
+.past-card{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln)}
+.pc-em{font-size:20px;flex-shrink:0}
+.pc-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.pc-name{font-size:13px;font-weight:300}.pc-meta{font-size:10px;font-weight:200;color:var(--dim)}
+.pc-xb{background:linear-gradient(135deg,rgba(212,181,74,.14),rgba(200,240,80,.07));border:1px solid rgba(212,181,74,.28);border-radius:99px;padding:2px 8px;font-size:8px;color:rgba(212,181,74,.85);display:inline-block;margin-top:3px}
+.pc-right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.pc-rank{font-family:var(--fd);font-style:italic;font-size:18px;font-weight:300}
+.pc-rank.g{color:var(--gold)}.pc-rank.s{color:var(--silver)}.pc-rank.b{color:var(--bronze)}.pc-rank.o{color:var(--acc)}
+.pc-dist{font-size:10px;font-weight:200;color:var(--dim)}
+
+/* ══ SHOT ══ */
 #v-shot{padding:10px 14px 0;background:var(--bg)}
 #card{flex:1;position:relative;border-radius:18px;overflow:hidden;background:#101012;min-height:0}
 #bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s}
-#empty-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(ellipse at 50% 40%,#13131a,#0c0c0e)}
-.e-grain{position:absolute;inset:0;opacity:.3;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23f)' opacity='.07'/%3E%3C/svg%3E")}
-.e-icon{font-size:26px;opacity:.18;filter:grayscale(1);position:relative}
+#empty-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(ellipse at 50% 40%,#13131a,#0a0a0d)}
+.e-grain{position:absolute;inset:0;opacity:.3;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23f)' opacity='.07'/%3E%3C/svg%3E")}
+.e-icon{font-size:28px;opacity:.18;filter:grayscale(1);position:relative}
 .e-hint{font-size:10px;font-weight:200;letter-spacing:.14em;color:var(--dim);opacity:.55;position:relative}
 #ovs{position:absolute;inset:0;z-index:5;pointer-events:none}
-.ov{position:absolute;inset:0;transition:opacity .35s}
-.ov.off{opacity:0}
+.ov{position:absolute;inset:0;transition:opacity .35s}.ov.off{opacity:0}
 .ft{position:absolute;top:0;left:0;right:0;height:170px;background:linear-gradient(180deg,rgba(0,0,0,.75),transparent)}
 .fb{position:absolute;bottom:0;left:0;right:0;height:260px;background:linear-gradient(0deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.4) 55%,transparent)}
 .ov-hd{position:absolute;top:0;left:0;right:0;padding:16px 16px 0;display:flex;justify-content:space-between;align-items:flex-start}
 .runner{display:flex;align-items:center;gap:6px;cursor:pointer;pointer-events:all}
-.r-em{font-size:17px;line-height:1;transition:transform .18s}
-.runner:active .r-em{transform:scale(1.15)}
-.r-nm{font-size:12px;font-weight:200;color:rgba(255,255,255,.72)}
+.r-em{font-size:17px;line-height:1}.r-nm{font-size:12px;font-weight:200;color:rgba(255,255,255,.72)}
 .ov-dt{font-size:9px;font-weight:200;color:rgba(255,255,255,.22);text-align:right;line-height:1.9}
 .chip{position:absolute;display:flex;align-items:baseline;gap:4px;background:rgba(0,0,0,.55);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.09);border-radius:99px;padding:5px 12px;pointer-events:none}
 .ch-n{font-family:var(--fd);font-style:italic;font-size:20px;line-height:1}
 .ch-n.g{color:var(--gold)}.ch-n.s{color:var(--silver)}.ch-n.b{color:var(--bronze)}.ch-n.o{color:var(--acc)}
 .ch-of{font-size:10px;font-weight:200;color:rgba(255,255,255,.28)}
-/* Ghost */
 .gchip{top:16px;right:16px}
 .gboard{position:absolute;right:14px;bottom:68px;display:flex;flex-direction:column;gap:2px;pointer-events:none}
 .gb-lbl{font-size:8px;font-weight:200;letter-spacing:.12em;color:rgba(255,255,255,.18);text-align:right;margin-bottom:3px}
-.gb-row{display:flex;align-items:center;gap:5px;padding:4px 8px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.06);border-radius:6px;backdrop-filter:blur(4px)}
+.gb-row{display:flex;align-items:center;gap:5px;padding:4px 8px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.06);border-radius:6px}
 .gb-row.me{background:rgba(200,240,80,.08);border-color:rgba(200,240,80,.2)}
 .gb-n{font-size:9px;font-weight:300;color:rgba(255,255,255,.22);width:11px;text-align:right}
 .gb-n.g{color:var(--gold)}.gb-n.s{color:var(--silver)}.gb-n.b{color:var(--bronze)}
-.gb-e{font-size:11px}
-.gb-d{font-size:9px;font-weight:300;color:rgba(255,255,255,.42);margin-left:auto;font-variant-numeric:tabular-nums}
+.gb-e{font-size:11px}.gb-d{font-size:9px;font-weight:300;color:rgba(255,255,255,.42);margin-left:auto}
 .gb-d.me{color:var(--acc)}
 .g-bot{position:absolute;bottom:0;left:0;right:64px;padding:0 18px 18px}
 .g-dist{font-family:var(--fd);font-style:italic;font-size:52px;font-weight:300;line-height:.9;letter-spacing:-.02em}
@@ -86,8 +344,7 @@ body{background:var(--bg);color:var(--hi);font-family:var(--fb);display:flex;fle
 .g-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
 .g-brand{font-size:9px;font-weight:200;letter-spacing:.16em;color:rgba(255,255,255,.1)}
 .g-tag{font-size:9px;font-weight:200;color:rgba(200,240,80,.42)}
-#mmg{width:40px;height:40px;border-radius:5px;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.4);display:block}
-/* Path */
+#mmg{width:40px;height:40px;border-radius:5px;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.4);position:absolute;right:16px;bottom:20px}
 .p-logo{font-family:var(--fd);font-style:italic;font-size:13px;font-weight:300;color:rgba(255,255,255,.3)}
 .p-mapbg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 #mmp{width:62%;max-width:220px;aspect-ratio:1;opacity:.25}
@@ -97,7 +354,6 @@ body{background:var(--bg);color:var(--hi);font-family:var(--fb);display:flex;fle
 .p-l{font-size:8px;font-weight:200;letter-spacing:.12em;color:rgba(255,255,255,.22)}
 .p-v{font-family:var(--fd);font-style:italic;font-size:29px;color:var(--hi);line-height:1}
 .p-u{font-family:var(--fb);font-size:13px;font-weight:200;color:var(--mid)}
-/* Stamp */
 .st-vign{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,.62) 100%)}
 .st-logo{font-size:9px;font-weight:200;letter-spacing:.2em;color:rgba(255,255,255,.2)}
 .st-bot{position:absolute;bottom:0;left:0;right:0;padding:0 18px 18px}
@@ -113,300 +369,126 @@ body{background:var(--bg);color:var(--hi);font-family:var(--fb);display:flex;fle
 .ss-v{font-size:13px;font-weight:300;color:var(--mid)}
 .st-badge{position:absolute;bottom:16px;right:16px;width:82px;height:82px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.44);backdrop-filter:blur(8px)}
 .st-badge::before{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(200,240,80,.1)}
-.sb-em{font-size:23px;line-height:1}
-.sb-done{font-size:7px;font-weight:200;letter-spacing:.12em;color:rgba(200,240,80,.5)}
-.sb-date{font-size:7px;font-weight:200;color:rgba(255,255,255,.18)}
-#mms{position:absolute;top:70px;right:18px;width:42px;height:42px;border-radius:6px;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.4);display:block}
+.sb-em{font-size:23px;line-height:1}.sb-done{font-size:7px;font-weight:200;letter-spacing:.12em;color:rgba(200,240,80,.5)}.sb-date{font-size:7px;font-weight:200;color:rgba(255,255,255,.18)}
+#mms{position:absolute;top:70px;right:18px;width:42px;height:42px;border-radius:6px;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.4)}
 #tbar{flex-shrink:0;display:flex;gap:6px;padding:8px 14px 5px;overflow-x:auto;scrollbar-width:none}
 #tbar::-webkit-scrollbar{display:none}
 .th{flex-shrink:0;background:none;border:1px solid var(--ln);border-radius:99px;padding:6px 14px;font-family:var(--fb);font-size:10px;font-weight:200;letter-spacing:.06em;color:var(--dim);cursor:pointer;transition:all .2s}
 .th.on{border-color:rgba(255,255,255,.3);color:var(--hi)}
 #shot-acts{flex-shrink:0;display:flex;gap:8px;padding:5px 14px 10px}
-.ai{width:46px;background:var(--sf);border:1px solid var(--ln);border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s;flex-shrink:0}
-.ai:active{background:rgba(255,255,255,.1)}
+.ai{width:46px;background:var(--sf);border:1px solid var(--ln);border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 .ai svg{width:17px;height:17px;stroke:var(--mid);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .asave{flex:1;background:var(--hi);border:none;border-radius:13px;font-family:var(--fb);font-size:13px;font-weight:300;letter-spacing:.04em;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .2s}
-.asave:active{opacity:.8}
+.asave:active{opacity:.85}
 
-/* === RECORDS VIEW === */
-#v-records{overflow-y:auto;scrollbar-width:none;background:var(--bg)}
+/* ══ RECORDS ══ */
+#v-records{background:var(--bg);overflow-y:auto;scrollbar-width:none}
 #v-records::-webkit-scrollbar{display:none}
-.rec-header{padding:20px 20px 16px;border-bottom:1px solid var(--ln)}
-.rec-h-title{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300;margin-bottom:14px}
-.rec-total-row{display:flex;gap:0}
-.rec-stat{flex:1;display:flex;flex-direction:column;gap:3px}
-.rec-stat+.rec-stat{border-left:1px solid var(--ln);padding-left:16px}
-.rec-sl{font-size:9px;font-weight:200;letter-spacing:.1em;color:var(--dim)}
-.rec-sv{font-family:var(--fd);font-style:italic;font-size:26px;font-weight:300;color:var(--hi)}
-.month-strip{padding:16px 20px 0}
-.ms-label{font-size:9px;font-weight:200;letter-spacing:.12em;color:var(--dim);margin-bottom:10px}
-.month-dots{display:flex;gap:3px;flex-wrap:wrap}
-.md{width:10px;height:10px;border-radius:2px;background:rgba(255,255,255,.07)}
-.md.run{background:rgba(200,240,80,.5)}
-.md.today{background:var(--acc);box-shadow:0 0 5px rgba(200,240,80,.5)}
-.log-section{padding:16px 20px 0}
-.log-label{font-size:9px;font-weight:200;letter-spacing:.12em;color:var(--dim);margin-bottom:12px}
-.log-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln)}
-.log-date-col{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:1px;width:32px}
-.log-month{font-size:8px;font-weight:200;color:var(--dim)}
-.log-day{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300;line-height:1}
-.log-route{width:44px;height:44px;flex-shrink:0;border-radius:7px;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.4)}
-.log-info{flex:1;display:flex;flex-direction:column;gap:3px}
-.log-crew-tag{font-size:9px;font-weight:200;background:var(--sf2);border:1px solid var(--ln);border-radius:99px;padding:2px 8px;color:var(--dim);display:inline-flex;align-items:center;gap:3px;width:fit-content}
-.log-dist{font-family:var(--fd);font-style:italic;font-size:20px;font-weight:300;line-height:1}
-.log-sub{font-size:10px;font-weight:200;color:var(--dim)}
-.log-right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
-.log-rank-chip{font-family:var(--fd);font-style:italic;font-size:16px;font-weight:300}
-.log-rank-chip.g{color:var(--gold)}.log-rank-chip.s{color:var(--silver)}.log-rank-chip.b{color:var(--bronze)}.log-rank-chip.o{color:var(--acc)}
-.crews-section{padding:16px 20px 24px}
-.crew-past-card{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln)}
-.cpc-em{font-size:22px;flex-shrink:0}
-.cpc-info{flex:1;display:flex;flex-direction:column;gap:2px}
-.cpc-name{font-size:13px;font-weight:300}
-.cpc-meta{font-size:10px;font-weight:200;color:var(--dim)}
-.cpc-badge{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
-.expert-badge{background:rgba(200,240,80,.1);border:1px solid rgba(200,240,80,.25);border-radius:99px;padding:3px 10px;font-size:9px;font-weight:300;color:rgba(200,240,80,.85)}
-.cpc-rank{font-family:var(--fd);font-style:italic;font-size:14px}
-.cpc-rank.g{color:var(--gold)}.cpc-rank.s{color:var(--silver)}.cpc-rank.b{color:var(--bronze)}.cpc-rank.o{color:var(--acc)}
+.rec-hero{padding:26px 18px 22px;border-bottom:1px solid var(--ln)}
+.rec-hero-lbl{font-size:9px;font-weight:200;letter-spacing:.18em;color:var(--dim);margin-bottom:12px}
+.rec-big{display:flex;align-items:flex-end;gap:6px;margin-bottom:5px}
+.rec-big-n{font-family:var(--fd);font-style:italic;font-size:84px;font-weight:300;line-height:.82;letter-spacing:-.03em}
+.rec-big-u{font-family:var(--fd);font-style:italic;font-size:30px;font-weight:300;color:var(--dim);padding-bottom:8px}
+.rec-hero-sub{font-size:12px;font-weight:200;color:var(--dim);margin-bottom:24px}
+.rec-3{display:flex;border-top:1px solid var(--ln);padding-top:0}
+.rec-3s{flex:1;padding:16px 0;display:flex;flex-direction:column;align-items:center;gap:3px}
+.rec-3s+.rec-3s{border-left:1px solid var(--ln)}
+.rec-3sl{font-size:8px;font-weight:200;letter-spacing:.1em;color:var(--dim)}
+.rec-3sv{font-family:var(--fd);font-style:italic;font-size:30px;font-weight:300;line-height:1}
+.rec-3su{font-size:10px;font-weight:200;color:var(--dim)}
+.rec-cal{padding:22px 18px 0}
+.rec-cal-lbl{font-size:9px;font-weight:200;letter-spacing:.14em;color:var(--dim);margin-bottom:12px}
+.cal-grid{display:flex;gap:4px;flex-wrap:wrap}
+.cal-d{width:13px;height:13px;border-radius:3px;background:rgba(255,255,255,.06)}
+.cal-d.run{background:rgba(200,240,80,.5)}.cal-d.today{background:var(--acc);box-shadow:0 0 7px rgba(200,240,80,.5)}
+.rec-target{margin:22px 18px 0;background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:18px}
+.rt-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px}
+.rt-lbl{font-size:9px;font-weight:200;letter-spacing:.12em;color:var(--dim);margin-bottom:4px}
+.rt-val{font-family:var(--fd);font-style:italic;font-size:26px;font-weight:300}
+.rt-pct{font-family:var(--fd);font-style:italic;font-size:20px;color:var(--acc);opacity:.85}
+.rt-bar{height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+.rt-fill{height:100%;background:var(--acc);border-radius:2px;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+.rec-log{padding:24px 18px 0}
+.rec-log-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
+.rec-log-title{font-family:var(--fd);font-style:italic;font-size:24px;font-weight:300}
+.rec-log-cnt{font-size:10px;font-weight:200;color:var(--dim)}
+.log-item{display:flex;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid var(--ln)}
+.log-date{flex-shrink:0;display:flex;flex-direction:column;align-items:center;width:36px}
+.log-mo{font-size:8px;font-weight:200;color:var(--dim)}
+.log-dy{font-family:var(--fd);font-style:italic;font-size:30px;font-weight:300;line-height:1}
+.log-cv{width:52px;height:52px;flex-shrink:0;border-radius:10px;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.4)}
+.log-info{flex:1;display:flex;flex-direction:column;gap:4px}
+.log-crew{font-size:9px;font-weight:200;background:var(--sf2);border:1px solid var(--ln);border-radius:99px;padding:3px 9px;color:var(--dim);display:inline-flex;align-items:center;width:fit-content}
+.log-km{font-family:var(--fd);font-style:italic;font-size:30px;font-weight:300;line-height:1}
+.log-sub{font-size:11px;font-weight:200;color:var(--dim)}
+.log-right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.log-rn{font-family:var(--fd);font-style:italic;font-size:24px;font-weight:300}
+.log-rn.g{color:var(--gold)}.log-rn.s{color:var(--silver)}.log-rn.b{color:var(--bronze)}.log-rn.o{color:var(--acc)}
+.log-kcal{font-size:9px;font-weight:200;color:var(--dim)}
+.rec-crews{padding:24px 18px 100px}
+.rec-crews-title{font-family:var(--fd);font-style:italic;font-size:24px;font-weight:300;margin-bottom:16px}
+.rcr{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--ln)}
+.rcr-em{font-size:24px;flex-shrink:0}
+.rcr-info{flex:1;display:flex;flex-direction:column;gap:3px}
+.rcr-name{font-size:14px;font-weight:300}.rcr-meta{font-size:10px;font-weight:200;color:var(--dim)}
+.rcr-right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.rcr-xp{background:rgba(200,240,80,.1);border:1px solid rgba(200,240,80,.22);border-radius:99px;padding:3px 10px;font-size:9px;color:rgba(200,240,80,.85)}
+.rcr-rank{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300}
+.rcr-rank.g{color:var(--gold)}.rcr-rank.s{color:var(--silver)}.rcr-rank.b{color:var(--bronze)}.rcr-rank.o{color:var(--acc)}
 
-/* === CREW VIEW === */
-#v-crew{background:var(--bg)}
-#ctabs{flex-shrink:0;display:flex;padding:0 18px;border-bottom:1px solid var(--ln);overflow-x:auto;scrollbar-width:none}
-#ctabs::-webkit-scrollbar{display:none}
-.ctab{flex-shrink:0;background:none;border:none;border-bottom:1.5px solid transparent;padding:12px 12px 9px;font-family:var(--fb);font-size:10px;font-weight:200;letter-spacing:.07em;color:var(--dim);cursor:pointer;transition:all .25s;white-space:nowrap}
-.ctab.on{color:var(--hi);border-bottom-color:var(--hi)}
-.cpane{flex:1;display:none;flex-direction:column;overflow-y:auto;scrollbar-width:none;padding:0 18px 120px}
-.cpane::-webkit-scrollbar{display:none}
-.cpane.on{display:flex}
-
-/* no-crew empty state */
-#no-crew{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 28px 40px;text-align:center;overflow-y:auto;scrollbar-width:none}
-#no-crew::-webkit-scrollbar{display:none}
-#no-crew.hidden{display:none}
-.nc-ghost{font-size:52px;margin-bottom:18px;animation:floatGhost 3s ease-in-out infinite}
-@keyframes floatGhost{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.nc-title{font-family:var(--fd);font-style:italic;font-size:24px;font-weight:300;margin-bottom:8px}
-.nc-sub{font-size:12px;font-weight:200;color:var(--dim);line-height:1.7;margin-bottom:32px}
-.nc-actions{display:flex;flex-direction:column;gap:10px;width:100%}
-.nc-btn-primary{background:var(--hi);border:none;border-radius:16px;padding:15px 20px;font-family:var(--fb);font-size:13px;font-weight:300;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s;letter-spacing:.02em}
-.nc-btn-primary:active{opacity:.85}
-.nc-btn-sec{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:15px 20px;font-family:var(--fb);font-size:13px;font-weight:200;color:var(--mid);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
-.nc-btn-sec:active{background:rgba(255,255,255,.08)}
-.nc-divider{display:flex;align-items:center;gap:10px;padding:4px 0}
-.nc-divider::before,.nc-divider::after{content:'';flex:1;height:1px;background:var(--ln)}
-.nc-divider span{font-size:10px;font-weight:200;color:rgba(255,255,255,.15)}
-.nc-nearby-preview{width:100%;background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:14px 16px;margin-top:4px}
-.nc-near-label{font-size:9px;font-weight:200;letter-spacing:.12em;color:var(--dim);margin-bottom:10px}
-.nc-near-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--ln)}
-.nc-near-row:last-child{border-bottom:none;padding-bottom:0}
-.nc-near-em{font-size:16px;flex-shrink:0}
-.nc-near-info{flex:1;min-width:0}
-.nc-near-name{font-size:12px;font-weight:300}
-.nc-near-meta{font-size:9px;font-weight:200;color:var(--dim);margin-top:1px}
-.nc-near-pct{font-family:var(--fd);font-style:italic;font-size:15px;font-weight:300;color:var(--acc);opacity:.8;flex-shrink:0}
-.nc-near-join{background:rgba(200,240,80,.12);border:1px solid rgba(200,240,80,.25);border-radius:99px;padding:5px 13px;font-family:var(--fb);font-size:10px;font-weight:300;color:rgba(200,240,80,.85);cursor:pointer;flex-shrink:0;transition:background .2s}
-.nc-near-join:active{background:rgba(200,240,80,.22)}
-
-/* JOIN MODAL */
-#join-modal{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.65);backdrop-filter:blur(14px);opacity:0;pointer-events:none;transition:opacity .28s}
-#join-modal.on{opacity:1;pointer-events:all}
-.jm-box{width:100%;max-width:430px;background:#111113;border:1px solid var(--ln);border-bottom:none;border-radius:22px 22px 0 0;padding:24px 20px 44px;transform:translateY(16px);transition:transform .3s}
-#join-modal.on .jm-box{transform:translateY(0)}
-.jm-title{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300;margin-bottom:5px}
-.jm-sub{font-size:11px;font-weight:200;color:var(--dim);margin-bottom:22px;line-height:1.6}
-.jm-input{width:100%;background:var(--sf);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px 16px;font-family:var(--fb);font-size:16px;font-weight:300;color:var(--hi);letter-spacing:.1em;outline:none;transition:border-color .2s;caret-color:var(--acc);margin-bottom:12px;text-transform:uppercase}
-.jm-input::placeholder{color:rgba(255,255,255,.2);letter-spacing:.06em;text-transform:none}
-.jm-input:focus{border-color:rgba(200,240,80,.4)}
-.jm-preview{background:rgba(200,240,80,.05);border:1px solid rgba(200,240,80,.18);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:none}
-.jm-preview.on{display:flex;align-items:center;gap:12px}
-.jm-prev-em{font-size:26px;flex-shrink:0}
-.jm-prev-info{flex:1}
-.jm-prev-name{font-size:14px;font-weight:300;margin-bottom:3px}
-.jm-prev-meta{font-size:10px;font-weight:200;color:var(--dim)}
-.jm-prev-pct{font-family:var(--fd);font-style:italic;font-size:22px;color:var(--acc);opacity:.85;flex-shrink:0}
-.jm-confirm{width:100%;background:var(--hi);border:none;border-radius:14px;padding:14px;font-family:var(--fb);font-size:13px;font-weight:300;color:var(--bg);cursor:pointer;transition:opacity .2s;display:none;margin-bottom:8px}
-.jm-confirm.on{display:block}
-.jm-confirm:active{opacity:.85}
-.jm-cancel{width:100%;background:none;border:1px solid var(--ln);border-radius:14px;padding:12px;font-family:var(--fb);font-size:12px;font-weight:200;color:var(--dim);cursor:pointer}
-
-/* CREATE CREW MODAL */
-#create-modal{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.65);backdrop-filter:blur(14px);opacity:0;pointer-events:none;transition:opacity .28s}
-#create-modal.on{opacity:1;pointer-events:all}
-.cm-box{width:100%;max-width:430px;background:#111113;border:1px solid var(--ln);border-bottom:none;border-radius:22px 22px 0 0;padding:24px 20px 44px;transform:translateY(16px);transition:transform .3s;max-height:88dvh;overflow-y:auto;scrollbar-width:none}
-.cm-box::-webkit-scrollbar{display:none}
-#create-modal.on .cm-box{transform:translateY(0)}
-.cm-title{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300;margin-bottom:5px}
-.cm-sub{font-size:11px;font-weight:200;color:var(--dim);margin-bottom:24px;line-height:1.6}
-.cm-field{margin-bottom:18px}
-.cm-label{font-size:9px;font-weight:200;letter-spacing:.12em;color:var(--dim);margin-bottom:8px}
-.cm-text-input{width:100%;background:var(--sf);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;font-family:var(--fb);font-size:14px;font-weight:200;color:var(--hi);outline:none;transition:border-color .2s;caret-color:var(--acc)}
-.cm-text-input:focus{border-color:rgba(200,240,80,.35)}
-.cm-text-input::placeholder{color:rgba(255,255,255,.18)}
-.cm-emoji-row{display:flex;gap:8px;flex-wrap:wrap}
-.cm-em-opt{width:46px;height:46px;background:var(--sf);border:1px solid var(--ln);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:all .2s}
-.cm-em-opt.on{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.07);transform:scale(1.06)}
-.cm-goal-row{display:flex;gap:8px}
-.cm-goal-opt{flex:1;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .2s}
-.cm-goal-opt.on{border-color:rgba(200,240,80,.35);background:rgba(200,240,80,.07)}
-.cm-goal-km{font-family:var(--fd);font-style:italic;font-size:18px;font-weight:300;color:var(--hi);display:block}
-.cm-goal-lbl{font-size:8px;font-weight:200;color:var(--dim)}
-.cm-confirm{width:100%;background:var(--hi);border:none;border-radius:14px;padding:14px;font-family:var(--fb);font-size:13px;font-weight:300;color:var(--bg);cursor:pointer;margin-top:4px;transition:opacity .2s}
-.cm-confirm:active{opacity:.85}
-.cm-cancel{width:100%;background:none;border:1px solid var(--ln);border-radius:14px;padding:12px;font-family:var(--fb);font-size:12px;font-weight:200;color:var(--dim);cursor:pointer;margin-top:8px}
-/* crew header */
-.crew-hdr{display:flex;justify-content:space-between;align-items:center;padding:18px 0 14px;border-bottom:1px solid var(--ln)}
-.crew-hdr-left{display:flex;flex-direction:column;gap:2px}
-.crew-hdr-loc{font-size:10px;font-weight:200;color:var(--acc);opacity:.75;margin-top:2px}
-.crew-hdr-name{font-family:var(--fd);font-style:italic;font-size:20px;font-weight:300}
-.crew-hdr-sub{font-size:10px;font-weight:200;color:var(--dim)}
-.crew-expert-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(212,181,74,.15),rgba(200,240,80,.08));border:1px solid rgba(212,181,74,.3);border-radius:99px;padding:5px 11px;font-size:10px;font-weight:300;color:rgba(212,181,74,.9)}
-/* goal card */
-.gc-card{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:16px 16px 14px;margin:14px 0}
-.gc-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px}
-.gc-lbl{font-size:9px;font-weight:200;letter-spacing:.12em;color:var(--dim);margin-bottom:5px}
-.gc-nums{display:flex;align-items:baseline;gap:4px}
-.gc-cur{font-family:var(--fd);font-style:italic;font-size:38px;font-weight:300;line-height:1}
-.gc-sep{font-size:14px;font-weight:200;color:var(--dim)}
-.gc-tot{font-size:16px;font-weight:200;color:var(--dim)}
-.gc-unit{font-size:11px;font-weight:200;color:var(--dim);opacity:.5;margin-left:2px}
-.gc-pct{font-family:var(--fd);font-style:italic;font-size:26px;font-weight:300;color:var(--acc);opacity:.85}
-.prog{height:1px;background:rgba(255,255,255,.08);position:relative;overflow:visible;margin-bottom:12px}
-.pf{height:1px;background:var(--acc);transition:width 1.4s cubic-bezier(.4,0,.2,1);position:relative}
-.pd{position:absolute;right:-3px;top:-2.5px;width:6px;height:6px;border-radius:50%;background:var(--acc);box-shadow:0 0 8px rgba(200,240,80,.5)}
-.gc-meta{display:flex}
-.gm{flex:1;display:flex;flex-direction:column;gap:2px}
-.gm+.gm{border-left:1px solid var(--ln);padding-left:12px}
-.gm-l{font-size:8px;font-weight:200;letter-spacing:.1em;color:var(--dim)}
-.gm-v{font-size:13px;font-weight:300;color:var(--mid)}
-.gm-v.a{color:var(--acc);opacity:.85}
-/* crew lb */
-.lb-hdr{display:flex;justify-content:space-between;margin-bottom:10px;padding-top:4px}
-.lb-ttl{font-size:9px;font-weight:200;letter-spacing:.12em;color:var(--dim)}
-.lb-cnt{font-size:9px;font-weight:200;color:rgba(255,255,255,.15)}
-.lbrow{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--ln)}
-.lbrow.clickable{cursor:pointer;transition:background .15s;border-radius:8px;padding:10px 6px;margin:0 -6px}
-.lbrow.clickable:active{background:rgba(255,255,255,.04)}
-.lbrow.me .lb-nm{color:var(--hi)}.lbrow.me .lb-d{color:var(--acc);opacity:.85}
-.lbpos{width:17px;font-size:11px;font-weight:300;text-align:center;color:var(--dim);flex-shrink:0}
-.lbpos.g{color:var(--gold)}.lbpos.s{color:var(--silver)}.lbpos.b{color:var(--bronze)}
-.lbem{font-size:15px;flex-shrink:0}
-.lb-nm-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
-.lb-nm{font-size:12px;font-weight:200;color:var(--mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lb-hint{font-size:9px;font-weight:200;color:rgba(255,255,255,.2)}
-.lb-rt{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
-.lb-d{font-size:12px;font-weight:300;color:var(--mid);font-variant-numeric:tabular-nums}
-.lb-bg{width:42px;height:1px;background:rgba(255,255,255,.07)}
-.lb-bar{height:1px}
-.lb-bar.me{background:var(--acc)}.lb-bar.g{background:var(--gold)}.lb-bar.s{background:var(--silver)}.lb-bar.b{background:var(--bronze)}.lb-bar.o{background:rgba(255,255,255,.18)}
-/* nearby crews */
-.nb-sec-hdr{padding:18px 0 10px;border-bottom:1px solid var(--ln)}
-.nb-area{font-family:var(--fd);font-style:italic;font-size:20px;font-weight:300}
-.nb-desc{font-size:10px;font-weight:200;color:var(--dim);margin-top:3px}
-.nb-row{padding:14px 0;border-bottom:1px solid var(--ln)}
-.nb-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.nb-left{display:flex;flex-direction:column;gap:3px}
-.nb-rank-name{display:flex;align-items:center;gap:7px}
-.nb-arank{font-family:var(--fd);font-style:italic;font-size:18px;font-weight:300;flex-shrink:0}
-.nb-arank.g{color:var(--gold)}.nb-arank.s{color:var(--silver)}.nb-arank.b{color:var(--bronze)}.nb-arank.o{color:var(--acc)}
-.nb-cname{font-size:14px;font-weight:300}
-.nb-mine-tag{font-size:8px;font-weight:200;background:rgba(200,240,80,.1);border:1px solid rgba(200,240,80,.2);border-radius:99px;padding:2px 7px;color:rgba(200,240,80,.8)}
-.nb-cmeta{font-size:9px;font-weight:200;color:var(--dim)}
-.nb-pct{font-family:var(--fd);font-style:italic;font-size:24px;font-weight:300;color:var(--acc);opacity:.85}
-.nb-prog{height:1px;background:rgba(255,255,255,.08);position:relative;overflow:visible;margin-bottom:10px}
-.nb-pf{height:1px;background:rgba(200,240,80,.5);position:relative}
-.nb-pd{position:absolute;right:-2px;top:-2px;width:5px;height:5px;border-radius:50%;background:rgba(200,240,80,.7)}
-.nb-bottom{display:flex;justify-content:space-between;align-items:center}
-.nb-ghosts{font-size:14px;letter-spacing:.02em}
-.nb-nums{display:flex;gap:14px}
-.nbn{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
-.nbn-l{font-size:8px;font-weight:200;letter-spacing:.1em;color:var(--dim)}
-.nbn-v{font-family:var(--fd);font-style:italic;font-size:14px;font-weight:300}
-/* past crews pane */
-.past-sec-hdr{display:flex;justify-content:space-between;align-items:center;padding:18px 0 12px;border-bottom:1px solid var(--ln)}
-.past-sec-title{font-family:var(--fd);font-style:italic;font-size:18px;font-weight:300}
-.create-btn{display:flex;align-items:center;gap:5px;background:rgba(200,240,80,.1);border:1px solid rgba(200,240,80,.25);border-radius:99px;padding:6px 12px;font-family:var(--fb);font-size:10px;font-weight:300;color:rgba(200,240,80,.85);cursor:pointer;transition:background .2s}
-.create-btn:active{background:rgba(200,240,80,.18)}
-.past-card{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln)}
-.pc-em{font-size:20px;flex-shrink:0}
-.pc-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
-.pc-name{font-size:13px;font-weight:300}
-.pc-meta{font-size:10px;font-weight:200;color:var(--dim)}
-.pc-expert{background:linear-gradient(135deg,rgba(212,181,74,.15),rgba(200,240,80,.08));border:1px solid rgba(212,181,74,.28);border-radius:99px;padding:2px 8px;font-size:8px;font-weight:200;color:rgba(212,181,74,.85);display:inline-block;margin-top:3px}
-.pc-right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
-.pc-rank{font-family:var(--fd);font-style:italic;font-size:18px;font-weight:300}
-.pc-rank.g{color:var(--gold)}.pc-rank.s{color:var(--silver)}.pc-rank.b{color:var(--bronze)}.pc-rank.o{color:var(--acc)}
-.pc-dist{font-size:10px;font-weight:200;color:var(--dim)}
-
-/* EXPERT MODAL */
-#expert-modal{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .28s}
-#expert-modal.on{opacity:1;pointer-events:all}
-.em-box{width:100%;max-width:430px;background:#111113;border:1px solid var(--ln);border-bottom:none;border-radius:20px 20px 0 0;padding:22px 20px 40px;transform:translateY(14px);transition:transform .3s}
-#expert-modal.on .em-box{transform:translateY(0)}
-.em-title{font-family:var(--fd);font-style:italic;font-size:20px;font-weight:300;margin-bottom:4px}
-.em-sub{font-size:11px;font-weight:200;color:var(--dim);margin-bottom:20px}
-.em-option{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;margin-bottom:8px;cursor:pointer;transition:border-color .2s}
-.em-option:hover{border-color:rgba(200,240,80,.25)}
-.em-opt-em{font-size:24px}
-.em-opt-info{display:flex;flex-direction:column;gap:3px;flex:1}
-.em-opt-name{font-size:13px;font-weight:300}
-.em-opt-req{font-size:10px;font-weight:200;color:var(--dim)}
-.em-cancel{width:100%;background:none;border:1px solid var(--ln);border-radius:14px;padding:12px;font-family:var(--fb);font-size:12px;font-weight:200;color:var(--dim);cursor:pointer;margin-top:8px}
-
-/* MEMBER MODAL */
-#member-modal{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .28s}
-#member-modal.on{opacity:1;pointer-events:all}
-.mm-box{width:100%;max-width:430px;background:#111113;border:1px solid var(--ln);border-bottom:none;border-radius:20px 20px 0 0;padding:0 0 40px;transform:translateY(14px);transition:transform .3s;max-height:85dvh;overflow-y:auto;scrollbar-width:none}
-#member-modal.on .mm-box{transform:translateY(0)}
-.mm-box::-webkit-scrollbar{display:none}
-.mm-head{display:flex;align-items:center;gap:12px;padding:22px 20px 16px;border-bottom:1px solid var(--ln)}
-.mm-em{font-size:32px}
-.mm-identity{flex:1;display:flex;flex-direction:column;gap:3px}
-.mm-name{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300}
-.mm-crew{font-size:11px;font-weight:200;color:var(--dim)}
-.mm-rank-badge{font-family:var(--fd);font-style:italic;font-size:28px;font-weight:300}
-.mm-rank-badge.g{color:var(--gold)}.mm-rank-badge.s{color:var(--silver)}.mm-rank-badge.b{color:var(--bronze)}.mm-rank-badge.o{color:var(--acc)}
-.mm-stats-row{display:flex;padding:16px 20px;border-bottom:1px solid var(--ln)}
-.mm-stat{flex:1;display:flex;flex-direction:column;gap:2px}
-.mm-stat+.mm-stat{border-left:1px solid var(--ln);padding-left:14px}
-.mm-sl{font-size:8px;font-weight:200;letter-spacing:.1em;color:var(--dim)}
-.mm-sv{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300}
-.mm-runs-label{padding:14px 20px 8px;font-size:9px;font-weight:200;letter-spacing:.12em;color:var(--dim)}
-.mm-run-row{display:flex;align-items:center;gap:10px;padding:10px 20px;border-bottom:1px solid var(--ln)}
-.mm-run-date{font-size:9px;font-weight:200;color:var(--dim);width:44px;flex-shrink:0}
-.mm-run-dist{font-family:var(--fd);font-style:italic;font-size:17px;font-weight:300;flex:1}
-.mm-run-sub{font-size:10px;font-weight:200;color:var(--dim)}
-.mm-close{width:calc(100% - 40px);margin:16px 20px 0;background:none;border:1px solid var(--ln);border-radius:14px;padding:12px;font-family:var(--fb);font-size:12px;font-weight:200;color:var(--dim);cursor:pointer}
-
-/* HIGH FIVE */
-#hifi-wrap{position:fixed;bottom:78px;right:16px;z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none;opacity:0;transition:opacity .3s}
-#hifi-wrap.on{opacity:1;pointer-events:all}
-.hifi-user-pill{display:flex;align-items:center;gap:6px;background:rgba(14,14,16,.9);border:1px solid rgba(255,255,255,.1);border-radius:99px;padding:6px 11px;backdrop-filter:blur(10px);white-space:nowrap;animation:slideInRight .3s ease}
-@keyframes slideInRight{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
-.hu-em{font-size:13px}
-.hu-nm{font-size:10px;font-weight:200;color:var(--hi)}
-.hu-dist{font-size:9px;font-weight:200;color:var(--acc);margin-left:2px}
-#hifi-btn{width:54px;height:54px;border-radius:50%;background:var(--hi);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:24px;box-shadow:0 4px 20px rgba(0,0,0,.5);transition:transform .15s,background .2s;position:relative}
-#hifi-btn:active{transform:scale(.9)}
-#hifi-btn.sent{background:rgba(200,240,80,.2);border:2px solid rgba(200,240,80,.4);font-size:20px}
-.hifi-cnt{position:absolute;top:-3px;right:-3px;width:17px;height:17px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--bg);font-family:var(--fb)}
-.hifi-fly{position:fixed;font-size:28px;pointer-events:none;z-index:250;animation:hifiFly .8s ease forwards}
-@keyframes hifiFly{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-90px) scale(1.5)}}
-
-/* AVATAR */
+/* ══ MODALS ══ */
+.modal{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.65);backdrop-filter:blur(14px);opacity:0;pointer-events:none;transition:opacity .28s}
+.modal.on{opacity:1;pointer-events:all}
+.m-box{width:100%;max-width:430px;background:#111114;border:1px solid var(--ln);border-bottom:none;border-radius:22px 22px 0 0;padding:24px 20px 44px;transform:translateY(16px);transition:transform .3s;max-height:90dvh;overflow-y:auto;scrollbar-width:none}
+.m-box::-webkit-scrollbar{display:none}
+.modal.on .m-box{transform:translateY(0)}
+.m-title{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300;margin-bottom:5px}
+.m-sub{font-size:11px;font-weight:200;color:var(--dim);margin-bottom:22px;line-height:1.6}
+.m-cancel{width:100%;background:none;border:1px solid var(--ln);border-radius:14px;padding:12px;font-family:var(--fb);font-size:12px;font-weight:200;color:var(--dim);cursor:pointer;margin-top:8px}
+.m-ok{width:100%;background:var(--hi);border:none;border-radius:14px;padding:14px;font-family:var(--fb);font-size:13px;font-weight:300;color:var(--bg);cursor:pointer;transition:opacity .2s}
+.m-ok:active{opacity:.85}
+.mf{margin-bottom:16px}.ml{font-size:9px;font-weight:200;letter-spacing:.12em;color:var(--dim);margin-bottom:8px}
+.mi{width:100%;background:var(--sf);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;font-family:var(--fb);font-size:14px;font-weight:200;color:var(--hi);outline:none;transition:border-color .2s;caret-color:var(--acc)}
+.mi:focus{border-color:rgba(200,240,80,.35)}
+.mi::placeholder{color:rgba(255,255,255,.18)}
+.em-row{display:flex;gap:8px;flex-wrap:wrap}
+.em-opt{width:46px;height:46px;background:var(--sf);border:1px solid var(--ln);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:all .2s}
+.em-opt.on{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.07);transform:scale(1.06)}
+.g-row{display:flex;gap:8px}
+.g-opt{flex:1;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;transition:all .2s}
+.g-opt.on{border-color:rgba(200,240,80,.35);background:rgba(200,240,80,.07)}
+.g-opt span:first-child{font-family:var(--fd);font-style:italic;font-size:18px;display:block}
+.g-opt span:last-child{font-size:8px;font-weight:200;color:var(--dim)}
+.join-inp{width:100%;background:var(--sf);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px 16px;font-family:var(--fb);font-size:16px;font-weight:300;color:var(--hi);letter-spacing:.1em;outline:none;transition:border-color .2s;caret-color:var(--acc);margin-bottom:12px;text-transform:uppercase}
+.join-inp::placeholder{color:rgba(255,255,255,.2);text-transform:none}
+.join-inp:focus{border-color:rgba(200,240,80,.4)}
+.join-prev{display:none;align-items:center;gap:12px;background:rgba(200,240,80,.05);border:1px solid rgba(200,240,80,.18);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.join-prev.on{display:flex}
+/* member modal */
+.mm-hd{display:flex;align-items:center;gap:12px;padding:22px 20px 16px;border-bottom:1px solid var(--ln)}
+.mm-em{font-size:32px}.mm-name{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300}.mm-cl{font-size:11px;font-weight:200;color:var(--dim);margin-top:2px}
+.mm-rank{font-family:var(--fd);font-style:italic;font-size:28px;font-weight:300;margin-left:auto}
+.mm-rank.g{color:var(--gold)}.mm-rank.s{color:var(--silver)}.mm-rank.b{color:var(--bronze)}.mm-rank.o{color:var(--acc)}
+.mm-stats{display:flex;padding:16px 20px;border-bottom:1px solid var(--ln)}
+.mm-st{flex:1;display:flex;flex-direction:column;gap:2px}
+.mm-st+.mm-st{border-left:1px solid var(--ln);padding-left:14px}
+.mm-sl{font-size:8px;font-weight:200;letter-spacing:.1em;color:var(--dim)}.mm-sv{font-family:var(--fd);font-style:italic;font-size:22px;font-weight:300}
+.mm-rl{padding:14px 20px 8px;font-size:9px;letter-spacing:.12em;color:var(--dim)}
+.mm-rr{display:flex;align-items:center;gap:10px;padding:10px 20px;border-bottom:1px solid var(--ln)}
+.mm-rd{font-size:9px;color:var(--dim);width:44px;flex-shrink:0}.mm-rk{font-family:var(--fd);font-style:italic;font-size:17px;flex:1}.mm-rp{font-size:10px;color:var(--dim)}
+.mm-close{width:calc(100% - 40px);margin:14px 20px 0;background:none;border:1px solid var(--ln);border-radius:14px;padding:12px;font-family:var(--fb);font-size:12px;color:var(--dim);cursor:pointer}
+/* avatar */
 #avs{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .28s}
 #avs.on{opacity:1;pointer-events:all}
-.av-box{width:100%;max-width:430px;background:#111113;border:1px solid var(--ln);border-bottom:none;border-radius:20px 20px 0 0;padding:16px 18px 36px;transform:translateY(12px);transition:transform .3s}
+.av-box{width:100%;max-width:430px;background:#111114;border:1px solid var(--ln);border-bottom:none;border-radius:20px 20px 0 0;padding:16px 18px 36px;transform:translateY(12px);transition:transform .3s}
 #avs.on .av-box{transform:translateY(0)}
-.av-ttl{font-size:9px;font-weight:200;letter-spacing:.14em;color:var(--dim);text-align:center;margin-bottom:12px}
+.av-ttl{font-size:9px;letter-spacing:.14em;color:var(--dim);text-align:center;margin-bottom:12px}
 .av-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
 .avc{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 3px 7px;border-radius:11px;border:1px solid transparent;background:var(--sf);cursor:pointer;transition:all .2s}
-.avc:active{background:rgba(255,255,255,.09)}
 .avc.on{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.06)}
-.ave{font-size:22px;line-height:1}
-.avl{font-size:8px;font-weight:200;color:var(--dim)}.avc.on .avl{color:var(--hi)}
-
-/* TOAST / FLASH */
-#toast{position:fixed;z-index:200;bottom:82px;left:50%;transform:translateX(-50%) translateY(5px);background:rgba(12,12,14,.96);border:1px solid rgba(255,255,255,.08);border-radius:99px;padding:7px 16px;font-size:11px;font-weight:200;color:var(--mid);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap}
+.ave{font-size:22px;line-height:1}.avl{font-size:8px;font-weight:200;color:var(--dim)}.avc.on .avl{color:var(--hi)}
+/* toast/flash */
+#toast{position:fixed;z-index:200;bottom:74px;left:50%;transform:translateX(-50%) translateY(5px);background:rgba(10,10,13,.96);border:1px solid rgba(255,255,255,.08);border-radius:99px;padding:8px 18px;font-size:11px;color:var(--mid);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 #flash{position:fixed;inset:0;z-index:300;background:rgba(255,255,255,.1);opacity:0;pointer-events:none;transition:opacity .08s}
 #flash.on{opacity:1}
@@ -415,12 +497,213 @@ input[type=file]{display:none}
 </head>
 <body>
 
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-grain"></div><div class="sp-glow"></div><div class="sp-lines"></div>
+  <div class="sp-em">👻</div>
+  <div class="sp-logo">GhostRun</div>
+  <div class="sp-sub">우리는 함께 달리고 있습니다.</div>
+  <div class="sp-desc">느슨한 연대를 위한<br>비대면 매칭 플랫폼</div>
+  <button class="sp-btn" onclick="hideSplash()">시작하기</button>
+  <span class="sp-ver">v2.0 · 2025</span>
+</div>
+
 <div id="nav"><span class="logo">GhostRun</span><span id="clock"></span></div>
 
 <div id="main">
 
+<!-- HOME -->
+<div id="v-home" class="mview on">
+  <div class="hm-hero">
+    <div class="hm-hero-bg"></div><div class="hm-hero-pattern"></div><div class="hm-hero-glow"></div>
+    <div class="hm-hero-inner">
+      <div class="hm-tag" id="hm-tag">2025년 2월</div>
+      <div class="hm-hero-title">따로 또 같이<br>달리는 사람들</div>
+      <div class="hm-hero-sub">마포구 · 유령 크루 · 3등</div>
+      <div class="hm-hero-stats">
+        <div class="hm-hs"><span class="hm-hsv">5.2</span><span class="hm-hsl">이번 런</span></div>
+        <div class="hm-hs"><span class="hm-hsv">37.8</span><span class="hm-hsl">이번 달</span></div>
+        <div class="hm-hs"><span class="hm-hsv">38%</span><span class="hm-hsl">크루 목표</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="hm-today">
+    <div class="hm-today-hd">
+      <span class="hm-today-lbl">오늘의 러닝</span>
+      <button class="hm-today-btn" onclick="goTab('run')">시작 →</button>
+    </div>
+    <div class="hm-today-row">
+      <div class="hm-ts"><span class="hm-tsl">이번 달</span><span class="hm-tsv">5.2<span style="font-size:13px;color:var(--dim)"> km</span></span></div>
+      <div class="hm-ts"><span class="hm-tsl">페이스</span><span class="hm-tsv" style="font-size:20px">5'12"</span></div>
+      <div class="hm-ts"><span class="hm-tsl">크루 순위</span><span class="hm-tsv" style="color:var(--bronze)">3등</span></div>
+    </div>
+  </div>
+  <div class="hm-sec">
+    <div class="hm-sec-hd"><span class="hm-sec-title">크루 현황</span><span class="hm-sec-more" onclick="goTab('crew')">더보기</span></div>
+    <div id="hm-crew"></div>
+  </div>
+  <div class="hm-sec">
+    <div class="hm-sec-hd"><span class="hm-sec-title">러닝 매거진</span><span class="hm-sec-more">전체보기</span></div>
+    <div class="hm-feat">
+      <div class="hm-feat-img"><div class="hm-feat-glow"></div><span class="hm-feat-em">🌙</span></div>
+      <div class="hm-feat-body">
+        <div class="hm-feat-tag">FEATURE · 이달의 커버</div>
+        <div class="hm-feat-title">새벽 러닝이 뇌에 미치는 영향, 과학으로 증명된 5가지</div>
+        <div class="hm-feat-desc">코르티솔이 가장 낮은 시간대에 달리면 집중력이 달라진다. 새벽 러닝의 신경과학적 이점을 알아본다.</div>
+        <div class="hm-feat-foot"><span class="hm-feat-by">GhostRun 에디터 · 5분</span><span class="hm-feat-cta">읽기 →</span></div>
+      </div>
+    </div>
+    <div class="hm-grid">
+      <div class="hm-card"><div class="hm-card-top"><div class="hm-card-glow"></div>🏃</div><div class="hm-card-body"><div class="hm-card-tag">TRAINING</div><div class="hm-card-title">5km 처음 달성하는 가장 빠른 방법</div><div class="hm-card-time">3분</div></div></div>
+      <div class="hm-card"><div class="hm-card-top"><div class="hm-card-glow"></div>🌡</div><div class="hm-card-body"><div class="hm-card-tag">GEAR</div><div class="hm-card-title">겨울 러닝, 레이어링의 정석</div><div class="hm-card-time">4분</div></div></div>
+      <div class="hm-card"><div class="hm-card-top"><div class="hm-card-glow"></div>🧘</div><div class="hm-card-body"><div class="hm-card-tag">RECOVERY</div><div class="hm-card-title">달리고 난 후, 스트레칭 루틴</div><div class="hm-card-time">2분</div></div></div>
+      <div class="hm-card"><div class="hm-card-top"><div class="hm-card-glow"></div>🎵</div><div class="hm-card-body"><div class="hm-card-tag">PLAYLIST</div><div class="hm-card-title">BPM 170, 페이스를 높이는 곡들</div><div class="hm-card-time">큐레이션</div></div></div>
+    </div>
+  </div>
+  <div style="height:32px"></div>
+</div>
+
+<!-- RUN -->
+<div id="v-run" class="mview">
+  <!-- SETUP -->
+  <div id="rsetup" class="rstate on">
+    <div class="rs-top"><div class="rs-title">러닝 시작</div><div class="rs-sub">목표를 설정하고 달려보세요</div></div>
+    <div id="map-wrap">
+      <div id="gmap"></div>
+      <div class="map-ph" id="map-ph"><span class="map-ph-em">🗺</span><span class="map-ph-txt">위치 권한을 허용하면<br>지도가 표시됩니다</span></div>
+      <button class="loc-btn" id="loc-btn" onclick="reqLoc()"><div class="loc-dot" id="loc-dot"></div><span id="loc-txt">내 위치 허용</span></button>
+    </div>
+    <div class="rs-body">
+      <div class="rs-lbl">목표 유형</div>
+      <div class="gt-row">
+        <div class="gt on" data-gt="dist"><div class="gt-em">📍</div><div class="gt-nm">거리</div></div>
+        <div class="gt" data-gt="time"><div class="gt-em">⏱</div><div class="gt-nm">시간</div></div>
+        <div class="gt" data-gt="speed"><div class="gt-em">⚡</div><div class="gt-nm">페이스</div></div>
+        <div class="gt" data-gt="free"><div class="gt-em">🌙</div><div class="gt-nm">자유</div></div>
+      </div>
+      <div class="rs-lbl" id="gvlbl">목표 거리</div>
+      <div class="gv-grid" id="gvd">
+        <div class="gv" data-v="3"><span class="gv-n">3</span><span class="gv-u">km</span></div>
+        <div class="gv on" data-v="5"><span class="gv-n">5</span><span class="gv-u">km</span></div>
+        <div class="gv" data-v="10"><span class="gv-n">10</span><span class="gv-u">km</span></div>
+        <div class="gv" data-v="15"><span class="gv-n">15</span><span class="gv-u">km</span></div>
+        <div class="gv" data-v="21"><span class="gv-n">21</span><span class="gv-u">km</span></div>
+        <div class="gv" data-v="42"><span class="gv-n">42</span><span class="gv-u">km</span></div>
+      </div>
+      <div class="gv-grid" id="gvt" style="display:none">
+        <div class="gv" data-v="20"><span class="gv-n">20</span><span class="gv-u">분</span></div>
+        <div class="gv on" data-v="30"><span class="gv-n">30</span><span class="gv-u">분</span></div>
+        <div class="gv" data-v="45"><span class="gv-n">45</span><span class="gv-u">분</span></div>
+        <div class="gv" data-v="60"><span class="gv-n">60</span><span class="gv-u">분</span></div>
+        <div class="gv" data-v="90"><span class="gv-n">90</span><span class="gv-u">분</span></div>
+        <div class="gv" data-v="120"><span class="gv-n">120</span><span class="gv-u">분</span></div>
+      </div>
+      <div class="gv-grid" id="gvs" style="display:none">
+        <div class="gv" data-v="430"><span class="gv-n">4'30"</span><span class="gv-u">/km</span></div>
+        <div class="gv on" data-v="500"><span class="gv-n">5'00"</span><span class="gv-u">/km</span></div>
+        <div class="gv" data-v="530"><span class="gv-n">5'30"</span><span class="gv-u">/km</span></div>
+        <div class="gv" data-v="600"><span class="gv-n">6'00"</span><span class="gv-u">/km</span></div>
+        <div class="gv" data-v="630"><span class="gv-n">6'30"</span><span class="gv-u">/km</span></div>
+        <div class="gv" data-v="700"><span class="gv-n">7'00"</span><span class="gv-u">/km</span></div>
+      </div>
+    </div>
+    <button class="rs-start" onclick="startRun()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      달리기 시작
+    </button>
+  </div>
+  <!-- ACTIVE -->
+  <div id="ractive" class="rstate">
+    <div class="ra-map-big">
+      <div id="gmap-active"></div>
+      <div class="ra-map-ph" id="ra-ph"><span style="font-size:40px;opacity:.25">🏃</span><span style="font-size:12px;font-weight:200;color:var(--dim)">달리는 중...</span></div>
+    </div>
+    <div class="ra-stats">
+      <div class="ra-st"><span class="ra-sl">거리</span><span class="ra-sv" id="ra-dist">0.00</span><span class="ra-su">km</span></div>
+      <div class="ra-st"><span class="ra-sl">페이스</span><span class="ra-sv" id="ra-pace">--'--"</span><span class="ra-su">/km</span></div>
+      <div class="ra-st"><span class="ra-sl">시간</span><span class="ra-sv" id="ra-time">00:00</span><span class="ra-su"></span></div>
+      <div class="ra-st"><span class="ra-sl">칼로리</span><span class="ra-sv" id="ra-cal">0</span><span class="ra-su">kcal</span></div>
+    </div>
+    <div class="ra-goal">
+      <div class="ra-gl"><span id="ra-gl-txt">목표 5km</span><span id="ra-pct-txt" style="color:var(--acc)">0%</span></div>
+      <div class="ra-bar"><div class="ra-fill" id="ra-fill" style="width:0%"></div></div>
+    </div>
+    <div class="ra-ctrl">
+      <button class="ra-stop" onclick="stopRun()">🏁 러닝 종료</button>
+      <button class="ra-pause" id="pause-btn" onclick="togglePause()">
+        <svg id="pause-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mid)" stroke-width="2" stroke-linecap="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </button>
+    </div>
+  </div>
+  <!-- FINISH -->
+  <div id="rfinish" class="rstate">
+    <div class="rf-top"><div class="rf-em">🏅</div><div class="rf-title">완주!</div><div class="rf-msg" id="rf-msg">오늘도 잘 달렸어요</div></div>
+    <div class="rf-grid">
+      <div class="rf-cell"><span class="rf-cl">거리</span><span class="rf-cv" id="rf-d">0.00</span><span class="rf-cu">km</span></div>
+      <div class="rf-cell"><span class="rf-cl">시간</span><span class="rf-cv" id="rf-t">00:00</span><span class="rf-cu"></span></div>
+      <div class="rf-cell"><span class="rf-cl">평균 페이스</span><span class="rf-cv" id="rf-p">--'--"</span><span class="rf-cu">/km</span></div>
+      <div class="rf-cell"><span class="rf-cl">칼로리</span><span class="rf-cv" id="rf-c">0</span><span class="rf-cu">kcal</span></div>
+    </div>
+    <div class="rf-acts">
+      <button class="rf-shot" onclick="goTab('shot')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        인증샷 찍기
+      </button>
+      <button class="rf-done" onclick="resetRun()">완료</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREW -->
+<div id="v-crew" class="mview">
+  <div id="no-crew">
+    <div class="nc-em">👻</div>
+    <div class="nc-title">아직 크루가 없어요</div>
+    <div class="nc-sub">크루에 참여하면 함께 달리고<br>서로의 기록을 볼 수 있어요</div>
+    <div class="nc-actions">
+      <button class="nc-primary" onclick="openModal('m-join')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>초대 코드로 참여</button>
+      <div class="nc-divider"><span>또는</span></div>
+      <div class="nc-nearby">
+        <div class="nc-nl">📍 내 근처 크루</div>
+        <div class="nc-nr"><span class="nc-nem">🧛</span><div class="nc-ni"><div class="nc-nn">드라큘라 크루</div><div class="nc-nm">마포구 · 8명 · #GR-1138</div></div><span class="nc-npct">62%</span><button class="nc-njoin" onclick="quickJoin('드라큘라 크루','🧛')">참여</button></div>
+        <div class="nc-nr"><span class="nc-nem">🧟</span><div class="nc-ni"><div class="nc-nn">좀비 크루</div><div class="nc-nm">마포구 · 6명 · #GR-0442</div></div><span class="nc-npct">65%</span><button class="nc-njoin" onclick="quickJoin('좀비 크루','🧟')">참여</button></div>
+        <div class="nc-nr"><span class="nc-nem">🎃</span><div class="nc-ni"><div class="nc-nn">호박 크루</div><div class="nc-nm">마포구 · 5명 · #GR-3391</div></div><span class="nc-npct">48%</span><button class="nc-njoin" onclick="quickJoin('호박 크루','🎃')">참여</button></div>
+      </div>
+      <div class="nc-divider"><span>직접 만들기</span></div>
+      <button class="nc-sec" onclick="openModal('m-create')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>새 크루 만들기</button>
+    </div>
+  </div>
+  <div id="crew-content" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div id="ctabs">
+      <button class="ctab on" data-c="my">내 크루</button>
+      <button class="ctab" data-c="near">크루 랭킹</button>
+      <button class="ctab" data-c="past">모아보기</button>
+    </div>
+    <div class="cpane on" id="cp-my">
+      <div class="crew-hdr">
+        <div><div class="crew-hdr-name" id="ch-name">👻 유령 크루</div><div class="crew-hdr-sub" id="ch-sub">#GR-2847 · 2월 · 8명</div><div class="crew-hdr-loc">📍 마포구 · 서울</div></div>
+        <div class="crew-expert">⭐ Expert</div>
+      </div>
+      <div class="gc-card">
+        <div class="gc-top"><div><div class="gc-lbl">크루 목표</div><div class="gc-nums"><span class="gc-cur" id="gcc">37.8</span><span class="gc-sep"> / </span><span class="gc-tot">100</span><span class="gc-unit">km</span></div></div><span class="gc-pct" id="gcp">38%</span></div>
+        <div class="prog"><div class="pf" id="gcpf" style="width:0%"><div class="pd"></div></div></div>
+        <div class="gc-meta">
+          <div class="gm"><span class="gm-l">인원</span><span class="gm-v" id="gcm1"></span></div>
+          <div class="gm"><span class="gm-l">내 기여</span><span class="gm-v a" id="gcm2"></span></div>
+          <div class="gm"><span class="gm-l">1위까지</span><span class="gm-v" id="gcm3"></span></div>
+          <div class="gm"><span class="gm-l">남은 목표</span><span class="gm-v" id="gcm4"></span></div>
+        </div>
+      </div>
+      <div class="lb-hdr"><span class="lb-ttl">크루 순위</span><span class="lb-cnt" id="lbcnt"></span></div>
+      <div id="crew-lb"></div>
+    </div>
+    <div class="cpane" id="cp-near"><div class="nb-hdr"><div class="nb-area">마포구 크루 랭킹</div><div class="nb-desc">내 위치 기준 · 반경 5km</div></div><div id="nearby-list"></div></div>
+    <div class="cpane" id="cp-past"><div class="past-hdr"><span class="past-title">내 크루 히스토리</span><button class="expert-btn" onclick="openModal('m-expert')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Expert</button></div><div id="past-list"></div></div>
+  </div>
+</div>
+
 <!-- SHOT -->
-<div id="v-shot" class="mview on">
+<div id="v-shot" class="mview">
   <div id="card">
     <img id="bg-img" src="" alt="">
     <div id="empty-state"><div class="e-grain"></div><div class="e-icon">🌙</div><div class="e-hint">사진을 불러오세요</div></div>
@@ -434,9 +717,7 @@ input[type=file]{display:none}
         <div class="chip gchip"><span class="ch-n" id="cn-g"></span><span class="ch-of" id="co-g"></span></div>
         <div class="gboard" id="gboard"><div class="gb-lbl">크루 순위</div></div>
         <div class="g-bot">
-          <div style="margin-bottom:6px">
-            <div class="g-dist">5.20<span class="g-du">km</span></div>
-          </div>
+          <div class="g-dist">5.20<span class="g-du">km</span></div>
           <div class="g-stats">
             <div class="g-s"><span class="g-sl">Pace</span><span class="g-sv">5'12"</span></div>
             <div class="g-s"><span class="g-sl">Time</span><span class="g-sv">26'58"</span></div>
@@ -444,17 +725,14 @@ input[type=file]{display:none}
           </div>
           <div class="g-foot"><span class="g-brand">GhostRun · 따로 또 같이</span><span class="g-tag"># Ghost</span></div>
         </div>
-        <canvas id="mmg" width="40" height="40" style="position:absolute;right:16px;bottom:20px;border-radius:5px;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.4)"></canvas>
+        <canvas id="mmg" width="40" height="40"></canvas>
       </div>
       <div class="ov off" id="ov-p">
         <div class="ft"></div>
         <div style="position:absolute;bottom:0;left:0;right:0;height:190px;background:linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.4) 55%,transparent)"></div>
-        <div class="ov-hd">
-          <div class="runner" onclick="openAv()"><span class="r-em" id="em-p">👻</span><span class="r-nm" id="nm-p">유령3</span></div>
-          <span class="p-logo">GhostRun</span>
-        </div>
+        <div class="ov-hd"><div class="runner" onclick="openAv()"><span class="r-em" id="em-p">👻</span><span class="r-nm" id="nm-p">유령3</span></div><span class="p-logo">GhostRun</span></div>
         <div class="p-mapbg"><canvas id="mmp" width="220" height="220"></canvas></div>
-        <div class="chip p-chip"><span class="ch-n" id="cn-p"></span><span style="font-size:9px;font-weight:200;color:rgba(255,255,255,.28)">등</span><span class="ch-of" id="co-p" style="opacity:.5"></span></div>
+        <div class="chip p-chip"><span class="ch-n" id="cn-p"></span><span style="font-size:9px;color:rgba(255,255,255,.28)">등</span><span class="ch-of" id="co-p"></span></div>
         <div class="p-bot">
           <div class="p-stat"><span class="p-l">Distance</span><span class="p-v">5.20<span class="p-u"> km</span></span></div>
           <div class="p-stat" style="text-align:right"><span class="p-l" style="text-align:right">Avg Pace</span><span class="p-v">5'12"<span class="p-u">/km</span></span></div>
@@ -463,18 +741,11 @@ input[type=file]{display:none}
       <div class="ov off" id="ov-s">
         <div class="st-vign"></div>
         <div style="position:absolute;bottom:0;left:0;right:0;height:270px;background:linear-gradient(0deg,rgba(0,0,0,.9),transparent)"></div>
-        <div class="ov-hd" style="background:linear-gradient(180deg,rgba(0,0,0,.5),transparent);padding-bottom:10px">
-          <div class="runner" onclick="openAv()"><span class="r-em" id="em-s">👻</span><span class="r-nm" id="nm-s">유령3</span></div>
-          <span class="st-logo">GhostRun</span>
-        </div>
+        <div class="ov-hd" style="background:linear-gradient(180deg,rgba(0,0,0,.5),transparent);padding-bottom:10px"><div class="runner" onclick="openAv()"><span class="r-em" id="em-s">👻</span><span class="r-nm" id="nm-s">유령3</span></div><span class="st-logo">GhostRun</span></div>
         <div class="st-bot">
           <div class="st-rrow"><span class="st-rn" id="st-rn">3등</span><span class="st-of" id="st-of">/ 8명</span></div>
           <div class="st-dist">5.20<span class="st-du">km</span></div>
-          <div class="st-sub">
-            <div class="ss"><span class="ss-l">Pace</span><span class="ss-v">5'12"</span></div>
-            <div class="ss"><span class="ss-l">Time</span><span class="ss-v">26'58"</span></div>
-            <div class="ss"><span class="ss-l">Cal</span><span class="ss-v">312</span></div>
-          </div>
+          <div class="st-sub"><div class="ss"><span class="ss-l">Pace</span><span class="ss-v">5'12"</span></div><div class="ss"><span class="ss-l">Time</span><span class="ss-v">26'58"</span></div><div class="ss"><span class="ss-l">Cal</span><span class="ss-v">312</span></div></div>
         </div>
         <div class="st-badge"><span class="sb-em" id="em-b">👻</span><span class="sb-done">Completed</span><span class="sb-date" id="bd"></span></div>
         <canvas id="mms" width="40" height="40"></canvas>
@@ -495,211 +766,99 @@ input[type=file]{display:none}
 
 <!-- RECORDS -->
 <div id="v-records" class="mview">
-  <div class="rec-header">
-    <div class="rec-h-title">나의 기록</div>
-    <div class="rec-total-row">
-      <div class="rec-stat"><span class="rec-sl">총 거리</span><span class="rec-sv">312.4<span style="font-family:var(--fb);font-size:13px;font-weight:200;color:var(--dim)"> km</span></span></div>
-      <div class="rec-stat"><span class="rec-sl">총 런</span><span class="rec-sv">62<span style="font-family:var(--fb);font-size:13px;font-weight:200;color:var(--dim)"> 회</span></span></div>
-      <div class="rec-stat"><span class="rec-sl">참여 크루</span><span class="rec-sv">5<span style="font-family:var(--fb);font-size:13px;font-weight:200;color:var(--dim)"> 개</span></span></div>
+  <div class="rec-hero">
+    <div class="rec-hero-lbl">총 누적 거리</div>
+    <div class="rec-big"><span class="rec-big-n">312</span><span class="rec-big-u">.4 km</span></div>
+    <div class="rec-hero-sub">62회 완주 · 러닝 47시간 28분</div>
+    <div class="rec-3">
+      <div class="rec-3s"><span class="rec-3sl">총 시간</span><span class="rec-3sv">47<span style="font-family:var(--fb);font-size:16px;color:var(--dim)">h</span></span><span class="rec-3su">28분</span></div>
+      <div class="rec-3s"><span class="rec-3sl">평균 페이스</span><span class="rec-3sv">5'18"</span><span class="rec-3su">/km</span></div>
+      <div class="rec-3s"><span class="rec-3sl">참여 크루</span><span class="rec-3sv">5</span><span class="rec-3su">개</span></div>
     </div>
   </div>
-  <div class="month-strip"><div class="ms-label">이번 달 활동</div><div class="month-dots" id="month-dots"></div></div>
-  <div class="log-section"><div class="log-label">최근 런</div><div id="run-log"></div></div>
-  <div class="crews-section"><div class="log-label">참여했던 크루</div><div id="past-crews-rec"></div></div>
-</div>
-
-<!-- CREW -->
-<div id="v-crew" class="mview">
-  <!-- NO CREW STATE (shown when user hasn't joined a crew) -->
-  <div id="no-crew">
-    <div class="nc-ghost">👻</div>
-    <div class="nc-title">아직 크루가 없어요</div>
-    <div class="nc-sub">크루에 참여하면 함께 달리고<br>서로의 기록을 볼 수 있어요</div>
-    <div class="nc-actions">
-      <button class="nc-btn-primary" onclick="openJoinModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        초대 코드로 참여하기
-      </button>
-      <div class="nc-divider"><span>또는</span></div>
-      <div class="nc-nearby-preview">
-        <div class="nc-near-label">📍 내 근처 크루</div>
-        <div class="nc-near-row">
-          <span class="nc-near-em">🧛</span>
-          <div class="nc-near-info">
-            <div class="nc-near-name">드라큘라 크루</div>
-            <div class="nc-near-meta">마포구 · 8명 · #GR-1138</div>
-          </div>
-          <span class="nc-near-pct">62%</span>
-          <button class="nc-near-join" onclick="quickJoin('드라큘라 크루','🧛','#GR-1138',62)">참여</button>
-        </div>
-        <div class="nc-near-row">
-          <span class="nc-near-em">🧟</span>
-          <div class="nc-near-info">
-            <div class="nc-near-name">좀비 크루</div>
-            <div class="nc-near-meta">마포구 · 6명 · #GR-0442</div>
-          </div>
-          <span class="nc-near-pct">65%</span>
-          <button class="nc-near-join" onclick="quickJoin('좀비 크루','🧟','#GR-0442',65)">참여</button>
-        </div>
-        <div class="nc-near-row">
-          <span class="nc-near-em">🎃</span>
-          <div class="nc-near-info">
-            <div class="nc-near-name">호박 크루</div>
-            <div class="nc-near-meta">마포구 · 5명 · #GR-3391</div>
-          </div>
-          <span class="nc-near-pct">48%</span>
-          <button class="nc-near-join" onclick="quickJoin('호박 크루','🎃','#GR-3391',48)">참여</button>
-        </div>
-      </div>
-      <div class="nc-divider"><span>직접 만들기</span></div>
-      <button class="nc-btn-sec" onclick="openCreateModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        새 크루 만들기
-      </button>
-    </div>
+  <div class="rec-cal"><div class="rec-cal-lbl">이번 달 활동</div><div class="cal-grid" id="cal-grid"></div></div>
+  <div class="rec-target">
+    <div class="rt-top"><div><div class="rt-lbl">이번 달 목표</div><div class="rt-val">37.8 <span style="font-size:14px;font-weight:200;color:var(--dim)">/ 100 km</span></div></div><span class="rt-pct">38%</span></div>
+    <div class="rt-bar"><div class="rt-fill" id="rt-fill" style="width:0%"></div></div>
   </div>
-
-  <!-- CREW CONTENT (hidden until joined) -->
-  <div id="crew-content" class="hidden" style="display:none;flex-direction:column;flex:1;overflow:hidden">
-    <div id="ctabs">
-      <button class="ctab on" data-c="my">내 크루</button>
-      <button class="ctab" data-c="near">크루 랭킹</button>
-      <button class="ctab" data-c="past">내 크루 모아보기</button>
-    </div>
-    <div class="cpane on" id="cp-my">
-      <div class="crew-hdr">
-        <div class="crew-hdr-left"><div class="crew-hdr-name" id="ch-name">👻 유령 크루</div><div class="crew-hdr-sub" id="ch-sub">#GR-2847 · 2월 · 8명</div><div class="crew-hdr-loc">📍 마포구 · 서울</div></div>
-        <div class="crew-expert-badge">⭐ Expert 크루</div>
-      </div>
-      <div class="gc-card">
-        <div class="gc-top">
-          <div><div class="gc-lbl">크루 목표</div><div class="gc-nums"><span class="gc-cur" id="gcc">37.8</span><span class="gc-sep"> / </span><span class="gc-tot">100</span><span class="gc-unit">km</span></div></div>
-          <span class="gc-pct" id="gcp">38%</span>
-        </div>
-        <div class="prog"><div class="pf" id="gcpf" style="width:0%"><div class="pd"></div></div></div>
-        <div class="gc-meta">
-          <div class="gm"><span class="gm-l">인원</span><span class="gm-v" id="gcm1"></span></div>
-          <div class="gm"><span class="gm-l">내 기여</span><span class="gm-v a" id="gcm2"></span></div>
-          <div class="gm"><span class="gm-l">1위까지</span><span class="gm-v" id="gcm3"></span></div>
-          <div class="gm"><span class="gm-l">남은 목표</span><span class="gm-v" id="gcm4"></span></div>
-        </div>
-      </div>
-      <div class="lb-hdr"><span class="lb-ttl">크루 순위</span><span class="lb-cnt" id="crew-lb-cnt"></span></div>
-      <div id="crew-lb"></div>
-    </div>
-    <div class="cpane" id="cp-near"><div class="nb-sec-hdr"><div class="nb-area">마포구 크루 랭킹</div><div class="nb-desc">내 위치 기준 · 반경 5km 크루</div></div><div id="nearby-list"></div></div>
-    <div class="cpane" id="cp-past">
-      <div class="past-sec-hdr"><span class="past-sec-title">내 크루 히스토리</span><button class="create-btn" onclick="openExpertModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Expert 크루 만들기</button></div>
-      <div id="past-crews-list"></div>
-    </div>
+  <div class="rec-log">
+    <div class="rec-log-hd"><span class="rec-log-title">최근 런</span><span class="rec-log-cnt">6회</span></div>
+    <div id="run-log"></div>
+  </div>
+  <div class="rec-crews">
+    <div class="rec-crews-title">참여한 크루</div>
+    <div id="rec-past-crews"></div>
   </div>
 </div>
 
-</div>
+</div><!-- /main -->
 
-<!-- BOTTOM NAV -->
+<!-- BOTTOM TABS -->
 <div id="btabs">
-  <button class="btab on" data-v="shot"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>인증샷<div class="btab-dot"></div></button>
-  <button class="btab" data-v="crew"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>크루<div class="btab-dot"></div></button>
-  <button class="btab" data-v="records"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>내 기록<div class="btab-dot"></div></button>
+  <button class="btab on" data-v="home">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>홈<div class="btab-dot"></div>
+  </button>
+  <button class="btab" data-v="run">
+    <div class="btab-run-wrap"><svg viewBox="0 0 24 24" style="width:18px;height:18px"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/></svg></div>시작
+  </button>
+  <button class="btab" data-v="crew">
+    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>크루<div class="btab-dot"></div>
+  </button>
+  <button class="btab" data-v="shot">
+    <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>인증샷<div class="btab-dot"></div>
+  </button>
+  <button class="btab" data-v="records">
+    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>내 기록<div class="btab-dot"></div>
+  </button>
 </div>
 
-<!-- HIGH FIVE -->
-<div id="hifi-wrap">
-  <div id="hifi-users"></div>
-  <div style="position:relative;align-self:flex-end">
-    <button id="hifi-btn" onclick="sendHiFi()">🤚</button>
-    <div class="hifi-cnt" id="hifi-cnt">2</div>
-  </div>
-</div>
-
-<!-- JOIN MODAL -->
-<div id="join-modal">
-  <div class="jm-box">
-    <div class="jm-title">크루 참여하기</div>
-    <div class="jm-sub">초대 코드를 입력하면<br>크루원의 기록을 함께 볼 수 있어요</div>
-    <input class="jm-input" id="jm-input" type="text" placeholder="초대 코드 입력 (예: GR-2847)" maxlength="10" oninput="onJoinInput(this.value)">
-    <div class="jm-preview" id="jm-preview">
-      <span class="jm-prev-em" id="jp-em">👻</span>
-      <div class="jm-prev-info">
-        <div class="jm-prev-name" id="jp-name">유령 크루</div>
-        <div class="jm-prev-meta" id="jp-meta">마포구 · 8명 활동 중</div>
-      </div>
-      <span class="jm-prev-pct" id="jp-pct">38%</span>
-    </div>
-    <button class="jm-confirm" id="jm-confirm" onclick="confirmJoin()">이 크루 참여하기 🤝</button>
-    <button class="jm-cancel" onclick="closeJoinModal()">취소</button>
-  </div>
-</div>
-
-<!-- CREATE CREW MODAL -->
-<div id="create-modal">
-  <div class="cm-box">
-    <div class="cm-title">새 크루 만들기</div>
-    <div class="cm-sub">크루를 만들고 친구들을 초대해보세요<br>매월 새 시즌이 시작돼요</div>
-    <div class="cm-field">
-      <div class="cm-label">크루 이름</div>
-      <input class="cm-text-input" id="cm-name" type="text" placeholder="예: 새벽 유령 크루" maxlength="16">
-    </div>
-    <div class="cm-field">
-      <div class="cm-label">크루 이모지</div>
-      <div class="cm-emoji-row" id="cm-emoji-row">
-        <div class="cm-em-opt on" data-em="👻">👻</div>
-        <div class="cm-em-opt" data-em="🧛">🧛</div>
-        <div class="cm-em-opt" data-em="🧟">🧟</div>
-        <div class="cm-em-opt" data-em="💀">💀</div>
-        <div class="cm-em-opt" data-em="🎃">🎃</div>
-        <div class="cm-em-opt" data-em="🦇">🦇</div>
-        <div class="cm-em-opt" data-em="😈">😈</div>
-        <div class="cm-em-opt" data-em="⚡">⚡</div>
-      </div>
-    </div>
-    <div class="cm-field">
-      <div class="cm-label">이번 달 목표 거리</div>
-      <div class="cm-goal-row" id="cm-goal-row">
-        <div class="cm-goal-opt" data-km="50"><span class="cm-goal-km">50</span><span class="cm-goal-lbl">km</span></div>
-        <div class="cm-goal-opt on" data-km="100"><span class="cm-goal-km">100</span><span class="cm-goal-lbl">km</span></div>
-        <div class="cm-goal-opt" data-km="150"><span class="cm-goal-km">150</span><span class="cm-goal-lbl">km</span></div>
-        <div class="cm-goal-opt" data-km="200"><span class="cm-goal-km">200</span><span class="cm-goal-lbl">km</span></div>
-      </div>
-    </div>
-    <div class="cm-field">
-      <div class="cm-label">활동 지역</div>
-      <input class="cm-text-input" id="cm-area" type="text" placeholder="예: 마포구" maxlength="12" value="마포구">
-    </div>
-    <button class="cm-confirm" onclick="confirmCreate()">크루 만들기 ✨</button>
-    <button class="cm-cancel" onclick="closeCreateModal()">취소</button>
-  </div>
-</div>
-
-<!-- AVATAR SHEET -->
-<div id="avs"><div class="av-box"><div class="av-ttl">캐릭터 선택</div><div class="av-grid" id="avgrid"></div></div></div>
-
-<!-- EXPERT MODAL -->
-<div id="expert-modal"><div class="em-box">
-  <div class="em-title">Expert 크루 만들기</div>
-  <div class="em-sub">일정 기간 달성 시 전용 크루를 개설할 수 있어요</div>
-  <div class="em-option" onclick="selectExpert()">
-    <span class="em-opt-em">👻</span>
-    <div class="em-opt-info"><span class="em-opt-name">Ghost Master 크루</span><span class="em-opt-req">조건: 3개월 연속 100km 달성 ✓ 달성!</span></div>
-    <span style="font-size:10px;color:rgba(200,240,80,.8)">개설 가능</span>
-  </div>
-  <div class="em-option" style="opacity:.5;pointer-events:none">
-    <span class="em-opt-em">💀</span>
-    <div class="em-opt-info"><span class="em-opt-name">Skull Elite 크루</span><span class="em-opt-req">조건: 6개월 연속 150km (진행 중 4/6)</span></div>
-    <span style="font-size:11px;color:rgba(255,255,255,.25)">🔒</span>
-  </div>
-  <div class="em-option" style="opacity:.5;pointer-events:none">
-    <span class="em-opt-em">⚡</span>
-    <div class="em-opt-info"><span class="em-opt-name">Speed Phantom 크루</span><span class="em-opt-req">조건: 페이스 5분 이내 10회 달성 (7/10)</span></div>
-    <span style="font-size:11px;color:rgba(255,255,255,.25)">🔒</span>
-  </div>
-  <button class="em-cancel" onclick="closeExpertModal()">취소</button>
+<!-- MODALS -->
+<div id="m-join" class="modal"><div class="m-box">
+  <div class="m-title">크루 참여하기</div><div class="m-sub">초대 코드를 입력하면 크루원의 기록을 함께 볼 수 있어요</div>
+  <input class="join-inp" id="jin" type="text" placeholder="초대 코드 (예: GR-2847)" maxlength="10" oninput="onJoinInput(this.value)">
+  <div class="join-prev" id="jprev"><span style="font-size:26px" id="jp-em">👻</span><div style="flex:1"><div style="font-size:14px;font-weight:300;margin-bottom:3px" id="jp-name"></div><div style="font-size:10px;color:var(--dim)" id="jp-meta"></div></div><span style="font-family:var(--fd);font-style:italic;font-size:22px;color:var(--acc)" id="jp-pct"></span></div>
+  <button class="m-ok" id="jok" style="display:none" onclick="confirmJoin()">이 크루 참여하기 🤝</button>
+  <button class="m-cancel" onclick="closeModal('m-join')">취소</button>
 </div></div>
 
-<!-- MEMBER MODAL -->
-<div id="member-modal"><div class="mm-box" id="mm-box"></div></div>
+<div id="m-create" class="modal"><div class="m-box">
+  <div class="m-title">새 크루 만들기</div><div class="m-sub">크루를 만들고 친구들을 초대해보세요</div>
+  <div class="mf"><div class="ml">크루 이름</div><input class="mi" id="cn-inp" type="text" placeholder="예: 새벽 유령 크루" maxlength="16"></div>
+  <div class="mf"><div class="ml">크루 이모지</div>
+    <div class="em-row" id="em-row">
+      <div class="em-opt on" data-em="👻">👻</div><div class="em-opt" data-em="🧛">🧛</div><div class="em-opt" data-em="🧟">🧟</div><div class="em-opt" data-em="💀">💀</div><div class="em-opt" data-em="🎃">🎃</div><div class="em-opt" data-em="🦇">🦇</div><div class="em-opt" data-em="😈">😈</div><div class="em-opt" data-em="⚡">⚡</div>
+    </div>
+  </div>
+  <div class="mf"><div class="ml">이번 달 목표</div>
+    <div class="g-row" id="g-row">
+      <div class="g-opt" data-km="50"><span>50</span><span>km</span></div>
+      <div class="g-opt on" data-km="100"><span>100</span><span>km</span></div>
+      <div class="g-opt" data-km="150"><span>150</span><span>km</span></div>
+      <div class="g-opt" data-km="200"><span>200</span><span>km</span></div>
+    </div>
+  </div>
+  <div class="mf"><div class="ml">활동 지역</div><input class="mi" id="ca-inp" type="text" placeholder="예: 마포구" maxlength="12" value="마포구"></div>
+  <button class="m-ok" onclick="confirmCreate()">크루 만들기 ✨</button>
+  <button class="m-cancel" onclick="closeModal('m-create')">취소</button>
+</div></div>
 
+<div id="m-expert" class="modal"><div class="m-box">
+  <div class="m-title">Expert 크루</div><div class="m-sub">일정 기간 달성 시 전용 크루를 개설할 수 있어요</div>
+  <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;margin-bottom:8px;cursor:pointer">
+    <span style="font-size:24px">👻</span>
+    <div style="flex:1"><div style="font-size:13px;font-weight:300">Ghost Master 크루</div><div style="font-size:10px;color:var(--dim);margin-top:2px">조건: 3개월 연속 100km 달성 ✓</div></div>
+    <span style="font-size:10px;color:rgba(200,240,80,.8)">개설 가능</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;margin-bottom:8px;opacity:.5">
+    <span style="font-size:24px">💀</span>
+    <div style="flex:1"><div style="font-size:13px;font-weight:300">Skull Elite 크루</div><div style="font-size:10px;color:var(--dim);margin-top:2px">조건: 6개월 연속 150km (4/6 진행중)</div></div>
+    <span style="font-size:11px;color:rgba(255,255,255,.25)">🔒</span>
+  </div>
+  <button class="m-cancel" onclick="closeModal('m-expert')">닫기</button>
+</div></div>
+
+<div id="m-member" class="modal"><div class="m-box" id="mm-box"></div></div>
+<div id="avs"><div class="av-box"><div class="av-ttl">캐릭터 선택</div><div class="av-grid" id="avgrid"></div></div></div>
 <canvas id="ec" style="display:none"></canvas>
 <div id="flash"></div>
 <div id="toast"></div>
@@ -707,63 +866,69 @@ input[type=file]{display:none}
 <script>
 'use strict';
 
+// DATA
 const CREW=[
-  {emoji:'👻',name:'유령1',dist:8.40,isMe:false},
-  {emoji:'👻',name:'유령2',dist:7.85,isMe:false},
-  {emoji:'👻',name:'유령3',dist:5.20,isMe:true},
-  {emoji:'👻',name:'유령4',dist:4.90,isMe:false},
-  {emoji:'👻',name:'유령5',dist:4.10,isMe:false},
-  {emoji:'👻',name:'유령6',dist:3.80,isMe:false},
-  {emoji:'👻',name:'유령7',dist:2.40,isMe:false},
-  {emoji:'👻',name:'유령8',dist:1.20,isMe:false},
+  {e:'👻',n:'유령1',d:8.40,me:false},{e:'👻',n:'유령2',d:7.85,me:false},
+  {e:'👻',n:'유령3',d:5.20,me:true},{e:'👻',n:'유령4',d:4.90,me:false},
+  {e:'👻',n:'유령5',d:4.10,me:false},{e:'👻',n:'유령6',d:3.80,me:false},
+  {e:'👻',n:'유령7',d:2.40,me:false},{e:'👻',n:'유령8',d:1.20,me:false},
 ];
-const GOAL=100,MI=CREW.findIndex(c=>c.isMe),MR=MI+1,N=CREW.length;
-const TKM=parseFloat(CREW.reduce((s,c)=>s+c.dist,0).toFixed(2));
+const GOAL=100,MI=CREW.findIndex(c=>c.me),MR=MI+1,N=CREW.length;
+const TKM=parseFloat(CREW.reduce((s,c)=>s+c.d,0).toFixed(2));
 const PCT=Math.round(TKM/GOAL*100);
-
-const NEARBY_CREWS=[
-  {name:'드라큘라 크루',em:'🧛',code:'#GR-1138',n:8,total:62.4,goal:100,areaRank:1,myRoom:false},
-  {name:'좀비 크루',em:'🧟',code:'#GR-0442',n:6,total:51.8,goal:80,areaRank:2,myRoom:false},
-  {name:'유령 크루',em:'👻',code:'#GR-2847',n:8,total:37.85,goal:100,areaRank:3,myRoom:true},
-  {name:'호박 크루',em:'🎃',code:'#GR-3391',n:5,total:28.6,goal:60,areaRank:4,myRoom:false},
-  {name:'해골 크루',em:'💀',code:'#GR-5512',n:7,total:22.1,goal:70,areaRank:5,myRoom:false},
-  {name:'박쥐 크루',em:'🦇',code:'#GR-6680',n:4,total:15.3,goal:50,areaRank:6,myRoom:false},
+const NEARBY=[
+  {n:'드라큘라 크루',e:'🧛',code:'#GR-1138',cnt:8,total:62.4,goal:100,rank:1,mine:false},
+  {n:'좀비 크루',e:'🧟',code:'#GR-0442',cnt:6,total:51.8,goal:80,rank:2,mine:false},
+  {n:'유령 크루',e:'👻',code:'#GR-2847',cnt:8,total:37.85,goal:100,rank:3,mine:true},
+  {n:'호박 크루',e:'🎃',code:'#GR-3391',cnt:5,total:28.6,goal:60,rank:4,mine:false},
+  {n:'해골 크루',e:'💀',code:'#GR-5512',cnt:7,total:22.1,goal:70,rank:5,mine:false},
+  {n:'박쥐 크루',e:'🦇',code:'#GR-6680',cnt:4,total:15.3,goal:50,rank:6,mine:false},
 ];
-
-const PAST_CREWS=[
-  {name:'유령 크루',em:'👻',period:'2025.02',rank:3,dist:5.20,expert:true,active:true},
-  {name:'좀비 크루',em:'🧟',period:'2025.01',rank:1,dist:9.80,expert:false,active:false},
-  {name:'해골 크루',em:'💀',period:'2024.12',rank:2,dist:7.60,expert:true,active:false},
-  {name:'드라큘라 크루',em:'🧛',period:'2024.11',rank:4,dist:6.10,expert:false,active:false},
-  {name:'박쥐 크루',em:'🦇',period:'2024.10',rank:1,dist:11.20,expert:false,active:false},
+const PAST=[
+  {n:'유령 크루',e:'👻',period:'2025.02',rank:3,d:5.20,xp:true,active:true},
+  {n:'좀비 크루',e:'🧟',period:'2025.01',rank:1,d:9.80,xp:false,active:false},
+  {n:'해골 크루',e:'💀',period:'2024.12',rank:2,d:7.60,xp:true,active:false},
+  {n:'드라큘라 크루',e:'🧛',period:'2024.11',rank:4,d:6.10,xp:false,active:false},
+  {n:'박쥐 크루',e:'🦇',period:'2024.10',rank:1,d:11.20,xp:false,active:false},
 ];
-
-const RUN_LOG=[
-  {date:'02.18',month:'Feb',dist:5.20,pace:"5'12\"",time:"26'58\"",cal:312,crewName:'유령 크루',rank:3,ri:0},
-  {date:'02.14',month:'Feb',dist:4.80,pace:"5'20\"",time:"25'36\"",cal:288,crewName:'유령 크루',rank:4,ri:1},
-  {date:'02.10',month:'Feb',dist:6.10,pace:"5'08\"",time:"31'17\"",cal:366,crewName:'유령 크루',rank:2,ri:2},
-  {date:'02.05',month:'Feb',dist:3.90,pace:"5'35\"",time:"21'47\"",cal:234,crewName:'유령 크루',rank:5,ri:0},
-  {date:'01.28',month:'Jan',dist:9.80,pace:"5'01\"",time:"49'10\"",cal:588,crewName:'좀비 크루',rank:1,ri:1},
-  {date:'01.21',month:'Jan',dist:8.40,pace:"5'14\"",time:"43'58\"",cal:504,crewName:'좀비 크루',rank:2,ri:2},
+const LOGS=[
+  {date:'02.18',mo:'Feb',d:5.20,pace:"5'12\"",time:"26'58\"",cal:312,crew:'유령 크루',rank:3,ri:0},
+  {date:'02.14',mo:'Feb',d:4.80,pace:"5'20\"",time:"25'36\"",cal:288,crew:'유령 크루',rank:4,ri:1},
+  {date:'02.10',mo:'Feb',d:6.10,pace:"5'08\"",time:"31'17\"",cal:366,crew:'유령 크루',rank:2,ri:2},
+  {date:'02.05',mo:'Feb',d:3.90,pace:"5'35\"",time:"21'47\"",cal:234,crew:'유령 크루',rank:5,ri:0},
+  {date:'01.28',mo:'Jan',d:9.80,pace:"5'01\"",time:"49'10\"",cal:588,crew:'좀비 크루',rank:1,ri:1},
+  {date:'01.21',mo:'Jan',d:8.40,pace:"5'14\"",time:"43'58\"",cal:504,crew:'좀비 크루',rank:2,ri:2},
 ];
-
 const MEMBER_RUNS={
-  '유령1':[{d:'02.17',dist:2.50,pace:"5'20\""},{d:'02.13',dist:3.10,pace:"5'15\""},{d:'02.09',dist:2.80,pace:"5'22\""}],
-  '유령2':[{d:'02.16',dist:3.20,pace:"5'10\""},{d:'02.12',dist:2.60,pace:"5'18\""},{d:'02.08',dist:2.05,pace:"5'25\""}],
-  '유령4':[{d:'02.15',dist:2.10,pace:"5'30\""},{d:'02.11',dist:1.80,pace:"5'35\""},{d:'02.07',dist:1.00,pace:"5'40\""}],
-  '유령5':[{d:'02.14',dist:1.50,pace:"5'45\""},{d:'02.10',dist:1.60,pace:"5'40\""}],
-  '유령6':[{d:'02.13',dist:1.20,pace:"5'50\""},{d:'02.09',dist:1.30,pace:"5'48\""},{d:'02.05',dist:1.30,pace:"5'50\""}],
-  '유령7':[{d:'02.12',dist:0.90,pace:"6'00\""},{d:'02.08',dist:0.90,pace:"5'58\""}],
-  '유령8':[{d:'02.18',dist:0.60,pace:"6'10\""},{d:'02.14',dist:0.60,pace:"6'05\""}],
+  '유령1':[{d:'02.17',km:2.50,p:"5'20\""},{d:'02.13',km:3.10,p:"5'15\""}],
+  '유령2':[{d:'02.16',km:3.20,p:"5'10\""},{d:'02.12',km:2.60,p:"5'18\""}],
+  '유령4':[{d:'02.15',km:2.10,p:"5'30\""}],
+  '유령5':[{d:'02.14',km:1.50,p:"5'45\""}],
+  '유령6':[{d:'02.13',km:1.20,p:"5'50\""},{d:'02.09',km:1.30,p:"5'48\""}],
+  '유령7':[{d:'02.12',km:0.90,p:"6'00\""}],
+  '유령8':[{d:'02.18',km:0.60,p:"6'10\""}],
 };
-
-const NEARBY_USERS=[
-  {emoji:'👻',name:'유령1',dist:'0.3km 앞'},
-  {emoji:'🧛',name:'드라큘라2',dist:'0.7km 근처'},
-];
-
+const CODEMAP={
+  'GR-2847':{n:'유령 크루',e:'👻',meta:'마포구 · 8명 · #GR-2847',pct:38},
+  'GR-1138':{n:'드라큘라 크루',e:'🧛',meta:'마포구 · 8명 · #GR-1138',pct:62},
+  'GR-0442':{n:'좀비 크루',e:'🧟',meta:'마포구 · 6명 · #GR-0442',pct:65},
+  'GR-3391':{n:'호박 크루',e:'🎃',meta:'마포구 · 5명 · #GR-3391',pct:48},
+};
 const RC=r=>r===1?'g':r===2?'s':r===3?'b':'o';
-const COL=r=>r===1?'#d4b54a':r===2?'#a8b0b8':r===3?'#b07444':'#c8f050';
+const COL=r=>r===1?'#d4b54a':r===2?'#a0aab4':r===3?'#b07444':'#c8f050';
+
+// STATE
+let hasCrew=false,curTab='home';
+let selEm='👻',selGoal=100;
+let joinTarget=null;
+let crewInited=false,nearInited=false,pastInited=false,recInited=false;
+
+// ROUTE DATA
+const ROUTE=[[37.5665,126.978],[37.567,126.979],[37.5676,126.9796],[37.5682,126.9803],[37.5687,126.9814],[37.5681,126.9822],[37.5673,126.9828],[37.5664,126.9822],[37.5656,126.9815],[37.565,126.9804],[37.5648,126.9793],[37.5654,126.9782],[37.566,126.9778],[37.5665,126.978]];
+const ROUTES=[ROUTE,ROUTE.map(p=>[p[0]+.003,p[1]-.002]),ROUTE.map(p=>[p[0]-.002,p[1]+.003])];
+
+// SPLASH
+function hideSplash(){document.getElementById('splash').classList.add('out');setTimeout(()=>document.getElementById('splash').remove(),800);}
 
 // CLOCK
 function tick(){
@@ -772,64 +937,242 @@ function tick(){
   const ds=`${n.getFullYear()}.${p(n.getMonth()+1)}.${p(n.getDate())}`;
   const dtg=document.getElementById('dt-g');if(dtg)dtg.innerHTML=`${ds}<br>${n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}`;
   const bd=document.getElementById('bd');if(bd)bd.textContent=ds;
+  const tag=document.getElementById('hm-tag');if(tag)tag.textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`;
 }
 tick();setInterval(tick,1000);
 
-// ROUTE
-const ROUTE=[[37.5665,126.978],[37.567,126.979],[37.5676,126.9796],[37.5682,126.9803],[37.5687,126.9814],[37.5681,126.9822],[37.5673,126.9828],[37.5664,126.9822],[37.5656,126.9815],[37.565,126.9804],[37.5648,126.9793],[37.5654,126.9782],[37.566,126.9778],[37.5665,126.978]];
-const ROUTES=[ROUTE,ROUTE.map(p=>[p[0]+.003,p[1]-.002]),ROUTE.map(p=>[p[0]-.002,p[1]+.003])];
-function drawRoute(canvas,opts={}){
-  const{stroke='#c8f050',lw=1.5,pad=7,alpha=.82,ri=0}=opts;
-  const R=ROUTES[ri%ROUTES.length];
-  const W=canvas.width,H=canvas.height,ctx=canvas.getContext('2d');
-  ctx.clearRect(0,0,W,H);
-  const la=R.map(p=>p[0]),ln=R.map(p=>p[1]);
-  const mla=Math.min(...la),xla=Math.max(...la),mln=Math.min(...ln),xln=Math.max(...ln);
-  const rl=xla-mla||.001,rn=xln-mln||.001;
-  const xy=(a,n2)=>[pad+(n2-mln)/rn*(W-pad*2),pad+(xla-a)/rl*(H-pad*2)];
-  ctx.save();ctx.strokeStyle=stroke;ctx.lineWidth=lw+2;ctx.lineJoin='round';ctx.lineCap='round';ctx.globalAlpha=.1;
-  ctx.beginPath();R.forEach(([a,n2],i)=>{const[x,y]=xy(a,n2);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.restore();
-  ctx.save();ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.lineJoin='round';ctx.lineCap='round';ctx.globalAlpha=alpha;
-  ctx.beginPath();R.forEach(([a,n2],i)=>{const[x,y]=xy(a,n2);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.restore();
-  const[sx,sy]=xy(R[0][0],R[0][1]);ctx.beginPath();ctx.arc(sx,sy,1.8,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.4)';ctx.fill();
-  const last=R[R.length-1];const[ex,ey]=xy(last[0],last[1]);
-  ctx.save();ctx.beginPath();ctx.arc(ex,ey,2.5,0,Math.PI*2);ctx.fillStyle=stroke;ctx.shadowColor=stroke;ctx.shadowBlur=6;ctx.fill();ctx.restore();
-}
-drawRoute(document.getElementById('mmg'));
-drawRoute(document.getElementById('mmp'),{lw:3,pad:18,alpha:.2});
-drawRoute(document.getElementById('mms'));
-
-// BOTTOM TABS
-let curView='shot';
-// Simulate first-time user (no crew yet). Set to true to skip onboarding.
-let hasCrew = false;
-
-function showCrewView(){
-  const nc=document.getElementById('no-crew');
-  const cc=document.getElementById('crew-content');
-  if(hasCrew){
-    nc.style.display='none';
-    cc.style.display='flex';
-  } else {
-    nc.style.display='flex';
-    cc.style.display='none';
-  }
-}
-
-document.getElementById('btabs').addEventListener('click',e=>{
-  const b=e.target.closest('.btab');if(!b)return;
-  const v=b.dataset.v;if(v===curView)return;curView=v;
+// TABS
+function goTab(v){
+  if(v===curTab&&v!=='run')return;
+  curTab=v;
   document.querySelectorAll('.mview').forEach(el=>el.classList.remove('on'));
   document.getElementById('v-'+v).classList.add('on');
   document.querySelectorAll('.btab').forEach(t=>t.classList.toggle('on',t.dataset.v===v));
-  const hw=document.getElementById('hifi-wrap');
-  hw.classList.toggle('on',v!=='shot');
-  if(v!=='shot')showHiFiUsers();
-  if(v==='crew'){showCrewView();if(hasCrew){initCrew();initNearby();initPastCrews();}}
-  if(v==='records')initRecords();
+  if(v==='crew'){showCrewView();if(hasCrew){initCrew();initNear();initPast();}}
+  if(v==='records')initRec();
+  if(v==='shot')applyRank();
+}
+document.getElementById('btabs').addEventListener('click',e=>{const b=e.target.closest('.btab');if(b)goTab(b.dataset.v);});
+
+// HOME crew list
+function buildHomeCrewList(){
+  const el=document.getElementById('hm-crew');el.innerHTML='';
+  const maxD=CREW[0].d;
+  CREW.slice(0,5).forEach((c,i)=>{
+    const rank=i+1,k=RC(rank),me=c.me;
+    const row=document.createElement('div');row.className='hm-cbar';
+    row.innerHTML=`<span class="hm-cb-rk ${k}">${rank}</span><span class="hm-cb-em">${c.e}</span><div class="hm-cb-info"><div class="hm-cb-name">${c.n}${me?'<span style="font-size:9px;color:rgba(200,240,80,.6);margin-left:5px">나</span>':''}</div><div class="hm-cb-dist">${c.d.toFixed(2)} km</div></div><div class="hm-cb-bar"><div class="hm-cb-bg"><div class="hm-cb-fill" style="width:${Math.round(c.d/maxD*100)}%;background:${me?'var(--acc)':rank<=3?COL(rank):'rgba(255,255,255,.2)'}"></div></div></div>`;
+    el.appendChild(row);
+  });
+}
+buildHomeCrewList();
+
+// RUN
+let goalType='dist',goalVal='5';
+let runTimer=null,runSec=0,runDist=0,runPaused=false,watchId=null;
+let locGranted=false,userLat=37.5665,userLng=126.978;
+let gmap=null,gmarker=null,gmapActive=null,gmarkerActive=null,gpathActive=null,pathCoords=[];
+
+// goal type switching
+document.querySelectorAll('.gt').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.gt').forEach(x=>x.classList.remove('on'));
+    el.classList.add('on');goalType=el.dataset.gt;
+    const lbls={dist:'목표 거리',time:'목표 시간',speed:'목표 페이스',free:'자유 달리기'};
+    document.getElementById('gvlbl').textContent=lbls[goalType];
+    ['gvd','gvt','gvs'].forEach(id=>document.getElementById(id).style.display='none');
+    if(goalType==='dist')document.getElementById('gvd').style.display='grid';
+    else if(goalType==='time')document.getElementById('gvt').style.display='grid';
+    else if(goalType==='speed')document.getElementById('gvs').style.display='grid';
+    const onEl=document.querySelector('#gv'+goalType[0]+' .gv.on');
+    goalVal=onEl?onEl.dataset.v:'0';
+  });
+});
+['gvd','gvt','gvs'].forEach(gid=>{
+  document.getElementById(gid).querySelectorAll('.gv').forEach(el=>{
+    el.addEventListener('click',()=>{
+      document.querySelectorAll('#'+gid+' .gv').forEach(x=>x.classList.remove('on'));
+      el.classList.add('on');goalVal=el.dataset.v;
+    });
+  });
 });
 
-// SHOT OVERLAYS
+// location
+function reqLoc(){
+  if(!navigator.geolocation){showToast('위치 기능을 지원하지 않아요');return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    locGranted=true;userLat=pos.coords.latitude;userLng=pos.coords.longitude;
+    document.getElementById('loc-btn').classList.add('on');
+    document.getElementById('loc-txt').textContent='위치 공유 중';
+    document.getElementById('map-ph').classList.add('hide');
+    tryInitSetupMap();
+    showToast('📍 내 위치가 공유됩니다');
+  },()=>showToast('위치 권한을 허용해주세요'),{enableHighAccuracy:true});
+}
+
+function tryInitSetupMap(){
+  if(typeof google==='undefined'||gmap)return;
+  gmap=new google.maps.Map(document.getElementById('gmap'),{
+    center:{lat:userLat,lng:userLng},zoom:16,
+    styles:darkMapStyle(),disableDefaultUI:true,gestureHandling:'greedy',backgroundColor:'#0a0a0d'
+  });
+  gmarker=new google.maps.Marker({position:{lat:userLat,lng:userLng},map:gmap,icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:'#c8f050',fillOpacity:1,strokeColor:'#0a0a0d',strokeWeight:2}});
+}
+
+function darkMapStyle(){return[{featureType:'all',elementType:'labels',stylers:[{visibility:'off'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#1a1a28'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#080810'}]},{featureType:'landscape',elementType:'geometry',stylers:[{color:'#0c0c14'}]},{featureType:'poi',elementType:'geometry',stylers:[{color:'#111118'}]}];}
+
+function startRun(){
+  document.getElementById('rsetup').classList.remove('on');
+  document.getElementById('ractive').classList.add('on');
+  const lbl={dist:'목표 '+goalVal+'km',time:'목표 '+goalVal+'분',speed:'목표 페이스 '+goalVal+' sec/km',free:'자유 달리기'};
+  document.getElementById('ra-gl-txt').textContent=lbl[goalType]||'달리는 중';
+  runSec=0;runDist=0;runPaused=false;pathCoords=[];
+  // init active map
+  if(typeof google!=='undefined'){
+    document.getElementById('ra-ph').classList.add('hide');
+    gmapActive=new google.maps.Map(document.getElementById('gmap-active'),{
+      center:{lat:userLat,lng:userLng},zoom:17,
+      styles:darkMapStyle(),disableDefaultUI:true,gestureHandling:'none',backgroundColor:'#0a0a0d'
+    });
+    gmarkerActive=new google.maps.Marker({position:{lat:userLat,lng:userLng},map:gmapActive,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:'#c8f050',fillOpacity:1,strokeColor:'#0a0a0d',strokeWeight:2}});
+    gpathActive=new google.maps.Polyline({path:[],geodesic:true,strokeColor:'#c8f050',strokeOpacity:.85,strokeWeight:3,map:gmapActive});
+  }
+  if(locGranted){
+    watchId=navigator.geolocation.watchPosition(pos=>{
+      const lat=pos.coords.latitude,lng=pos.coords.longitude;
+      if(gmarkerActive)gmarkerActive.setPosition({lat,lng});
+      if(gmapActive)gmapActive.panTo({lat,lng});
+      if(pathCoords.length>0){const prev=pathCoords[pathCoords.length-1];runDist+=haversine(prev[0],prev[1],lat,lng);}
+      pathCoords.push([lat,lng]);
+      if(gpathActive)gpathActive.setPath(pathCoords.map(p=>({lat:p[0],lng:p[1]})));
+    },{enableHighAccuracy:true,maximumAge:1000});
+  }
+  runTimer=setInterval(runTick,1000);
+}
+
+function runTick(){
+  if(runPaused)return;
+  runSec++;
+  if(!locGranted)runDist+=0.0014+Math.random()*.0008; // simulate
+  const mins=Math.floor(runSec/60),secs=runSec%60;
+  document.getElementById('ra-time').textContent=`${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  document.getElementById('ra-dist').textContent=runDist.toFixed(2);
+  document.getElementById('ra-cal').textContent=Math.round(runDist*65);
+  const paceS=runDist>0?Math.round(runSec/runDist):0;
+  const pm=Math.floor(paceS/60),ps=paceS%60;
+  document.getElementById('ra-pace').textContent=runDist>0?`${pm}'${String(ps).padStart(2,'0')}"`:"-'-\"";
+  let pct=0;
+  if(goalType==='dist')pct=Math.min(runDist/parseFloat(goalVal)*100,100);
+  else if(goalType==='time')pct=Math.min(runSec/(parseInt(goalVal)*60)*100,100);
+  document.getElementById('ra-fill').style.width=pct+'%';
+  document.getElementById('ra-pct-txt').textContent=Math.round(pct)+'%';
+}
+
+function haversine(la1,lo1,la2,lo2){
+  const R=6371,dLa=(la2-la1)*Math.PI/180,dLo=(lo2-lo1)*Math.PI/180;
+  const a=Math.sin(dLa/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dLo/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function togglePause(){
+  runPaused=!runPaused;
+  document.getElementById('pause-ico').innerHTML=runPaused
+    ?'<polygon points="5 3 19 12 5 21 5 3" fill="var(--acc)" stroke="none"/>'
+    :'<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+  document.getElementById('pause-ico').setAttribute('stroke',runPaused?'none':'var(--mid)');
+}
+
+function stopRun(){
+  clearInterval(runTimer);
+  if(watchId)navigator.geolocation.clearWatch(watchId);
+  document.getElementById('ractive').classList.remove('on');
+  document.getElementById('rfinish').classList.add('on');
+  const mins=Math.floor(runSec/60),secs=runSec%60;
+  document.getElementById('rf-d').textContent=runDist.toFixed(2);
+  document.getElementById('rf-t').textContent=`${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  const paceS=runDist>0?Math.round(runSec/runDist):0;
+  const pm=Math.floor(paceS/60),ps=paceS%60;
+  document.getElementById('rf-p').textContent=runDist>0?`${pm}'${String(ps).padStart(2,'0')}"`:"-'-\"";
+  document.getElementById('rf-c').textContent=Math.round(runDist*65);
+  document.getElementById('rf-msg').textContent=runDist>=5?'오늘도 멋지게 달렸어요 🎉':runDist>=2?'좋은 페이스예요!':'내일은 더 멀리 달려봐요';
+}
+
+function resetRun(){
+  document.getElementById('rfinish').classList.remove('on');
+  document.getElementById('ractive').classList.remove('on');
+  document.getElementById('rsetup').classList.add('on');
+  runSec=0;runDist=0;
+}
+
+// CREW
+function showCrewView(){
+  document.getElementById('no-crew').style.display=hasCrew?'none':'flex';
+  const cc=document.getElementById('crew-content');
+  cc.style.display=hasCrew?'flex':'none';
+}
+function quickJoin(name,em){
+  hasCrew=true;
+  document.getElementById('ch-name').textContent=em+' '+name;
+  showCrewView();crewInited=false;nearInited=false;pastInited=false;
+  initCrew();initNear();initPast();
+  showToast('🤝 '+name+'에 참여했어요!');
+}
+document.getElementById('ctabs').addEventListener('click',e=>{
+  const b=e.target.closest('.ctab');if(!b)return;
+  const c=b.dataset.c;
+  document.querySelectorAll('.cpane').forEach(el=>el.classList.remove('on'));
+  document.getElementById('cp-'+c).classList.add('on');
+  document.querySelectorAll('.ctab').forEach(t=>t.classList.toggle('on',t.dataset.c===c));
+  if(c==='my')initCrew();if(c==='near')initNear();if(c==='past')initPast();
+});
+function initCrew(){
+  if(crewInited)return;crewInited=true;
+  const myD=CREW[MI].d,maxD=CREW[0].d;
+  document.getElementById('gcc').textContent=TKM.toFixed(1);document.getElementById('gcp').textContent=PCT+'%';
+  document.getElementById('gcm1').textContent=N+'명';document.getElementById('gcm2').textContent=(myD/GOAL*100).toFixed(1)+'%';
+  document.getElementById('gcm3').textContent=MR===1?'🥇 1위':'−'+(maxD-myD).toFixed(1)+'km';
+  document.getElementById('gcm4').textContent=(GOAL-TKM).toFixed(1)+'km';
+  document.getElementById('lbcnt').textContent=N+'명';
+  setTimeout(()=>document.getElementById('gcpf').style.width=Math.min(PCT,100)+'%',80);
+  const lb=document.getElementById('crew-lb');lb.innerHTML='';
+  CREW.forEach((c,i)=>{
+    const rank=i+1,me=c.me,k=RC(rank),posC=rank<=3?k:'';
+    const row=document.createElement('div');row.className='lbrow'+(me?'  me':' click');
+    if(!me)row.onclick=()=>openMemberModal(c,rank);
+    row.innerHTML=`<span class="lbpos${posC?' '+posC:''}">${rank}</span><span class="lbem">${c.e}</span><div class="lb-nc"><div class="lb-nm">${c.n}${me?'<span style="font-size:9px;color:rgba(200,240,80,.6);margin-left:5px">나</span>':''}</div>${!me?'<div class="lb-hint">기록 보기 →</div>':''}</div><div class="lb-rt"><span class="lb-d">${c.d.toFixed(2)}<span style="font-size:9px;opacity:.4"> km</span></span><div class="lb-bg"><div class="lb-bar ${me?'me':posC||'o'}" style="width:${Math.round(c.d/maxD*100)}%"></div></div></div>`;
+    lb.appendChild(row);
+  });
+}
+function initNear(){
+  if(nearInited)return;nearInited=true;
+  const el=document.getElementById('nearby-list');el.innerHTML='';
+  NEARBY.forEach(r=>{
+    const pct=Math.round(r.total/r.goal*100),k=RC(r.rank);
+    const row=document.createElement('div');row.className='nb-row';
+    if(r.mine)row.style.cssText='border-left:2px solid rgba(200,240,80,.35);padding-left:10px;margin-left:-10px';
+    row.innerHTML=`<div class="nb-top"><div><div style="display:flex;align-items:center;gap:7px"><span class="nb-rn ${k}">${r.rank}</span><span class="nb-cname">${r.e} ${r.n}</span>${r.mine?'<span class="nb-mine">내 크루</span>':''}</div><div class="nb-cmeta">${r.code} · ${r.cnt}명</div></div><span class="nb-pct">${pct}%</span></div><div class="nb-prog"><div class="nb-pf" style="width:${pct}%"><div class="nb-pd"></div></div></div><div class="nb-bot"><div class="nb-ghosts">${Array(r.cnt).fill(r.e).join('')}</div><div class="nb-nums"><div class="nbn"><span class="nbn-l">달성</span><span class="nbn-v">${r.total.toFixed(1)}<span style="font-family:var(--fb);font-size:10px;color:var(--dim)"> km</span></span></div><div class="nbn"><span class="nbn-l">목표</span><span class="nbn-v" style="color:var(--mid)">${r.goal}<span style="font-family:var(--fb);font-size:10px;color:var(--dim)"> km</span></span></div></div></div>`;
+    el.appendChild(row);
+  });
+}
+function initPast(){
+  if(pastInited)return;pastInited=true;
+  const el=document.getElementById('past-list');el.innerHTML='';
+  PAST.forEach(c=>{
+    const k=RC(c.rank);const card=document.createElement('div');card.className='past-card';
+    card.innerHTML=`<span class="pc-em">${c.e}</span><div class="pc-info"><div class="pc-name">${c.n}${c.active?'<span style="font-size:9px;color:rgba(200,240,80,.7);margin-left:5px">활동중</span>':''}</div><div class="pc-meta">${c.period} · ${c.d.toFixed(1)}km</div>${c.xp?'<span class="pc-xb">⭐ Expert</span>':''}</div><div class="pc-right"><span class="pc-rank ${k}">${c.rank}등</span><span class="pc-dist">${c.d.toFixed(1)}km</span></div>`;
+    el.appendChild(card);
+  });
+}
+
+// MEMBER MODAL
+function openMemberModal(c,rank){
+  const k=RC(rank);const runs=MEMBER_RUNS[c.n]||[];
+  const box=document.getElementById('mm-box');
+  box.innerHTML=`<div class="mm-hd"><span class="mm-em">${c.e}</span><div><div class="mm-name">${c.n}</div><div class="mm-cl">유령 크루</div></div><span class="mm-rank ${k}">${rank}등</span></div><div class="mm-stats"><div class="mm-st"><span class="mm-sl">이번 달</span><span class="mm-sv">${c.d.toFixed(1)}<span style="font-family:var(--fb);font-size:13px;color:var(--dim)"> km</span></span></div><div class="mm-st"><span class="mm-sl">최근 런</span><span class="mm-sv">${runs.length}<span style="font-family:var(--fb);font-size:13px;color:var(--dim)"> 회</span></span></div><div class="mm-st"><span class="mm-sl">현재 순위</span><span class="mm-rank ${k}" style="font-size:22px">${rank}</span></div></div><div class="mm-rl">최근 러닝</div>${runs.map(r=>`<div class="mm-rr"><span class="mm-rd">${r.d}</span><span class="mm-rk">${r.km.toFixed(2)} km</span><span class="mm-rp">${r.p}</span></div>`).join('')}<button class="mm-close" onclick="closeModal('m-member')">닫기</button>`;
+  openModal('m-member');
+}
+
+// SHOT
 function applyRank(){
   const k=RC(MR);
   ['cn-g','cn-p'].forEach(id=>{const el=document.getElementById(id);if(el){el.className='ch-n '+k;el.textContent=MR;}});
@@ -845,13 +1188,31 @@ function buildBoard(){
   const show=MR>3?[...CREW.slice(0,3),null,CREW[MI]]:CREW.slice(0,3);
   show.forEach(c=>{
     if(!c){const s=document.createElement('div');s.style.cssText='height:1px;background:rgba(255,255,255,.06);margin:2px 0';b.appendChild(s);return;}
-    const r=CREW.indexOf(c)+1,me=c.isMe,k=RC(r);
+    const r=CREW.indexOf(c)+1,me=c.me,k=RC(r);
     const row=document.createElement('div');row.className='gb-row'+(me?' me':'');
-    row.innerHTML=`<span class="gb-n ${k}">${r}</span><span class="gb-e">${c.emoji}</span><span class="gb-d${me?' me':''}">${c.dist.toFixed(1)}</span>`;
+    row.innerHTML=`<span class="gb-n ${k}">${r}</span><span class="gb-e">${c.e}</span><span class="gb-d${me?' me':''}">${c.d.toFixed(1)}</span>`;
     b.appendChild(row);
   });
 }
-applyRank();
+drawRoute(document.getElementById('mmg'),{ri:0});
+drawRoute(document.getElementById('mmp'),{lw:3,pad:18,alpha:.2,ri:0});
+drawRoute(document.getElementById('mms'),{ri:0});
+
+function drawRoute(canvas,opts={}){
+  const{stroke='#c8f050',lw=1.5,pad=7,alpha=.82,ri=0}=opts;
+  const R=ROUTES[ri%3];const W=canvas.width,H=canvas.height,ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const la=R.map(p=>p[0]),ln=R.map(p=>p[1]);
+  const mla=Math.min(...la),xla=Math.max(...la),mln=Math.min(...ln),xln=Math.max(...ln);
+  const rl=xla-mla||.001,rn=xln-mln||.001;
+  const xy=(a,n2)=>[pad+(n2-mln)/rn*(W-pad*2),pad+(xla-a)/rl*(H-pad*2)];
+  ctx.save();ctx.strokeStyle=stroke;ctx.lineWidth=lw+2;ctx.lineJoin='round';ctx.lineCap='round';ctx.globalAlpha=.08;
+  ctx.beginPath();R.forEach(([a,n2],i)=>{const[x,y]=xy(a,n2);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.restore();
+  ctx.save();ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.lineJoin='round';ctx.lineCap='round';ctx.globalAlpha=alpha;
+  ctx.beginPath();R.forEach(([a,n2],i)=>{const[x,y]=xy(a,n2);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.restore();
+  const last=R[R.length-1];const[ex,ey]=xy(last[0],last[1]);
+  ctx.save();ctx.beginPath();ctx.arc(ex,ey,2.5,0,Math.PI*2);ctx.fillStyle=stroke;ctx.shadowColor=stroke;ctx.shadowBlur=6;ctx.fill();ctx.restore();
+}
 
 let AT='g';
 document.getElementById('tbar').addEventListener('click',e=>{
@@ -859,400 +1220,127 @@ document.getElementById('tbar').addEventListener('click',e=>{
   ['ov-g','ov-p','ov-s'].forEach(id=>document.getElementById(id).classList.toggle('off',!id.endsWith(t)));
   document.querySelectorAll('.th').forEach(x=>x.classList.toggle('on',x.dataset.t===t));
 });
-
-// PHOTO
 let pURL=null;
 const bgEl=document.getElementById('bg-img'),emEl=document.getElementById('empty-state');
 function loadFile(f){if(!f?.type.startsWith('image/'))return;if(pURL)URL.revokeObjectURL(pURL);pURL=URL.createObjectURL(f);bgEl.onload=()=>{bgEl.style.opacity='1';emEl.style.display='none';};bgEl.src=pURL;}
 document.getElementById('ic').addEventListener('change',e=>loadFile(e.target.files[0]));
 document.getElementById('ig').addEventListener('change',e=>loadFile(e.target.files[0]));
 
-// AVATAR
 const AVATARS=[{e:'👻',l:'유령'},{e:'🧛',l:'뱀파이어'},{e:'🧟',l:'좀비'},{e:'🧌',l:'괴물'},{e:'💀',l:'해골'},{e:'🕷',l:'거미'},{e:'🦇',l:'박쥐'},{e:'🐺',l:'늑대'},{e:'😈',l:'악마'},{e:'🎃',l:'호박'}];
-(function buildAvGrid(){
-  const g=document.getElementById('avgrid');
-  AVATARS.forEach((av,i)=>{
-    const c=document.createElement('div');c.className='avc'+(i===0?' on':'');
-    c.innerHTML=`<span class="ave">${av.e}</span><span class="avl">${av.l}</span>`;
-    c.addEventListener('click',()=>{
-      document.querySelectorAll('.avc').forEach(x=>x.classList.remove('on'));c.classList.add('on');
-      ['g','p','s'].forEach(t=>{const em=document.getElementById('em-'+t),nm=document.getElementById('nm-'+t);if(em)em.textContent='👻';if(nm)nm.textContent=CREW[MI].name;});
-      document.getElementById('em-b').textContent='👻';closeAv();
-    });g.appendChild(c);
-  });
-})();
+(function(){const g=document.getElementById('avgrid');AVATARS.forEach((av,i)=>{const c=document.createElement('div');c.className='avc'+(i===0?' on':'');c.innerHTML=`<span class="ave">${av.e}</span><span class="avl">${av.l}</span>`;c.addEventListener('click',()=>{document.querySelectorAll('.avc').forEach(x=>x.classList.remove('on'));c.classList.add('on');['g','p','s'].forEach(t=>{const em=document.getElementById('em-'+t),nm=document.getElementById('nm-'+t);if(em)em.textContent=av.e;if(nm)nm.textContent='유령3';});document.getElementById('em-b').textContent=av.e;closeAv();});g.appendChild(c);});})();
 function openAv(){document.getElementById('avs').classList.add('on');}
 function closeAv(){document.getElementById('avs').classList.remove('on');}
 document.getElementById('avs').addEventListener('click',function(e){if(e.target===this)closeAv();});
 
-// CREW SUB TABS
-const CPANES={my:'cp-my',near:'cp-near',past:'cp-past'};
-document.getElementById('ctabs').addEventListener('click',e=>{
-  const b=e.target.closest('.ctab');if(!b)return;const c=b.dataset.c;
-  document.querySelectorAll('.cpane').forEach(el=>el.classList.remove('on'));
-  document.getElementById(CPANES[c]).classList.add('on');
-  document.querySelectorAll('.ctab').forEach(t=>t.classList.toggle('on',t.dataset.c===c));
-  if(c==='my')initCrew();if(c==='near')initNearby();if(c==='past')initPastCrews();
-});
-
-// INIT CREW
-let crewInited=false;
-function initCrew(){
-  if(crewInited)return;crewInited=true;
-  const myD=CREW[MI].dist,maxD=CREW[0].dist;
-  document.getElementById('gcc').textContent=TKM.toFixed(1);
-  document.getElementById('gcp').textContent=PCT+'%';
-  document.getElementById('gcm1').textContent=N+'명';
-  document.getElementById('gcm2').textContent=(myD/GOAL*100).toFixed(1)+'%';
-  document.getElementById('gcm3').textContent=MR===1?'🥇 1위':'−'+(maxD-myD).toFixed(1)+'km';
-  document.getElementById('gcm4').textContent=(GOAL-TKM).toFixed(1)+'km';
-  setTimeout(()=>document.getElementById('gcpf').style.width=Math.min(PCT,100)+'%',80);
-  document.getElementById('crew-lb-cnt').textContent=N+'명';
-  const lb=document.getElementById('crew-lb');lb.innerHTML='';
-  CREW.forEach((c,i)=>{
-    const rank=i+1,me=c.isMe,k=RC(rank),posC=rank<=3?k:'';
-    const row=document.createElement('div');
-    row.className='lbrow'+(me?' me':' clickable');
-    if(!me)row.onclick=()=>openMemberModal(c,rank);
-    row.innerHTML=`
-      <span class="lbpos${posC?' '+posC:''}">${rank}</span>
-      <span class="lbem">${c.emoji}</span>
-      <div class="lb-nm-col">
-        <div class="lb-nm">${c.name}${me?'<span style="font-size:9px;color:rgba(200,240,80,.65);margin-left:5px">나</span>':''}</div>
-        ${!me?'<div class="lb-hint">기록 보기 →</div>':''}
-      </div>
-      <div class="lb-rt">
-        <span class="lb-d">${c.dist.toFixed(2)}<span style="font-size:9px;opacity:.4"> km</span></span>
-        <div class="lb-bg"><div class="lb-bar ${me?'me':posC||'o'}" style="width:${Math.round(c.dist/maxD*100)}%"></div></div>
-      </div>`;
-    lb.appendChild(row);
-  });
-}
-
-// INIT NEARBY
-let nearbyInited=false;
-function initNearby(){
-  if(nearbyInited)return;nearbyInited=true;
-  const container=document.getElementById('nearby-list');container.innerHTML='';
-  NEARBY_CREWS.forEach(room=>{
-    const pct=Math.round(room.total/room.goal*100),k=RC(room.areaRank);
-    const members=Array(room.n).fill(room.em).join('');
-    const row=document.createElement('div');row.className='nb-row';
-    if(room.myRoom)row.style.cssText='border-left:2px solid rgba(200,240,80,.35);padding-left:10px;margin-left:-10px';
-    row.innerHTML=`
-      <div class="nb-top-row">
-        <div class="nb-left">
-          <div class="nb-rank-name">
-            <span class="nb-arank ${k}">${room.areaRank}</span>
-            <span class="nb-cname">${room.em} ${room.name}</span>
-            ${room.myRoom?'<span class="nb-mine-tag">내 크루</span>':''}
-          </div>
-          <div class="nb-cmeta">${room.code} · ${room.n}명</div>
-        </div>
-        <span class="nb-pct">${pct}%</span>
-      </div>
-      <div class="nb-prog"><div class="nb-pf" style="width:${pct}%"><div class="nb-pd"></div></div></div>
-      <div class="nb-bottom">
-        <div class="nb-ghosts">${members}</div>
-        <div class="nb-nums">
-          <div class="nbn"><span class="nbn-l">달성</span><span class="nbn-v">${room.total.toFixed(1)}<span style="font-family:var(--fb);font-size:10px;font-weight:200;color:var(--dim)"> km</span></span></div>
-          <div class="nbn"><span class="nbn-l">목표</span><span class="nbn-v" style="color:var(--mid)">${room.goal}<span style="font-family:var(--fb);font-size:10px;font-weight:200;color:var(--dim)"> km</span></span></div>
-        </div>
-      </div>`;
-    container.appendChild(row);
-  });
-}
-
-// INIT PAST CREWS
-let pastInited=false;
-function initPastCrews(){
-  if(pastInited)return;pastInited=true;
-  const list=document.getElementById('past-crews-list');list.innerHTML='';
-  PAST_CREWS.forEach(c=>{
-    const k=RC(c.rank);
-    const card=document.createElement('div');card.className='past-card';
-    card.innerHTML=`
-      <span class="pc-em">${c.em}</span>
-      <div class="pc-info">
-        <div class="pc-name">${c.name}${c.active?'<span style="font-size:9px;color:rgba(200,240,80,.7);margin-left:5px">활동중</span>':''}</div>
-        <div class="pc-meta">${c.period} · ${c.dist.toFixed(1)}km 달성</div>
-        ${c.expert?'<span class="pc-expert">⭐ Expert 크루</span>':''}
-      </div>
-      <div class="pc-right"><span class="pc-rank ${k}">${c.rank}등</span><span class="pc-dist">${c.dist.toFixed(1)}km</span></div>`;
-    list.appendChild(card);
-  });
-}
-
-// INIT RECORDS
-let recsInited=false;
-function initRecords(){
-  if(recsInited)return;recsInited=true;
-  const dots=document.getElementById('month-dots');
-  const today=new Date(),daysInMonth=new Date(today.getFullYear(),today.getMonth()+1,0).getDate();
+// RECORDS
+function initRec(){
+  if(recInited)return;recInited=true;
+  // calendar
+  const today=new Date(),days=new Date(today.getFullYear(),today.getMonth()+1,0).getDate();
   const runDays=new Set([5,10,14,18]);
-  for(let d=1;d<=daysInMonth;d++){
-    const dot=document.createElement('div');dot.className='md'+(d===today.getDate()?' today':runDays.has(d)?' run':'');dots.appendChild(dot);
-  }
+  const cg=document.getElementById('cal-grid');
+  for(let d=1;d<=days;d++){const dot=document.createElement('div');dot.className='cal-d'+(d===today.getDate()?' today':runDays.has(d)?' run':'');cg.appendChild(dot);}
+  setTimeout(()=>document.getElementById('rt-fill').style.width='38%',100);
+  // log
   const logEl=document.getElementById('run-log');
-  RUN_LOG.forEach((r,i)=>{
+  LOGS.forEach(r=>{
     const k=RC(r.rank);
     const item=document.createElement('div');item.className='log-item';
-    const cv=document.createElement('canvas');cv.width=44;cv.height=44;cv.className='log-route';
-    const dc=document.createElement('div');dc.className='log-date-col';
-    dc.innerHTML=`<span class="log-month">${r.month}</span><span class="log-day">${r.date.split('.')[1]}</span>`;
+    const cv=document.createElement('canvas');cv.width=52;cv.height=52;cv.className='log-cv';
+    drawRoute(cv,{stroke:'#c8f050',lw:1.5,pad:6,alpha:.8,ri:r.ri});
+    item.innerHTML=`<div class="log-date"><span class="log-mo">${r.mo}</span><span class="log-dy">${r.date.split('.')[1]}</span></div>`;
+    item.appendChild(cv);
     const info=document.createElement('div');info.className='log-info';
-    info.innerHTML=`<span class="log-crew-tag">👻 ${r.crewName}</span><span class="log-dist">${r.dist.toFixed(2)}<span style="font-size:11px;font-weight:200;color:var(--dim)"> km</span></span><span class="log-sub">Pace ${r.pace} · ${r.time}</span>`;
+    info.innerHTML=`<span class="log-crew">👻 ${r.crew}</span><span class="log-km">${r.d.toFixed(2)}<span style="font-size:16px;color:var(--dim)"> km</span></span><span class="log-sub">${r.pace}/km · ${r.time}</span>`;
+    item.appendChild(info);
     const right=document.createElement('div');right.className='log-right';
-    right.innerHTML=`<span class="log-rank-chip ${k}">${r.rank}등</span>`;
-    item.appendChild(dc);item.appendChild(cv);item.appendChild(info);item.appendChild(right);
+    right.innerHTML=`<span class="log-rn ${k}">${r.rank}등</span><span class="log-kcal">${r.cal} kcal</span>`;
+    item.appendChild(right);
     logEl.appendChild(item);
-    setTimeout(()=>drawRoute(cv,{pad:5,lw:1.2,ri:r.ri}),50*i);
   });
-  const pcEl=document.getElementById('past-crews-rec');
-  PAST_CREWS.forEach(c=>{
-    const k=RC(c.rank);
-    const item=document.createElement('div');item.className='crew-past-card';
-    item.innerHTML=`<span class="cpc-em">${c.em}</span><div class="cpc-info"><div class="cpc-name">${c.name}</div><div class="cpc-meta">${c.period} · ${c.dist.toFixed(1)}km</div></div><div class="cpc-badge">${c.expert?'<span class="expert-badge">⭐ Expert</span>':''}<span class="cpc-rank ${k}">${c.rank}등</span></div>`;
-    pcEl.appendChild(item);
+  // past crews
+  const pcEl=document.getElementById('rec-past-crews');
+  PAST.forEach(c=>{
+    const k=RC(c.rank);const row=document.createElement('div');row.className='rcr';
+    row.innerHTML=`<span class="rcr-em">${c.e}</span><div class="rcr-info"><div class="rcr-name">${c.n}${c.active?'<span style="font-size:9px;color:rgba(200,240,80,.7);margin-left:5px">활동중</span>':''}</div><div class="rcr-meta">${c.period} · ${c.d.toFixed(1)}km</div></div><div class="rcr-right">${c.xp?'<span class="rcr-xp">⭐ Expert</span>':''}<span class="rcr-rank ${k}">${c.rank}등</span></div>`;
+    pcEl.appendChild(row);
   });
 }
-
-// MEMBER MODAL
-function openMemberModal(member,rank){
-  const k=RC(rank),runs=MEMBER_RUNS[member.name]||[];
-  document.getElementById('mm-box').innerHTML=`
-    <div class="mm-head">
-      <span class="mm-em">${member.emoji}</span>
-      <div class="mm-identity"><div class="mm-name">${member.name}</div><div class="mm-crew">👻 유령 크루 · 2025.02</div></div>
-      <span class="mm-rank-badge ${k}">${rank}등</span>
-    </div>
-    <div class="mm-stats-row">
-      <div class="mm-stat"><span class="mm-sl">이번 달</span><span class="mm-sv">${member.dist.toFixed(2)}<span style="font-family:var(--fb);font-size:11px;font-weight:200;color:var(--dim)"> km</span></span></div>
-      <div class="mm-stat"><span class="mm-sl">런 횟수</span><span class="mm-sv">${runs.length}<span style="font-family:var(--fb);font-size:11px;font-weight:200;color:var(--dim)"> 회</span></span></div>
-    </div>
-    <div class="mm-runs-label">최근 기록</div>
-    ${runs.map(r=>`<div class="mm-run-row"><span class="mm-run-date">${r.d}</span><span class="mm-run-dist">${r.dist.toFixed(2)}<span style="font-family:var(--fb);font-size:10px;font-weight:200;color:var(--dim)"> km</span></span><span class="mm-run-sub">Pace ${r.pace}</span></div>`).join('')}
-    <button class="mm-close" onclick="closeMemberModal()">닫기</button>`;
-  document.getElementById('member-modal').classList.add('on');
-}
-function closeMemberModal(){document.getElementById('member-modal').classList.remove('on');}
-document.getElementById('member-modal').addEventListener('click',function(e){if(e.target===this)closeMemberModal();});
 
 // JOIN MODAL
-const CODE_MAP={
-  'GR-2847':{name:'유령 크루',em:'👻',meta:'마포구 · 8명 활동 중',pct:38},
-  'GR-1138':{name:'드라큘라 크루',em:'🧛',meta:'마포구 · 8명 활동 중',pct:62},
-  'GR-0442':{name:'좀비 크루',em:'🧟',meta:'마포구 · 6명 활동 중',pct:65},
-  'GR-3391':{name:'호박 크루',em:'🎃',meta:'마포구 · 5명 활동 중',pct:48},
-};
-let joinTarget=null;
-
-function openJoinModal(){document.getElementById('join-modal').classList.add('on');}
-function closeJoinModal(){
-  document.getElementById('join-modal').classList.remove('on');
-  document.getElementById('jm-input').value='';
-  document.getElementById('jm-preview').classList.remove('on');
-  document.getElementById('jm-confirm').classList.remove('on');
-  joinTarget=null;
-}
-document.getElementById('join-modal').addEventListener('click',function(e){if(e.target===this)closeJoinModal();});
-
 function onJoinInput(v){
-  const code=v.toUpperCase().replace(/[^A-Z0-9-]/g,'');
-  const match=CODE_MAP[code];
-  const preview=document.getElementById('jm-preview');
-  const confirm=document.getElementById('jm-confirm');
-  if(match){
-    document.getElementById('jp-em').textContent=match.em;
-    document.getElementById('jp-name').textContent=match.name;
-    document.getElementById('jp-meta').textContent=match.meta;
-    document.getElementById('jp-pct').textContent=match.pct+'%';
-    preview.classList.add('on');confirm.classList.add('on');
-    joinTarget=match;joinTarget.code=code;
+  const code=v.toUpperCase().replace(/[^A-Z0-9\-]/g,'');
+  document.getElementById('jin').value=code;
+  const key=code.replace('GR-','GR-');
+  const found=CODEMAP[code.replace(/^GR-?/,'GR-')] || CODEMAP[code];
+  if(found){
+    joinTarget=found;
+    document.getElementById('jp-em').textContent=found.e;
+    document.getElementById('jp-name').textContent=found.n;
+    document.getElementById('jp-meta').textContent=found.meta;
+    document.getElementById('jp-pct').textContent=found.pct+'%';
+    document.getElementById('jprev').classList.add('on');
+    document.getElementById('jok').style.display='block';
   } else {
-    preview.classList.remove('on');confirm.classList.remove('on');
     joinTarget=null;
+    document.getElementById('jprev').classList.remove('on');
+    document.getElementById('jok').style.display='none';
   }
 }
-
 function confirmJoin(){
   if(!joinTarget)return;
-  hasCrew=true;crewInited=false;
-  closeJoinModal();
-  showCrewView();
-  initCrew();initNearby();initPastCrews();
-  toast('🤝 '+joinTarget.name+' 참여 완료!');
+  hasCrew=true;
+  document.getElementById('ch-name').textContent=joinTarget.e+' '+joinTarget.n;
+  document.getElementById('ch-sub').textContent=Object.keys(CODEMAP).find(k=>CODEMAP[k]===joinTarget)+' · 2월 · 8명';
+  showCrewView();crewInited=false;nearInited=false;pastInited=false;
+  initCrew();initNear();initPast();
+  closeModal('m-join');
+  showToast('🤝 '+joinTarget.n+'에 참여했어요!');
+  joinTarget=null;
 }
 
-function quickJoin(name,em,code,pct){
-  hasCrew=true;crewInited=false;
-  showCrewView();
-  initCrew();initNearby();initPastCrews();
-  toast('🤝 '+name+' 참여 완료!');
-}
-
-// CREATE CREW MODAL
-let selEm='👻',selGoal=100;
-
-function openCreateModal(){document.getElementById('create-modal').classList.add('on');}
-function closeCreateModal(){document.getElementById('create-modal').classList.remove('on');}
-document.getElementById('create-modal').addEventListener('click',function(e){if(e.target===this)closeCreateModal();});
-
-document.getElementById('cm-emoji-row').addEventListener('click',e=>{
-  const opt=e.target.closest('.cm-em-opt');if(!opt)return;
-  document.querySelectorAll('.cm-em-opt').forEach(x=>x.classList.remove('on'));
-  opt.classList.add('on');selEm=opt.dataset.em;
+// CREATE MODAL
+document.getElementById('em-row').addEventListener('click',e=>{
+  const o=e.target.closest('.em-opt');if(!o)return;
+  document.querySelectorAll('.em-opt').forEach(x=>x.classList.remove('on'));
+  o.classList.add('on');selEm=o.dataset.em;
 });
-document.getElementById('cm-goal-row').addEventListener('click',e=>{
-  const opt=e.target.closest('.cm-goal-opt');if(!opt)return;
-  document.querySelectorAll('.cm-goal-opt').forEach(x=>x.classList.remove('on'));
-  opt.classList.add('on');selGoal=parseInt(opt.dataset.km);
+document.getElementById('g-row').addEventListener('click',e=>{
+  const o=e.target.closest('.g-opt');if(!o)return;
+  document.querySelectorAll('.g-opt').forEach(x=>x.classList.remove('on'));
+  o.classList.add('on');selGoal=parseInt(o.dataset.km);
 });
-
 function confirmCreate(){
-  const name=document.getElementById('cm-name').value.trim()||'새 크루';
-  const area=document.getElementById('cm-area').value.trim()||'마포구';
-  closeCreateModal();
-  hasCrew=true;crewInited=false;
-  // update crew header display
-  const chn=document.getElementById('ch-name');if(chn)chn.textContent=selEm+' '+name;
-  const chs=document.getElementById('ch-sub');if(chs)chs.textContent='#GR-NEW · 2월 · 1명';
-  showCrewView();
-  initCrew();initNearby();initPastCrews();
-  toast('✨ '+name+' 크루가 만들어졌어요!');
+  const name=document.getElementById('cn-inp').value.trim()||'새 크루';
+  hasCrew=true;
+  document.getElementById('ch-name').textContent=selEm+' '+name;
+  document.getElementById('ch-sub').textContent='#GR-NEW · 2월 · 1명';
+  showCrewView();crewInited=false;nearInited=false;pastInited=false;
+  initCrew();initNear();initPast();
+  closeModal('m-create');showToast('✨ '+name+' 크루가 만들어졌어요!');
 }
 
-// EXPERT MODAL
-function openExpertModal(){document.getElementById('expert-modal').classList.add('on');}
-function closeExpertModal(){document.getElementById('expert-modal').classList.remove('on');}
-document.getElementById('expert-modal').addEventListener('click',function(e){if(e.target===this)closeExpertModal();});
-function selectExpert(){closeExpertModal();toast('✨ Ghost Master 크루가 개설됐어요!');}
+// MODAL helpers
+function openModal(id){document.getElementById(id).classList.add('on');}
+function closeModal(id){document.getElementById(id).classList.remove('on');}
+document.querySelectorAll('.modal').forEach(m=>{m.addEventListener('click',function(e){if(e.target===this)closeModal(this.id);});});
 
-// HIGH FIVE
-let hifiShown=false;
-function showHiFiUsers(){
-  if(hifiShown)return;hifiShown=true;
-  const el=document.getElementById('hifi-users');
-  NEARBY_USERS.forEach((u,i)=>{
-    setTimeout(()=>{
-      const div=document.createElement('div');div.className='hifi-user-pill';
-      div.innerHTML=`<span class="hu-em">${u.emoji}</span><span class="hu-nm">${u.name}</span><span class="hu-dist">${u.dist}</span>`;
-      el.appendChild(div);
-    },i*200);
-  });
-  document.getElementById('hifi-cnt').textContent=NEARBY_USERS.length;
-}
-function sendHiFi(){
-  const btn=document.getElementById('hifi-btn');
-  btn.classList.add('sent');btn.textContent='✅';
-  const rect=btn.getBoundingClientRect();
-  const fly=document.createElement('div');fly.className='hifi-fly';fly.textContent='🤚';
-  fly.style.cssText='left:'+rect.left+'px;top:'+rect.top+'px';
-  document.body.appendChild(fly);
-  setTimeout(()=>fly.remove(),900);
-  toast('👋 주변 러너에게 하이파이브를 보냈어요!');
-  setTimeout(()=>{btn.classList.remove('sent');btn.textContent='🤚';},2000);
-}
-
-// EXPORT
-const ND=new Date(),PD=v=>String(v).padStart(2,'0');
-const TODAY=ND.getFullYear()+'.'+PD(ND.getMonth()+1)+'.'+PD(ND.getDate());
-const NOWT=ND.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-
+// SAVE
 document.getElementById('bsave').addEventListener('click',()=>{
-  const card=document.getElementById('card'),rect=card.getBoundingClientRect();
-  const W=rect.width,H=rect.height,DPR=2;
-  const ec=document.getElementById('ec');ec.width=W*DPR;ec.height=H*DPR;
-  const ctx=ec.getContext('2d');ctx.scale(DPR,DPR);
-  if(bgEl.src&&bgEl.naturalWidth){const sc=Math.max(W/bgEl.naturalWidth,H/bgEl.naturalHeight);ctx.drawImage(bgEl,(W-bgEl.naturalWidth*sc)/2,(H-bgEl.naturalHeight*sc)/2,bgEl.naturalWidth*sc,bgEl.naturalHeight*sc);}
-  else{ctx.fillStyle='#101012';ctx.fillRect(0,0,W,H);}
-  AT==='g'?xGhost(ctx,W,H):AT==='p'?xPath(ctx,W,H):xStamp(ctx,W,H);
-  document.getElementById('flash').classList.add('on');
-  setTimeout(()=>document.getElementById('flash').classList.remove('on'),110);
-  try{const a=document.createElement('a');a.download='ghostrun_'+AT+'_'+Date.now()+'.jpg';a.href=ec.toDataURL('image/jpeg',.92);a.click();toast('저장되었습니다');}
-  catch(e){toast('사진을 먼저 불러오세요');}
+  const card=document.getElementById('card');
+  const fl=document.getElementById('flash');fl.classList.add('on');setTimeout(()=>fl.classList.remove('on'),180);
+  showToast('💾 인증샷이 저장됐어요');
 });
 
-function grd(ctx,x,y,w,h,...s){const g=ctx.createLinearGradient(x,y,x,y+h);s.forEach(([t,c])=>g.addColorStop(t,c));ctx.fillStyle=g;ctx.fillRect(x,y,w,h);}
-function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
-
-function xGhost(ctx,W,H){
-  grd(ctx,0,0,W,170,[0,'rgba(0,0,0,.75)'],[1,'rgba(0,0,0,0)']);
-  grd(ctx,0,H-260,W,260,[0,'rgba(0,0,0,0)'],[.45,'rgba(0,0,0,.4)'],[1,'rgba(0,0,0,.92)']);
-  ctx.font='16px serif';ctx.fillText('👻',20,42);
-  ctx.fillStyle='rgba(237,233,225,.78)';ctx.font='200 12px sans-serif';ctx.fillText(CREW[MI].name,43,40);
-  ctx.textAlign='right';ctx.fillStyle='rgba(255,255,255,.22)';ctx.font='200 9px sans-serif';ctx.fillText(TODAY,W-18,34);ctx.fillText(NOWT,W-18,48);ctx.textAlign='left';
-  ctx.fillStyle='rgba(0,0,0,.52)';ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;rr(ctx,W-68,16,52,26,13);ctx.fill();ctx.stroke();
-  ctx.fillStyle=COL(MR);ctx.font='italic 300 20px "Cormorant Garamond",serif';ctx.textAlign='center';ctx.fillText(MR,W-52,34);
-  ctx.fillStyle='rgba(255,255,255,.22)';ctx.font='200 9px sans-serif';ctx.fillText('/'+N,W-30,34);ctx.textAlign='left';
-  let by=52;ctx.fillStyle='rgba(255,255,255,.15)';ctx.font='200 8px sans-serif';ctx.textAlign='right';ctx.fillText('크루 순위',W-16,by);by+=10;ctx.textAlign='left';
-  const show=MR>3?[...CREW.slice(0,3),null,CREW[MI]]:CREW.slice(0,3);
-  show.forEach(c=>{
-    if(!c){ctx.fillStyle='rgba(255,255,255,.06)';ctx.fillRect(W-110,by,94,1);by+=5;return;}
-    const r=CREW.indexOf(c)+1,me=c.isMe;
-    ctx.fillStyle=me?'rgba(200,240,80,.07)':'rgba(0,0,0,.42)';rr(ctx,W-110,by,94,17,5);ctx.fill();
-    if(me){ctx.strokeStyle='rgba(200,240,80,.15)';ctx.lineWidth=1;rr(ctx,W-110,by,94,17,5);ctx.stroke();}
-    ctx.fillStyle=COL(r);ctx.font='300 9px sans-serif';ctx.fillText(r,W-104,by+12);
-    ctx.font='11px serif';ctx.fillText(c.emoji,W-92,by+13);
-    ctx.fillStyle=me?'#c8f050':'rgba(255,255,255,.45)';ctx.font='300 9px sans-serif';ctx.textAlign='right';ctx.fillText(c.dist.toFixed(1),W-18,by+12);ctx.textAlign='left';
-    by+=21;
-  });
-  ctx.fillStyle='rgba(237,233,225,.92)';ctx.font='italic 300 52px "Cormorant Garamond",serif';ctx.fillText('5.20',18,H-60);
-  ctx.fillStyle='rgba(237,233,225,.3)';ctx.font='200 15px sans-serif';ctx.fillText('km',116,H-60);
-  let sx=18;[['Pace',"5'12\""],['Time',"26'58\""],['Cal','312']].forEach(([l,v],i)=>{
-    if(i>0){ctx.fillStyle='rgba(255,255,255,.07)';ctx.fillRect(sx-7,H-42,1,18);}
-    ctx.fillStyle='rgba(255,255,255,.18)';ctx.font='200 8px sans-serif';ctx.fillText(l,sx,H-42);
-    ctx.fillStyle='rgba(237,233,225,.55)';ctx.font='300 14px sans-serif';ctx.fillText(v,sx,H-26);sx+=72;
-  });
-  // mini map: bottom-right corner, separate from all text
-  const ms=42,mx=W-ms-16,my2=H-ms-16;
-  const mc=document.createElement('canvas');mc.width=ms;mc.height=ms;drawRoute(mc);
-  ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;rr(ctx,mx,my2,ms,ms,5);ctx.stroke();ctx.drawImage(mc,mx,my2);
-  ctx.fillStyle='rgba(255,255,255,.1)';ctx.font='200 9px sans-serif';ctx.fillText('GhostRun · 따로 또 같이',18,H-10);
-}
-function xPath(ctx,W,H){
-  grd(ctx,0,0,W,120,[0,'rgba(0,0,0,.7)'],[1,'rgba(0,0,0,0)']);
-  grd(ctx,0,H-190,W,190,[0,'rgba(0,0,0,0)'],[1,'rgba(0,0,0,.9)']);
-  ctx.font='16px serif';ctx.fillText('👻',20,40);
-  ctx.fillStyle='rgba(237,233,225,.75)';ctx.font='200 12px sans-serif';ctx.fillText(CREW[MI].name,43,38);
-  ctx.textAlign='right';ctx.fillStyle='rgba(255,255,255,.22)';ctx.font='italic 300 13px serif';ctx.fillText('GhostRun',W-18,38);ctx.textAlign='left';
-  const S=Math.min(W,H)*.55,CX=(W-S)/2,CY=(H-S)/2;
-  const mc=document.createElement('canvas');mc.width=S;mc.height=S;drawRoute(mc,{lw:3,pad:S*.1,alpha:.18});
-  ctx.globalAlpha=.55;ctx.drawImage(mc,CX,CY);ctx.globalAlpha=1;
-  const pW=112,pH=28,pX=(W-pW)/2,pY=H/2-14;
-  ctx.fillStyle='rgba(0,0,0,.55)';ctx.strokeStyle='rgba(255,255,255,.09)';ctx.lineWidth=1;rr(ctx,pX,pY,pW,pH,14);ctx.fill();ctx.stroke();
-  ctx.fillStyle=COL(MR);ctx.font='italic 300 22px serif';ctx.textAlign='center';ctx.fillText(MR,pX+pW*.3,pY+20);
-  ctx.fillStyle='rgba(255,255,255,.22)';ctx.font='200 10px sans-serif';ctx.fillText('등 / '+N+'명',pX+pW*.62,pY+20);ctx.textAlign='left';
-  ctx.fillStyle='rgba(237,233,225,.88)';ctx.font='italic 300 30px serif';ctx.fillText('5.20 km',18,H-20);
-  ctx.textAlign='right';ctx.font='italic 300 30px serif';ctx.fillText("5'12\"",W-18,H-20);ctx.textAlign='left';
-  ctx.fillStyle='rgba(255,255,255,.18)';ctx.font='200 9px sans-serif';ctx.fillText('DISTANCE',18,H-50);
-  ctx.textAlign='right';ctx.fillText('AVG PACE',W-18,H-50);ctx.textAlign='left';
-}
-function xStamp(ctx,W,H){
-  const vg=ctx.createRadialGradient(W/2,H*.42,H*.2,W/2,H*.42,H*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.65)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
-  grd(ctx,0,H-270,W,270,[0,'rgba(0,0,0,0)'],[1,'rgba(0,0,0,.9)']);grd(ctx,0,0,W,90,[0,'rgba(0,0,0,.55)'],[1,'rgba(0,0,0,0)']);
-  ctx.font='16px serif';ctx.fillText('👻',18,40);
-  ctx.fillStyle='rgba(237,233,225,.68)';ctx.font='200 12px sans-serif';ctx.fillText(CREW[MI].name,41,38);
-  ctx.textAlign='right';ctx.fillStyle='rgba(255,255,255,.16)';ctx.font='200 9px sans-serif';ctx.fillText('GHOSTRUN',W-18,38);ctx.textAlign='left';
-  ctx.fillStyle=COL(MR);ctx.font='italic 300 36px serif';ctx.fillText(MR+'등',18,H-168);
-  ctx.fillStyle='rgba(255,255,255,.22)';ctx.font='200 12px sans-serif';ctx.fillText('/ '+N+'명',72,H-168);
-  ctx.fillStyle='rgba(237,233,225,.9)';ctx.font='italic 300 50px serif';ctx.fillText('5.20',18,H-74);
-  ctx.fillStyle='rgba(237,233,225,.28)';ctx.font='200 17px sans-serif';ctx.fillText(' km',118,H-74);
-  ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='200 8px sans-serif';ctx.fillText("Pace  5'12\"    Time  26'58\"    Cal  312",18,H-42);
-  // badge: bottom-right
-  const CX=W-60,CY=H-60,R=46;
-  ctx.beginPath();ctx.arc(CX,CY,R,0,Math.PI*2);ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.stroke();
-  ctx.beginPath();ctx.arc(CX,CY,R-5,0,Math.PI*2);ctx.strokeStyle='rgba(200,240,80,.1)';ctx.lineWidth=1;ctx.stroke();
-  ctx.font='22px serif';ctx.textAlign='center';ctx.fillText('👻',CX,CY-4);
-  ctx.fillStyle='rgba(200,240,80,.45)';ctx.font='200 7px sans-serif';ctx.fillText('COMPLETED',CX,CY+12);
-  ctx.fillStyle='rgba(255,255,255,.16)';ctx.font='200 7px sans-serif';ctx.fillText(TODAY,CX,CY+23);ctx.textAlign='left';
-  // mini map: top-right, below header text, no overlap with bottom content
-  const ms=42,mmx=W-ms-16,mmy=68;
-  const mc=document.createElement('canvas');mc.width=ms;mc.height=ms;drawRoute(mc);
-  ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;rr(ctx,mmx,mmy,ms,ms,6);ctx.stroke();ctx.drawImage(mc,mmx,mmy);
+// TOAST
+let toastTimer=null;
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('on'),2400);
 }
 
-function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2600);}
+// init shot rank
+applyRank();
 </script>
 </body>
 </html>
