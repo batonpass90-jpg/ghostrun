@@ -2,7 +2,14 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <!-- PWA: 앱처럼 실행 -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GhostRun">
+  <meta name="application-name" content="GhostRun">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>GhostRun</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,300;1,400;1,700;1,900&family=Barlow:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>
@@ -585,7 +592,8 @@ input[type=file]{display:none}
 /* Barlow small text */
 .bsm { font-size: 10px; font-weight: 300; letter-spacing: .08em }
 </style>
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5a866c85a9fb2bad3fc42dac5d3c683c&libraries=services"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5a866c85a9fb2bad3fc42dac5d3c683c&libraries=services"></script>
 </head>
 <body>
 
@@ -775,7 +783,7 @@ input[type=file]{display:none}
   <!-- HEALTH PERMISSION MODAL -->
   <div id="health-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(5,5,5,.94);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);flex-direction:column;align-items:center;justify-content:flex-end;padding:0 0 40px">
     <div style="width:100%;max-width:420px;background:#161616;border-radius:26px 26px 22px 22px;overflow:hidden;border:1px solid rgba(255,255,255,.08)">
-      <div style="display:flex;justify-content:center;padding:12px 0 0"><div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.15)"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px 0"><div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:0 auto"></div><button onclick="closeModal('m-friends')" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:20px;cursor:pointer;line-height:1">×</button></div>
       <div style="display:flex;align-items:center;justify-content:center;gap:16px;padding:24px 28px 0">
         <div style="width:56px;height:56px;border-radius:16px;background:#ff3b30;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(255,59,48,.3)">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -825,6 +833,10 @@ input[type=file]{display:none}
       <div id="run-kakao-map" style="position:absolute;inset:0;width:100%;height:100%"></div>
       <!-- SVG overlay for run path + dots -->
       <svg id="ra-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5" viewBox="0 0 400 320" preserveAspectRatio="none">
+        <!-- Simulation mode path (hidden when Kakao active) -->
+        <path id="ghost-path" d="M 30 290 C 70 270,100 230,140 200 C 180 170,220 150,270 110 C 310 78,350 52,390 28" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="3" stroke-dasharray="8 6"/>
+        <path id="run-path" d="M 30 290 C 70 270,100 230,140 200 C 180 170,220 150,270 110 C 310 78,350 52,390 28" fill="none" stroke="#c8f050" stroke-width="4" stroke-linecap="round"/>
+        <!-- GPS mode path -->
         <polyline id="run-path-line" points="" fill="none" stroke="#c8f050" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
         <polyline id="run-path-glow" points="" fill="none" stroke="rgba(200,240,80,.2)" stroke-width="12" stroke-linecap="round" opacity="0.6"/>
         <circle id="runner-glow" cx="200" cy="160" r="18" fill="rgba(200,240,80,.12)"><animate attributeName="r" values="16;22;16" dur="1.6s" repeatCount="indefinite"/></circle>
@@ -975,6 +987,12 @@ input[type=file]{display:none}
 
   <!-- ── 공개 크루 목록 ── -->
   <div id="room-pane-browse" class="rpane" style="padding:12px 16px 24px">
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <input id="join-code-input" type="text" placeholder="크루 코드 입력 (CR-XXXX)" maxlength="9"
+        style="flex:1;height:42px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:0 12px;font-size:13px;color:#fff;outline:none;letter-spacing:.05em"
+        oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')joinByCode()">
+      <button onclick="joinByCode()" style="height:42px;padding:0 16px;background:#c8f050;border:none;border-radius:10px;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:900;color:#0a0a0a;cursor:pointer">입장</button>
+    </div>
     <div id="room-list-container"></div>
   </div>
 
@@ -1501,8 +1519,7 @@ input[type=file]{display:none}
         <button onclick="searchFriends(document.getElementById('friend-search-input').value)" style="height:46px;padding:0 18px;background:#c8f050;border:none;border-radius:12px;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:800;color:#0a0a0a;cursor:pointer">검색</button>
       </div>
       <div id="friend-search-results"></div>
-      <div style="margin-top:6px">
-        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.35);margin-bottom:12px">추천 러너</div>
+      <div style="margin-top:12px">:10px;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.35);margin-bottom:10px">추천 러너</div>
         <div id="friend-suggest-container"></div>
       </div>
     </div>
@@ -1512,7 +1529,7 @@ input[type=file]{display:none}
 <script>
 
 // DATA
-const PAST_LOGS=[
+var PAST_LOGS=[
   {date:'02.18',mo:'Feb',d:5.20,pace:"5'12\"",time:"26'58\"",cal:312,ri:0},
   {date:'02.14',mo:'Feb',d:4.80,pace:"5'20\"",time:"25'36\"",cal:288,ri:1},
   {date:'02.10',mo:'Feb',d:6.10,pace:"5'08\"",time:"31'17\"",cal:366,ri:2},
@@ -1520,6 +1537,18 @@ const PAST_LOGS=[
   {date:'01.28',mo:'Jan',d:9.80,pace:"5'01\"",time:"49'10\"",cal:588,ri:1},
   {date:'01.21',mo:'Jan',d:8.40,pace:"5'14\"",time:"43'58\"",cal:504,ri:2},
 ];
+// Load saved runs from localStorage
+try{
+  var _saved=JSON.parse(localStorage.getItem("ghostrun_runs")||"[]");
+  if(_saved.length>0){
+    _saved.forEach(function(r){
+      if(!PAST_LOGS.find(function(p){return p.date===r.date&&p.d===r.d}))PAST_LOGS.unshift(r);
+    });
+    // Keep most recent first - unshift already puts new items first
+    if(PAST_LOGS.length>50)PAST_LOGS.length=50;
+  }
+}catch(e){}
+
 const INSTA_POSTS=[
   {em:'👻',user:'익명의 러너',dist:5.20,pace:"5'12\"",date:'오늘',caption:'새벽 러닝 성공! 🌙',colors:['#0d1a0d','#1a2e0d'],accentAngle:'145deg'},
   {em:'🏃',user:'새벽의 유령',dist:8.40,pace:"4'55\"",date:'어제',caption:'10km 도전 중! 💪',colors:['#1a0d0d','#2e1a0d'],accentAngle:'135deg'},
@@ -1551,6 +1580,18 @@ function addHistory(room){
   localStorage.setItem(HISTORY_KEY,JSON.stringify(hist.slice(0,20)));
 }
 
+function confirmCreate(){
+  var nameEl=document.getElementById('cn-inp');
+  if(!nameEl||!nameEl.value.trim()){showToast('크루 이름을 입력해주세요');return;}
+  var emEl=document.querySelector('#em-row .em-opt.on');
+  var em=emEl?emEl.dataset.em:'👻';
+  closeModal('m-create');
+  openCreateRoom();
+  setTimeout(function(){
+    var crName=document.getElementById('cr-name');
+    if(crName){crName.value=nameEl.value.trim();}
+  },80);
+}
 function openCreateRoom(){
   document.getElementById('cr-name').value='';
   document.getElementById('cr-pw').style.display='none';
@@ -1783,6 +1824,28 @@ function switchRoomTab(tab){
 function renderRoomTabs(){renderPublicRooms();renderMyRooms();renderFriendsList();renderRoomHistory();}
 
 
+function confirmJoin(){
+  var code=(document.getElementById("jin")||{}).value||'';code=code.trim().toUpperCase();
+  if(!code){showToast("코드를 입력해주세요");return;}
+  var allRooms=[...(typeof SAMPLE_ROOMS!=="undefined"?SAMPLE_ROOMS:[]),...getRooms()];
+  var room=allRooms.find(function(r){return r.code&&r.code.toUpperCase()===code;});
+  if(!room){showToast("크루를 찾을 수 없어요 ❌");return;}
+  closeModal("m-join");
+  showJoinPreview(room.id);
+}
+function onJoinInput(val){
+  val=(val||"").trim().toUpperCase();
+  var prev=document.getElementById("jprev");
+  if(!prev)return;
+  var allRooms=[...(typeof SAMPLE_ROOMS!=="undefined"?SAMPLE_ROOMS:[]),...getRooms()];
+  var found=allRooms.find(function(r){return r.code&&r.code.toUpperCase()===val;});
+  if(found){
+    prev.style.display="flex";
+    var e=document.getElementById("jp-em");if(e)e.textContent=found.em||"👻";
+    var n=document.getElementById("jp-name");if(n)n.textContent=found.name||"크루";
+    var t=document.getElementById("jp-meta");if(t)t.textContent=(found.members||0)+"명 · "+(found.dist||"?")+"km";
+  }else{prev.style.display="none";}
+}
 function joinByCode(){
   var inp=document.getElementById('join-code-input');
   var code=(inp?inp.value.trim().toUpperCase():'');
@@ -1800,18 +1863,6 @@ function renderPublicRooms(){
   if(!el)return;
   const allPublic=[...SAMPLE_ROOMS,...getRooms().filter(r=>!r.mine)];
   el.innerHTML='';
-  // Code entry bar
-  var codeBar=document.createElement('div');
-  codeBar.style.cssText='display:flex;gap:8px;margin-bottom:16px';
-  var codeInp=document.createElement('input');
-  codeInp.id='join-code-input';codeInp.type='text';codeInp.placeholder='크루 코드 입력 (CR-XXXX)';codeInp.maxLength=8;
-  codeInp.style.cssText='flex:1;height:46px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:0 14px;font-family:Barlow Condensed,sans-serif;font-size:16px;font-weight:600;letter-spacing:.08em;color:#fff;outline:none;box-sizing:border-box;text-transform:uppercase';
-  codeInp.oninput=function(){this.value=this.value.toUpperCase().replace(/[^A-Z0-9-]/g,'');};
-  codeInp.onkeydown=function(e){if(e.key==='Enter')joinByCode();};
-  var codeBtn=document.createElement('button');
-  codeBtn.style.cssText='height:46px;padding:0 18px;background:#c8f050;border:none;border-radius:12px;font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:800;letter-spacing:.06em;color:#0a0a0a;cursor:pointer;flex-shrink:0';
-  codeBtn.textContent='입장';codeBtn.onclick=joinByCode;
-  codeBar.appendChild(codeInp);codeBar.appendChild(codeBtn);el.appendChild(codeBar);
   // Section label
   var lbl=document.createElement('div');lbl.style.cssText='font-size:10px;font-weight:400;letter-spacing:.14em;color:rgba(255,255,255,.35);margin-bottom:10px';lbl.textContent='공개 크루';el.appendChild(lbl);
   allPublic.forEach(room=>{
@@ -2186,6 +2237,13 @@ tick();setInterval(tick,1000);
 // TABS
 function goTab(v){
   if(v===curTab&&v!=='run')return;curTab=v;
+  // If going to run tab and finish screen showing, go back to setup
+  if(v==='run'){
+    var rfinishEl=document.getElementById('rfinish');
+    if(rfinishEl&&rfinishEl.classList.contains('on')){
+      // keep finish screen - user can navigate away and come back
+    }
+  }
   document.querySelectorAll('.mview').forEach(el=>el.classList.remove('on'));
   const view=document.getElementById('v-'+v);if(view)view.classList.add('on');
   document.querySelectorAll('.btab').forEach(t=>t.classList.toggle('on',t.dataset.v===v));
@@ -2220,6 +2278,12 @@ let locGranted=false,userLat=37.5665,userLng=126.978;
 let pathCoords=[],clapCount=0;
 
 function requestHealthAccess(){const m=document.getElementById('health-modal');if(m)m.style.display='flex';}
+function denyHealthAccess(){
+  var m=document.getElementById('health-modal');
+  if(m){m.style.display='none';}
+  showToast('건강 데이터를 나중에 연동할 수 있어요');
+  startRun();
+}
 function grantHealthAccess(){
   const m=document.getElementById('health-modal');
   if(m)m.style.display='none';
@@ -2267,7 +2331,8 @@ function showLocationModal(){
   el.style.display='flex';
 }
 function grantLocationAccess(){
-  const m=document.getElementById('location-modal');if(m)m.style.display='none';
+  var m=document.getElementById('location-modal');
+  if(m){m.style.opacity='0';m.style.transition='opacity .3s';setTimeout(function(){if(m.parentNode)m.parentNode.removeChild(m);},300);}
   locGranted=true;
   if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>{userLat=pos.coords.latitude;userLng=pos.coords.longitude;},err=>{console.warn('GPS ('+err.code+'): 위치 권한이 없거나 사용 불가합니다. 시뮬레이션 모드로 전환합니다.');locGranted=false;},{enableHighAccuracy:true,timeout:8000});}
   showToast('📍 위치 서비스가 허용됐어요');startRun();
@@ -2278,7 +2343,8 @@ function denyLocationAccess(){
 }
 
 function initRunSVG(){
-  const rp=document.getElementById('run-path');
+  if(typeof runKakaoMap!=="undefined"&&runKakaoMap){return;}
+  const rp=document.getElementById('run-path-line')||document.getElementById('run-path');
   const gp=document.getElementById('ghost-path');
   if(!rp)return;
   try{
@@ -2294,7 +2360,9 @@ function initRunSVG(){
   }catch(e){}
 }
 function updateRunSVG(pct){
-  const rp=document.getElementById('run-path');if(!rp)return;
+  if(typeof runKakaoMap!=="undefined"&&runKakaoMap){return;}
+  const rp=document.getElementById('run-path-line')||document.getElementById('run-path');
+  if(!rp)return;
   try{
     const len=rp.getTotalLength();rp.style.strokeDashoffset=len*(1-Math.min(pct,1));
     const pt=rp.getPointAtLength(len*Math.min(pct,.999));
@@ -2815,8 +2883,11 @@ function deleteMyCourse(id) {
 
 // Init course map when tab activated
 function initCourseMap() {
-  if (typeof kakao !== 'undefined' && kakao.maps) {
+  if (typeof kakao !== "undefined" && kakao.maps) {
     initCourseKakaoMap();
+  } else if (typeof kakao !== "undefined" && !kakao.maps) {
+    // SDK loading - retry
+    setTimeout(initCourseMap, 300);
   } else {
     var locEl = document.getElementById('cm-location');
     if (locEl) locEl.textContent = '서울특별시';
@@ -2853,6 +2924,8 @@ function latLngToSVG(lat, lng) {
 
 function renderNearbyOnSVG() {
   var svg = document.getElementById('ra-svg');
+  // In Kakao map mode, skip SVG nearby rendering (Kakao markers used instead)
+  if (runKakaoMap) { svg&&svg.querySelectorAll('.nearby-runner').forEach(function(e){e.remove();}); return; }
   if (!svg) return;
 
   // Update my position if GPS active
@@ -3016,7 +3089,10 @@ function checkVoiceMilestone(distKm, paceStr) {
 function initRunKakaoMap() {
   var container = document.getElementById('run-kakao-map');
   if (!container || runKakaoMap) return;
-  if (typeof kakao === 'undefined' || !kakao.maps) return;
+  if (typeof kakao === 'undefined' || !kakao.maps) {
+    setTimeout(initRunKakaoMap, 400);
+    return;
+  }
   var center = new kakao.maps.LatLng(userLat, userLng);
   var options = { center: center, level: 3 };
   runKakaoMap = new kakao.maps.Map(container, options);
@@ -3131,7 +3207,16 @@ function startRun(){
   runSec=0;runDist=0;runPaused=false;pathCoords=[];clapCount=0;
   lastVoiceKm=0;
   resetRunKakaoMap();
-  setTimeout(initRunKakaoMap, 200);
+  var runMapDiv=document.getElementById("run-kakao-map");
+  var runSvgEl=document.getElementById("ra-svg");
+  if(locGranted){
+    if(runMapDiv)runMapDiv.style.display="block";
+    if(runSvgEl)runSvgEl.style.display="none";
+    setTimeout(initRunKakaoMap, 200);
+  } else {
+    if(runMapDiv)runMapDiv.style.display="none";
+    if(runSvgEl)runSvgEl.style.display="block";
+  }
   const ccEl=document.getElementById('clap-count');if(ccEl)ccEl.textContent='0';
   initRunSVG();buildRacingTrack();
   if(locGranted){
@@ -3151,7 +3236,12 @@ function startRun(){
 
 function runTick(){
   if(runPaused)return;runSec++;
-  if(!locGranted)runDist+=0.0014+Math.random()*.0008;
+  if(!locGranted){
+    runDist+=0.0014+Math.random()*.0008;
+    // Simulate GPS movement for nearby runners
+    userLat+=0.000005+(Math.random()-0.5)*0.00001;
+    userLng+=0.000008+(Math.random()-0.5)*0.00001;
+  }
   const mins=Math.floor(runSec/60),secs=runSec%60;
   const distEl=document.getElementById('ra-dist'),paceEl=document.getElementById('ra-pace'),timeEl=document.getElementById('ra-time'),calEl=document.getElementById('ra-cal');
   if(distEl)distEl.textContent=runDist.toFixed(2);
@@ -3183,7 +3273,16 @@ function handlePauseTap(){
     if(psp)psp.textContent=runDist>0?(pm2+"'"+String(ps2).padStart(2,'0')+'"'):"--'--\"";
   }
 }
-function resumeRun(){runPaused=false;document.getElementById('rpaused').classList.remove('on');document.getElementById('ractive').classList.add('on');showToast('계속 달려요!');}
+function resumeRun(){
+  runPaused=false;
+  document.getElementById('rpaused').classList.remove('on');
+  document.getElementById('ractive').classList.add('on');
+  showToast('계속 달려요!');
+  var runMapDiv=document.getElementById('run-kakao-map');
+  var runSvgEl=document.getElementById('ra-svg');
+  if(locGranted){if(runMapDiv)runMapDiv.style.display='block';if(runSvgEl)runSvgEl.style.display='none';}
+  else{if(runMapDiv)runMapDiv.style.display='none';if(runSvgEl)runSvgEl.style.display='block';}
+}
 function togglePause(){handlePauseTap();}
 
 function doClap(){
@@ -3207,6 +3306,7 @@ function toggleFullMap(){const c=document.getElementById('ra-map-container');if(
 
 function stopRun(){
   clearInterval(runTimer);runTimer=null;
+  stopNearbyTracking();
   if(watchId){navigator.geolocation.clearWatch(watchId);watchId=null;}
   document.getElementById('ractive').classList.remove('on');document.getElementById('rpaused').classList.remove('on');document.getElementById('rfinish').classList.add('on');
   const mins=Math.floor(runSec/60),secs=runSec%60;
@@ -3218,10 +3318,27 @@ function stopRun(){
   if(rfP)rfP.textContent=runDist>0?(pm+"'"+String(ps).padStart(2,'0')+'"'):"--'--\"";
   if(rfMsg)rfMsg.textContent=runDist>=5?'오늘도 멋지게 달렸어요 🎉':runDist>=2?'좋은 페이스예요!':'내일은 더 멀리 달려봐요';
   if(currentUser)GR_API.updateUser({totalKm:(currentUser.totalKm||312.4)+runDist,runCount:(currentUser.runCount||62)+1}).then(u=>{currentUser=u;});
+  // Save run to history
+  var now=new Date();
+  var newRun={
+    date:String(now.getMonth()+1).padStart(2,"0")+"."+String(now.getDate()).padStart(2,"0"),
+    mo:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][now.getMonth()],
+    d:parseFloat(runDist.toFixed(2)),
+    pace:runDist>0?(Math.floor(runSec/runDist/60)+"'"+String(Math.floor(runSec/runDist)%60).padStart(2,"0")+'"'):'--\'--"',
+    t:String(Math.floor(runSec/60)).padStart(2,"0")+":"+String(runSec%60).padStart(2,"0"),
+    kcal:Math.round(runDist*65)
+  };
+  if(runDist>0.05){
+    PAST_LOGS.unshift(newRun);
+    if(PAST_LOGS.length>50)PAST_LOGS.length=50;
+    try{localStorage.setItem("ghostrun_runs",JSON.stringify(PAST_LOGS));}catch(e){}
+  }
+  recInited=false;
 }
 
 function resetRun(){
   stopNearbyTracking();
+  resetRunKakaoMap();
   document.getElementById('rfinish').classList.remove('on');document.getElementById('ractive').classList.remove('on');document.getElementById('rpaused').classList.remove('on');document.getElementById('rsetup').classList.add('on');
   runSec=0;runDist=0;clapCount=0;const ccEl=document.getElementById('clap-count');if(ccEl)ccEl.textContent='0';
 }
@@ -3229,6 +3346,27 @@ function resetRun(){
 // SHOT
 function applyRank(){
   const emB=document.getElementById('em-b');if(emB)emB.textContent=currentUser?currentUser.avatar||'👻':'👻';
+  // Update overlay stats with last run data
+  var mins=Math.floor(runSec/60),secs=runSec%60;
+  var paceS=runDist>0?Math.floor(runSec/runDist):0,pm=Math.floor(paceS/60),ps=paceS%60;
+  var distStr=runDist>0?runDist.toFixed(2):'5.20';
+  var timeStr=runDist>0?(String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0')):'26:58';
+  var paceStr=runDist>0?(pm+"'"+String(ps).padStart(2,'0')+'"'):'5\'12"';
+  var calStr=runDist>0?String(Math.round(runDist*65)):'312';
+  var nm=currentUser?currentUser.nickname||'Runner':'Runner';
+  var av=currentUser?currentUser.avatar||'👻':'👻';
+  ['em-g','em-p','em-s'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=av;});
+  ['nm-g','nm-p','nm-s'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=nm;});
+  // Ghost overlay stats
+  var gDist=document.querySelector('#ov-g .g-dist');if(gDist)gDist.innerHTML=distStr+'<span class="g-du">km</span>';
+  var gStats=document.querySelectorAll('#ov-g .g-sv');
+  if(gStats.length>=3){gStats[0].textContent=paceStr;gStats[1].textContent=timeStr;gStats[2].textContent=calStr;}
+  // Path overlay stats
+  var pStats=document.querySelectorAll('#ov-p .p-v');
+  if(pStats.length>=3){pStats[0].innerHTML=distStr+'<span class="p-u"> km</span>';pStats[1].textContent=paceStr;pStats[2].textContent=timeStr;}
+  // Date
+  var now=new Date();var ds=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][now.getDay()]+', '+(now.getMonth()+1)+'/'+now.getDate();
+  document.querySelectorAll('.ov-dt').forEach(function(e){e.textContent=ds;});
   drawRoute(document.getElementById('mmg'),{ri:0});
   drawRoute(document.getElementById('mmp'),{lw:3,pad:18,alpha:.2,ri:0});
   drawRoute(document.getElementById('mms'),{ri:0});
@@ -3310,9 +3448,80 @@ function openModal(id){const el=document.getElementById(id);if(!el)return;el.sty
 function closeModal(id){const el=document.getElementById(id);if(!el)return;el.classList.remove('on');setTimeout(()=>{el.style.display='none';},200);}
 document.querySelectorAll('.modal').forEach(m=>{m.addEventListener('click',function(e){if(e.target===this)closeModal(this.id);});});
 
-document.getElementById('bsave').addEventListener('click',()=>{
-  const fl=document.getElementById('flash');fl.classList.add('on');setTimeout(()=>fl.classList.remove('on'),180);showToast('인증샷이 저장됐어요');
-});
+
+// ══════════════════════════════════════
+// SHOT SAVE: html2canvas → download/share
+// ══════════════════════════════════════
+async function saveShot() {
+  var card = document.getElementById('card');
+  if (!card) { showToast('카드를 찾을 수 없어요'); return; }
+
+  var btn = document.getElementById('bsave');
+  if (btn) { btn.disabled = true; btn.textContent = '저장 중...'; }
+
+  // Flash effect
+  var fl = document.getElementById('flash');
+  if (fl) { fl.classList.add('on'); setTimeout(function(){ fl.classList.remove('on'); }, 180); }
+
+  try {
+    var canvas = await html2canvas(card, {
+      useCORS: true,
+      allowTaint: true,
+      scale: window.devicePixelRatio || 2,
+      backgroundColor: null,
+      logging: false,
+      ignoreElements: function(el) {
+        // Ignore the action bar below the card
+        return el.id === 'shot-acts' || el.classList.contains('btabs');
+      }
+    });
+
+    var dataUrl = canvas.toDataURL('image/png');
+    var filename = 'ghostrun_' + new Date().toISOString().slice(0,10) + '.png';
+
+    // Try Web Share API first (mobile: saves to gallery or shares)
+    if (navigator.share && navigator.canShare) {
+      try {
+        var blob = await new Promise(function(res) { canvas.toBlob(res, 'image/png'); });
+        var file = new File([blob], filename, { type: 'image/png' });
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: 'GhostRun 인증샷',
+            text: '오늘도 달렸어요 👻'
+          });
+          showToast('✅ 공유 완료!');
+          return;
+        }
+      } catch(shareErr) {
+        if (shareErr.name !== 'AbortError') {
+          console.warn('Share failed, falling back to download:', shareErr);
+        } else {
+          // User cancelled share - still ok
+          return;
+        }
+      }
+    }
+
+    // Fallback: download as file
+    var a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('✅ 사진이 저장됐어요!');
+
+  } catch(err) {
+    console.error('Shot save error:', err);
+    showToast('저장 실패 - 스크린샷을 이용해주세요');
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>저장하기'; }
+  }
+}
+
+document.getElementById('bsave').addEventListener('click', saveShot);
+
 
 let toastTimer=null;
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('on'),2400);}
@@ -3516,6 +3725,16 @@ async function checkServer(){const online=await GR_API.ping();setSrvBadge(online
   const badge=document.getElementById('srv-badge');if(badge)badge.style.opacity='1';checkServer();
   const session=GR_API.currentUser();
   if(session){currentUser=session;const np=document.getElementById('nav-profile');if(np)np.textContent=session.avatar||'👻';['nm-g','nm-p','nm-s'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=session.nickname;});}
+
+// iOS: unlock speechSynthesis on first touch
+document.addEventListener('touchstart', function _unlockTTS(){
+  if(window.speechSynthesis){
+    var u=new SpeechSynthesisUtterance('');
+    window.speechSynthesis.speak(u);
+    window.speechSynthesis.cancel();
+  }
+  document.removeEventListener('touchstart', _unlockTTS);
+}, {once:true});
 })();
 </script>
 
