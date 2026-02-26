@@ -585,6 +585,7 @@ input[type=file]{display:none}
 /* Barlow small text */
 .bsm { font-size: 10px; font-weight: 300; letter-spacing: .08em }
 </style>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5a866c85a9fb2bad3fc42dac5d3c683c&libraries=services"></script>
 </head>
 <body>
 
@@ -820,12 +821,14 @@ input[type=file]{display:none}
     <div id="ra-profile" onclick="openProfile()" style="position:absolute;top:10px;right:14px;z-index:10;width:38px;height:38px;border-radius:50%;background:rgba(30,30,30,.9);border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer">👻</div>
     <!-- MAP + STATS -->
     <div id="ra-map-container" style="flex:1;min-height:200px;position:relative;background:#0a0a0a;display:flex;flex-direction:column">
-      <svg id="ra-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" viewBox="0 0 400 320" preserveAspectRatio="none">
-        <path id="ghost-path" d="M 30 290 C 70 270,100 230,140 200 C 180 170,220 150,270 110 C 310 78,350 52,390 28" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="3.5" stroke-dasharray="9 9"/>
-        <path id="run-path" d="M 30 290 C 70 270,100 230,140 200 C 180 170,220 150,270 110 C 310 78,350 52,390 28" fill="none" stroke="#c8f050" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M 30 290 C 70 270,100 230,140 200 C 180 170,220 150,270 110 C 310 78,350 52,390 28" fill="none" stroke="rgba(200,240,80,.15)" stroke-width="12" stroke-linecap="round"/>
-        <circle id="runner-glow" cx="30" cy="290" r="18" fill="rgba(200,240,80,.12)"><animate attributeName="r" values="16;22;16" dur="1.6s" repeatCount="indefinite"/></circle>
-        <circle id="runner-dot" cx="30" cy="290" r="8" fill="#c8f050"><animate attributeName="r" values="8;10;8" dur="1.6s" repeatCount="indefinite"/></circle>
+      <!-- Kakao run map -->
+      <div id="run-kakao-map" style="position:absolute;inset:0;width:100%;height:100%"></div>
+      <!-- SVG overlay for run path + dots -->
+      <svg id="ra-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5" viewBox="0 0 400 320" preserveAspectRatio="none">
+        <polyline id="run-path-line" points="" fill="none" stroke="#c8f050" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <polyline id="run-path-glow" points="" fill="none" stroke="rgba(200,240,80,.2)" stroke-width="12" stroke-linecap="round" opacity="0.6"/>
+        <circle id="runner-glow" cx="200" cy="160" r="18" fill="rgba(200,240,80,.12)"><animate attributeName="r" values="16;22;16" dur="1.6s" repeatCount="indefinite"/></circle>
+        <circle id="runner-dot" cx="200" cy="160" r="8" fill="#c8f050"><animate attributeName="r" values="8;10;8" dur="1.6s" repeatCount="indefinite"/></circle>
       </svg>
       <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:2;pointer-events:none;padding:16px">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.24em;color:rgba(255,255,255,.35);margin-bottom:4px">DISTANCE (KM)</div>
@@ -1237,71 +1240,18 @@ input[type=file]{display:none}
 
   <!-- Map Canvas (SVG simulated dark map) -->
   <div id="course-map-wrap" style="position:absolute;inset:0;overflow:hidden">
-    <svg id="cm-svg" width="100%" height="100%" viewBox="0 0 400 700" preserveAspectRatio="xMidYMid slice" style="display:block">
-      <!-- Dark map base -->
-      <rect width="400" height="700" fill="#141414"/>
-      <!-- Grid streets -->
-      <g opacity="0.18" stroke="#888" stroke-width="0.5" fill="none">
-        <!-- Horizontal roads -->
-        <line x1="0" y1="80"  x2="400" y2="80"/><line x1="0" y1="140" x2="400" y2="140"/>
-        <line x1="0" y1="210" x2="400" y2="210"/><line x1="0" y1="280" x2="400" y2="280"/>
-        <line x1="0" y1="350" x2="400" y2="350"/><line x1="0" y1="420" x2="400" y2="420"/>
-        <line x1="0" y1="490" x2="400" y2="490"/><line x1="0" y1="560" x2="400" y2="560"/>
-        <line x1="0" y1="630" x2="400" y2="630"/>
-        <!-- Vertical roads -->
-        <line x1="60"  y1="0" x2="60"  y2="700"/><line x1="130" y1="0" x2="130" y2="700"/>
-        <line x1="200" y1="0" x2="200" y2="700"/><line x1="270" y1="0" x2="270" y2="700"/>
-        <line x1="340" y1="0" x2="340" y2="700"/>
-      </g>
-      <!-- Major roads brighter -->
-      <g opacity="0.35" stroke="#aaa" stroke-width="1.5" fill="none">
-        <line x1="0" y1="350" x2="400" y2="350"/>
-        <line x1="200" y1="0" x2="200" y2="700"/>
-        <path d="M 0 200 Q 120 180 200 200 Q 300 220 400 190"/>
-        <path d="M 0 480 Q 100 500 200 470 Q 320 440 400 480"/>
-      </g>
-      <!-- Park/water areas -->
-      <ellipse cx="200" cy="350" rx="160" ry="60" fill="rgba(52,211,153,.06)" stroke="rgba(52,211,153,.15)" stroke-width="1"/>
-      <text x="200" y="354" text-anchor="middle" font-size="9" fill="rgba(52,211,153,.4)" font-family="sans-serif" letter-spacing="0.08em">한강공원</text>
-      <rect x="30" y="140" width="90" height="50" rx="4" fill="rgba(52,211,153,.04)" stroke="rgba(52,211,153,.1)" stroke-width="0.8"/>
-      <text x="75" y="169" text-anchor="middle" font-size="7" fill="rgba(52,211,153,.3)" font-family="sans-serif">여의도공원</text>
-      <!-- Block fills -->
-      <g fill="rgba(255,255,255,.025)">
-        <rect x="62" y="82" width="66" height="56" rx="2"/>
-        <rect x="132" y="82" width="66" height="56" rx="2"/>
-        <rect x="62" y="142" width="66" height="66" rx="2"/>
-        <rect x="202" y="142" width="66" height="66" rx="2"/>
-        <rect x="272" y="142" width="66" height="56" rx="2"/>
-        <rect x="132" y="212" width="66" height="66" rx="2"/>
-        <rect x="272" y="212" width="66" height="66" rx="2"/>
-        <rect x="62" y="282" width="66" height="66" rx="2"/>
-        <rect x="202" y="282" width="66" height="66" rx="2"/>
-        <rect x="62" y="422" width="66" height="66" rx="2"/>
-        <rect x="132" y="422" width="66" height="66" rx="2"/>
-        <rect x="272" y="422" width="66" height="66" rx="2"/>
-        <rect x="62" y="492" width="66" height="66" rx="2"/>
-        <rect x="202" y="492" width="66" height="66" rx="2"/>
-        <rect x="272" y="492" width="66" height="66" rx="2"/>
-        <rect x="132" y="562" width="66" height="66" rx="2"/>
-        <rect x="272" y="562" width="66" height="66" rx="2"/>
-      </g>
-      <!-- Preset courses drawn as paths -->
-      <!-- Course 1: 여의도 한강 루프 (lime) -->
-      <path id="cm-course-1" d="M 95 310 Q 60 290 55 350 Q 50 420 95 430 Q 160 445 200 440 Q 260 445 310 425 Q 355 410 355 350 Q 355 290 310 275 Q 260 265 200 270 Q 160 265 95 310 Z" fill="rgba(200,240,80,.06)" stroke="#c8f050" stroke-width="2.5" stroke-dasharray="8 4" opacity="0.85"/>
-      <!-- Course 2: 남산 하트런 (purple) -->
-      <path id="cm-course-2" d="M 75 490 Q 55 470 65 450 Q 75 430 95 440 Q 110 430 120 445 Q 140 420 150 450 Q 160 470 130 495 Q 110 510 75 490 Z" fill="rgba(167,139,250,.06)" stroke="#a78bfa" stroke-width="2" stroke-dasharray="6 4" opacity="0.8"/>
-      <!-- Course 3: 나만의 코스 (blue) -->
-      <path id="cm-course-3" d="M 260 500 Q 290 470 330 490 Q 360 510 345 550 Q 330 580 295 575 Q 265 570 255 545 Q 248 520 260 500 Z" fill="rgba(96,165,250,.06)" stroke="#60a5fa" stroke-width="2" stroke-dasharray="6 4" opacity="0.75"/>
-
-      <!-- User location dot -->
-      <circle id="cm-user-dot" cx="200" cy="350" r="10" fill="rgba(200,240,80,.2)" stroke="none">
-        <animate attributeName="r" values="8;14;8" dur="2s" repeatCount="indefinite"/>
-      </circle>
-      <circle cx="200" cy="350" r="5" fill="#c8f050" id="cm-user-center"/>
-
-      <!-- Draw path layer (user drawn) -->
-      <polyline id="cm-draw-path" points="" fill="none" stroke="#c8f050" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+    <!-- Kakao course map -->
+    <div id="course-kakao-map" style="position:absolute;inset:0;width:100%;height:100%;z-index:1"></div>
+    <!-- SVG draw overlay -->
+    <svg id="cm-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5">
+      <!-- User drawn path -->
+      <polyline id="cm-draw-path" points="" fill="none" stroke="#c8f050" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+      <!-- GPS run path on course map -->
+      <polyline id="cm-run-path" points="" fill="none" stroke="rgba(200,240,80,.7)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
       <circle id="cm-draw-cursor" cx="-50" cy="-50" r="8" fill="rgba(200,240,80,.3)" stroke="#c8f050" stroke-width="1.5" style="display:none"/>
+      <!-- User location dot (shown when not drawing) -->
+      <circle id="cm-user-dot" cx="-50" cy="-50" r="10" fill="rgba(200,240,80,.25)"><animate attributeName="r" values="8;14;8" dur="2s" repeatCount="indefinite"/></circle>
+      <circle id="cm-user-center" cx="-50" cy="-50" r="5" fill="#c8f050"/>
     </svg>
   </div>
 
@@ -2665,7 +2615,10 @@ function toggleCourseDrawing() {
   if (overlay) overlay.style.display = 'block';
   if (btn) { btn.textContent = '✏️ 그리는 중...'; btn.style.color = '#c8f050'; }
   // Attach tap listener
-  if (svg) {
+  if (courseKakaoMap) {
+    drawLatLngs = [];
+    if (drawPolyline) { drawPolyline.setMap(null); drawPolyline = null; }
+  } else if (svg) {
     svg.style.cursor = 'crosshair';
     svg.addEventListener('click', onMapTap);
     svg.addEventListener('mousemove', onMapMove);
@@ -2751,13 +2704,30 @@ function updateDrawPath() {
 }
 
 function undoDrawPoint() {
-  if (cmDrawPoints.length > 0) {
+  if (courseKakaoMap && drawLatLngs.length > 0) {
+    drawLatLngs.pop();
+    if (drawPolyline) drawPolyline.setPath(drawLatLngs);
+    updateDrawDistFromLatLngs();
+  } else if (cmDrawPoints.length > 0) {
     cmDrawPoints.pop();
     updateDrawPath();
   }
 }
 
 function saveDrawnCourse() {
+  if (courseKakaoMap && drawLatLngs.length >= 2) {
+    var name = '내 코스 ' + (myCourses.length + 1);
+    var distKm = window._cmDrawDistKm || '0.00';
+    var course = { id: 'mc_'+Date.now(), name:name,
+      latLngs: drawLatLngs.map(function(l){return [l.getLat(),l.getLng()];}),
+      dist:distKm, createdAt:new Date().toLocaleDateString('ko-KR'), color:'#c8f050' };
+    myCourses.push(course);
+    try{localStorage.setItem('ghostrun_courses',JSON.stringify(myCourses));}catch(e){}
+    cancelCourseDrawing();
+    switchCmTab('mine');
+    showToast('코스 저장됨: '+name+' ('+distKm+'km)');
+    return;
+  }
   if (cmDrawPoints.length < 2) { showToast('최소 2개 포인트가 필요해요'); return; }
   var name = '내 코스 ' + (myCourses.length + 1);
   var totalPx = 0;
@@ -2799,6 +2769,7 @@ function cancelCourseDrawing() {
     svg.removeEventListener('touchmove', onMapTouchMove);
     svg.removeEventListener('touchend', onMapTouchEnd);
   }
+  if (courseKakaoMap && drawPolyline) { drawPolyline.setMap(null); drawPolyline = null; drawLatLngs = []; }
   if (btn) { btn.textContent = '✏️ 코스 그리기'; }
   cmDrawPoints = [];
 }
@@ -2844,31 +2815,13 @@ function deleteMyCourse(id) {
 
 // Init course map when tab activated
 function initCourseMap() {
-  var locEl = document.getElementById('cm-location');
-  if (locEl && navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(pos){
-      var lat = pos.coords.latitude.toFixed(4);
-      var lng = pos.coords.longitude.toFixed(4);
-      if (locEl) locEl.textContent = '📍 현재 위치 · ' + lat + ', ' + lng;
-    }, function(){
-      if (locEl) locEl.textContent = '📍 서울특별시';
-    });
-  } else if (locEl) {
-    locEl.textContent = '📍 서울특별시';
+  if (typeof kakao !== 'undefined' && kakao.maps) {
+    initCourseKakaoMap();
+  } else {
+    var locEl = document.getElementById('cm-location');
+    if (locEl) locEl.textContent = '서울특별시';
   }
 }
-// ══════════════════════════════════════════
-// ── NEARBY GPS RUNNERS ──
-const NEARBY_RUNNERS = [
-  {id:'nr_1', nick:'새벽의 유령', em:'🌙', lat:37.5672, lng:126.9790, speed:0.000018, dir:0.8, color:'#a78bfa'},
-  {id:'nr_2', nick:'한강지킴이',  em:'🏃', lat:37.5658, lng:126.9775, speed:0.000022, dir:2.1, color:'#60a5fa'},
-  {id:'nr_3', nick:'도시유령',    em:'👻', lat:37.5681, lng:126.9803, speed:0.000015, dir:1.4, color:'#f472b6'},
-  {id:'nr_4', nick:'바람처럼',    em:'💨', lat:37.5649, lng:126.9762, speed:0.000025, dir:3.5, color:'#34d399'},
-  {id:'nr_5', nick:'새벽4시',     em:'⚡', lat:37.5690, lng:126.9815, speed:0.000012, dir:0.3, color:'#fbbf24'},
-];
-let nearbyRunnerTimer = null;
-let mapViewLat = 37.5665, mapViewLng = 126.978;
-let mapViewZoom = 0.008; // lat/lng span visible in map
 
 function updateNearbyRunners() {
   // Drift each runner along their direction
@@ -3024,6 +2977,150 @@ function stopNearbyTracking() {
   }
 }
 
+
+// ══════════════════════════════════════════
+// KAKAO MAPS + GPS TRACKING + VOICE ALERTS
+// ══════════════════════════════════════════
+var runKakaoMap = null;
+var runMapMarker = null;
+var runPolyline = null;
+var runLatLngs = [];
+var lastVoiceKm = 0;
+
+var courseKakaoMap = null;
+var courseMapInited = false;
+var drawPolyline = null;
+var drawLatLngs = [];
+var courseMapMarker = null;
+
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  var utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'ko-KR';
+  utter.rate = 0.95;
+  utter.pitch = 1.0;
+  window.speechSynthesis.speak(utter);
+}
+
+function checkVoiceMilestone(distKm, paceStr) {
+  var km = Math.floor(distKm);
+  if (km > 0 && km > lastVoiceKm) {
+    lastVoiceKm = km;
+    var cleaned = paceStr.replace("'","분 ").replace('"','초');
+    var msg = km + '킬로미터 완주! 현재 페이스 ' + cleaned + '입니다.';
+    speak(msg);
+  }
+}
+
+function initRunKakaoMap() {
+  var container = document.getElementById('run-kakao-map');
+  if (!container || runKakaoMap) return;
+  if (typeof kakao === 'undefined' || !kakao.maps) return;
+  var center = new kakao.maps.LatLng(userLat, userLng);
+  var options = { center: center, level: 3 };
+  runKakaoMap = new kakao.maps.Map(container, options);
+  var svgIcon = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="12" r="10" fill="%23c8f050" stroke="%230a0a0a" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="%230a0a0a"/></svg>';
+  var markerImg = new kakao.maps.MarkerImage(svgIcon, new kakao.maps.Size(24,24), {offset: new kakao.maps.Point(12,12)});
+  runMapMarker = new kakao.maps.Marker({ position: center, image: markerImg, map: runKakaoMap });
+  runPolyline = new kakao.maps.Polyline({
+    path: [], strokeWeight: 5, strokeColor: '#c8f050',
+    strokeOpacity: 0.9, strokeStyle: 'solid', map: runKakaoMap
+  });
+  runLatLngs = [];
+}
+
+function updateRunKakaoMap(lat, lng) {
+  if (!runKakaoMap) return;
+  var latlng = new kakao.maps.LatLng(lat, lng);
+  runMapMarker.setPosition(latlng);
+  runLatLngs.push(latlng);
+  runPolyline.setPath(runLatLngs);
+  runKakaoMap.setCenter(latlng);
+}
+
+function resetRunKakaoMap() {
+  if (runPolyline) runPolyline.setPath([]);
+  runLatLngs = [];
+  lastVoiceKm = 0;
+  runKakaoMap = null;
+  runMapMarker = null;
+  runPolyline = null;
+}
+
+function initCourseKakaoMap() {
+  if (courseMapInited) {
+    if (courseKakaoMap && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(pos) {
+        var latlng = new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+        courseKakaoMap.setCenter(latlng);
+        if (courseMapMarker) courseMapMarker.setPosition(latlng);
+      }, function(){});
+    }
+    return;
+  }
+  var container = document.getElementById('course-kakao-map');
+  if (!container) return;
+  if (typeof kakao === 'undefined' || !kakao.maps) return;
+  courseMapInited = true;
+  var center = new kakao.maps.LatLng(userLat, userLng);
+  courseKakaoMap = new kakao.maps.Map(container, { center: center, level: 4 });
+  var svgIcon2 = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="8" fill="%23c8f050" stroke="white" stroke-width="2"/></svg>';
+  var markerImg2 = new kakao.maps.MarkerImage(svgIcon2, new kakao.maps.Size(20,20), {offset: new kakao.maps.Point(10,10)});
+  courseMapMarker = new kakao.maps.Marker({ position: center, image: markerImg2, map: courseKakaoMap });
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      var latlng = new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+      userLat = pos.coords.latitude; userLng = pos.coords.longitude;
+      courseKakaoMap.setCenter(latlng);
+      courseMapMarker.setPosition(latlng);
+      var locEl = document.getElementById('cm-location');
+      if (locEl) locEl.textContent = '📍 현재 위치';
+    }, function(err) {
+      var locEl = document.getElementById('cm-location');
+      if (locEl) locEl.textContent = '📍 서울특별시 (GPS 불가)';
+    }, { enableHighAccuracy: true, timeout: 8000 });
+
+    navigator.geolocation.watchPosition(function(pos) {
+      var latlng = new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+      userLat = pos.coords.latitude; userLng = pos.coords.longitude;
+      if (courseMapMarker) courseMapMarker.setPosition(latlng);
+      if (!cmDrawing && courseKakaoMap) courseKakaoMap.setCenter(latlng);
+    }, function(err) {}, { enableHighAccuracy: true, maximumAge: 3000 });
+  }
+
+  kakao.maps.event.addListener(courseKakaoMap, 'click', function(mouseEvent) {
+    if (!cmDrawing) return;
+    var latlng = mouseEvent.latLng;
+    drawLatLngs.push(latlng);
+    if (!drawPolyline) {
+      drawPolyline = new kakao.maps.Polyline({
+        path: drawLatLngs, strokeWeight: 5, strokeColor: '#c8f050',
+        strokeOpacity: 0.9, strokeStyle: 'solid', map: courseKakaoMap
+      });
+    } else {
+      drawPolyline.setPath(drawLatLngs);
+    }
+    updateDrawDistFromLatLngs();
+  });
+}
+
+function updateDrawDistFromLatLngs() {
+  if (drawLatLngs.length < 2) return;
+  var total = 0;
+  for (var i = 1; i < drawLatLngs.length; i++) {
+    total += haversine(
+      drawLatLngs[i-1].getLat(), drawLatLngs[i-1].getLng(),
+      drawLatLngs[i].getLat(),   drawLatLngs[i].getLng()
+    );
+  }
+  var distEl = document.getElementById('cm-draw-dist');
+  if (distEl) distEl.textContent = '예상 거리: ' + total.toFixed(2) + ' km · ' + drawLatLngs.length + '개 포인트';
+  window._cmDrawDistKm = total.toFixed(2);
+}
+// ══════════════════════════════════════════
+
 function startRun(){
   document.getElementById('rsetup').classList.remove('on');
   document.getElementById('rpaused').classList.remove('on');
@@ -3032,11 +3129,14 @@ function startRun(){
   const glEl=document.getElementById('ra-gl-txt');if(glEl)glEl.textContent=(goalNumLabel[goalType]||'5KM')+' GOAL';
   const rap=document.getElementById('ra-profile');if(rap&&currentUser)rap.textContent=currentUser.avatar||'👻';
   runSec=0;runDist=0;runPaused=false;pathCoords=[];clapCount=0;
+  lastVoiceKm=0;
+  resetRunKakaoMap();
+  setTimeout(initRunKakaoMap, 200);
   const ccEl=document.getElementById('clap-count');if(ccEl)ccEl.textContent='0';
   initRunSVG();buildRacingTrack();
   if(locGranted){
     watchId=navigator.geolocation.watchPosition(
-      pos=>{const lat=pos.coords.latitude,lng=pos.coords.longitude;if(pathCoords.length>0){const prev=pathCoords[pathCoords.length-1];runDist+=haversine(prev[0],prev[1],lat,lng);}pathCoords.push([lat,lng]);},
+      pos=>{const lat=pos.coords.latitude,lng=pos.coords.longitude;if(pathCoords.length>0){const prev=pathCoords[pathCoords.length-1];runDist+=haversine(prev[0],prev[1],lat,lng);}pathCoords.push([lat,lng]);userLat=lat;userLng=lng;updateRunKakaoMap(lat,lng);},
       err=>{
         var msg={1:'권한 거부됨',2:'위치 불가',3:'시간 초과'}[err.code]||'알 수 없음';
         console.warn('GPS 오류 ('+err.code+'): '+msg);
@@ -3062,6 +3162,7 @@ function runTick(){
   let pct=0;const gv=parseFloat(goalVal)||5;
   if(goalType==='dist')pct=runDist/gv;else if(goalType==='time')pct=runSec/(gv*60);else pct=runDist/5;
   updateRunSVG(pct);updateRacingTrack(Math.min(pct*100,100));
+  if(runDist>0){var _ps=Math.floor(runSec/runDist),_pm=Math.floor(_ps/60),_psec=_ps%60;checkVoiceMilestone(runDist,_pm+String.fromCharCode(39)+String(_psec).padStart(2,'0')+String.fromCharCode(34));}
 }
 
 function haversine(la1,lo1,la2,lo2){
