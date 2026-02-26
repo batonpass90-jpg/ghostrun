@@ -809,9 +809,13 @@ input[type=file]{display:none}
 
   <!-- STATE 1: ACTIVE RUN -->
   <div id="ractive" class="rstate" style="flex-direction:column;background:#0a0a0a;position:relative;flex:1;min-height:0">
-    <div style="position:absolute;top:16px;left:16px;z-index:10;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);border-radius:99px;padding:5px 12px 5px 8px;border:1px solid rgba(255,255,255,.08)">
+    <div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);border-radius:99px;padding:4px 12px 4px 8px;border:1px solid rgba(255,255,255,.08)">
       <div style="width:7px;height:7px;border-radius:50%;background:#c8f050;box-shadow:0 0 8px #c8f050;animation:syncPulse 1.5s infinite"></div>
       <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.15em;color:rgba(255,255,255,.6)">GHOST SYNC ACTIVE</span>
+    </div>
+    <div id="nearby-badge" style="position:absolute;top:10px;left:14px;z-index:10;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1);border-radius:99px;padding:4px 10px 4px 8px;display:flex;align-items:center;gap:5px;pointer-events:none">
+      <span style="width:6px;height:6px;border-radius:50%;background:#34d399;display:inline-block;box-shadow:0 0 6px #34d399;flex-shrink:0"></span>
+      <span id="nearby-count" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.8)">주변 5명</span>
     </div>
     <div id="ra-profile" onclick="openProfile()" style="position:absolute;top:10px;right:14px;z-index:10;width:38px;height:38px;border-radius:50%;background:rgba(30,30,30,.9);border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer">👻</div>
     <!-- MAP + STATS -->
@@ -851,21 +855,21 @@ input[type=file]{display:none}
         <div id="track-ghosts" style="position:absolute;inset:0"></div>
       </div>
     </div>
-    <!-- BOTTOM ACTIONS: CLAP + huge PAUSE -->
-    <div style="background:#0a0a0a;border-top:1px solid rgba(255,255,255,.05);display:flex;align-items:stretch;flex-shrink:0;min-height:110px">
-      <!-- CLAP -->
-      <button id="clap-btn" onclick="doClap()" style="flex:0 0 100px;background:rgba(255,255,255,.03);border:none;border-right:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:14px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent">
-        <span id="clap-em" style="font-size:32px;display:block;transition:transform .2s">👏</span>
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.35)">CLAP</span>
-        <span id="clap-count" style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:rgba(200,240,80,.7)">0</span>
-      </button>
-      <!-- PAUSE — massive lime -->
+    <!-- BOTTOM ACTIONS: PAUSE + CLAP (50/50) -->
+    <div style="background:#0a0a0a;border-top:1px solid rgba(255,255,255,.05);display:flex;align-items:stretch;flex-shrink:0;min-height:100px">
+      <!-- PAUSE — left half -->
       <button id="pause-btn" onclick="handlePauseTap()" style="flex:1;background:#c8f050;border:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .1s,opacity .1s;box-shadow:0 -4px 24px rgba(200,240,80,.3)" onmousedown="this.style.transform='scale(.98)'" onmouseup="this.style.transform=''" ontouchstart="this.style.transform='scale(.98)'" ontouchend="this.style.transform=''">
         <svg width="44" height="44" viewBox="0 0 24 24" fill="#0a0a0a" stroke="none">
           <rect x="5" y="3" width="4" height="18" rx="1.5"/>
           <rect x="15" y="3" width="4" height="18" rx="1.5"/>
         </svg>
         <span style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:.18em;color:#0a0a0a;line-height:1">PAUSE</span>
+      </button>
+      <!-- CLAP — right half -->
+      <button id="clap-btn" onclick="doClap()" style="flex:1;background:rgba(255,255,255,.03);border:none;border-left:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:23px 10px 13px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+        <span id="clap-em" style="font-size:36px;display:block;transition:transform .2s">👏</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.35)">CLAP</span>
+        <span id="clap-count" style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:rgba(200,240,80,.7)">0</span>
       </button>
     </div>
 
@@ -1214,6 +1218,224 @@ input[type=file]{display:none}
   </div>
 </div>
 
+
+<!-- COURSE MAP -->
+<div id="v-coursemap" class="mview" style="overflow:hidden;flex-direction:column;background:#0d0d0d">
+
+  <!-- Header -->
+  <div style="position:absolute;top:0;left:0;right:0;z-index:20;padding:14px 16px 10px;background:linear-gradient(180deg,rgba(10,10,10,.98) 60%,transparent);pointer-events:none">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#fff;line-height:1;letter-spacing:.02em">러닝 코스</div>
+        <div id="cm-location" style="font-size:10px;font-weight:300;color:rgba(255,255,255,.4);letter-spacing:.06em;margin-top:2px">📍 위치 확인 중...</div>
+      </div>
+      <div style="display:flex;gap:6px;pointer-events:all">
+        <button id="cm-draw-btn" onclick="toggleCourseDrawing()" style="height:34px;padding:0 14px;background:rgba(200,240,80,.12);border:1.5px solid rgba(200,240,80,.3);border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;color:#c8f050;cursor:pointer">✏️ 코스 그리기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map Canvas (SVG simulated dark map) -->
+  <div id="course-map-wrap" style="position:absolute;inset:0;overflow:hidden">
+    <svg id="cm-svg" width="100%" height="100%" viewBox="0 0 400 700" preserveAspectRatio="xMidYMid slice" style="display:block">
+      <!-- Dark map base -->
+      <rect width="400" height="700" fill="#141414"/>
+      <!-- Grid streets -->
+      <g opacity="0.18" stroke="#888" stroke-width="0.5" fill="none">
+        <!-- Horizontal roads -->
+        <line x1="0" y1="80"  x2="400" y2="80"/><line x1="0" y1="140" x2="400" y2="140"/>
+        <line x1="0" y1="210" x2="400" y2="210"/><line x1="0" y1="280" x2="400" y2="280"/>
+        <line x1="0" y1="350" x2="400" y2="350"/><line x1="0" y1="420" x2="400" y2="420"/>
+        <line x1="0" y1="490" x2="400" y2="490"/><line x1="0" y1="560" x2="400" y2="560"/>
+        <line x1="0" y1="630" x2="400" y2="630"/>
+        <!-- Vertical roads -->
+        <line x1="60"  y1="0" x2="60"  y2="700"/><line x1="130" y1="0" x2="130" y2="700"/>
+        <line x1="200" y1="0" x2="200" y2="700"/><line x1="270" y1="0" x2="270" y2="700"/>
+        <line x1="340" y1="0" x2="340" y2="700"/>
+      </g>
+      <!-- Major roads brighter -->
+      <g opacity="0.35" stroke="#aaa" stroke-width="1.5" fill="none">
+        <line x1="0" y1="350" x2="400" y2="350"/>
+        <line x1="200" y1="0" x2="200" y2="700"/>
+        <path d="M 0 200 Q 120 180 200 200 Q 300 220 400 190"/>
+        <path d="M 0 480 Q 100 500 200 470 Q 320 440 400 480"/>
+      </g>
+      <!-- Park/water areas -->
+      <ellipse cx="200" cy="350" rx="160" ry="60" fill="rgba(52,211,153,.06)" stroke="rgba(52,211,153,.15)" stroke-width="1"/>
+      <text x="200" y="354" text-anchor="middle" font-size="9" fill="rgba(52,211,153,.4)" font-family="sans-serif" letter-spacing="0.08em">한강공원</text>
+      <rect x="30" y="140" width="90" height="50" rx="4" fill="rgba(52,211,153,.04)" stroke="rgba(52,211,153,.1)" stroke-width="0.8"/>
+      <text x="75" y="169" text-anchor="middle" font-size="7" fill="rgba(52,211,153,.3)" font-family="sans-serif">여의도공원</text>
+      <!-- Block fills -->
+      <g fill="rgba(255,255,255,.025)">
+        <rect x="62" y="82" width="66" height="56" rx="2"/>
+        <rect x="132" y="82" width="66" height="56" rx="2"/>
+        <rect x="62" y="142" width="66" height="66" rx="2"/>
+        <rect x="202" y="142" width="66" height="66" rx="2"/>
+        <rect x="272" y="142" width="66" height="56" rx="2"/>
+        <rect x="132" y="212" width="66" height="66" rx="2"/>
+        <rect x="272" y="212" width="66" height="66" rx="2"/>
+        <rect x="62" y="282" width="66" height="66" rx="2"/>
+        <rect x="202" y="282" width="66" height="66" rx="2"/>
+        <rect x="62" y="422" width="66" height="66" rx="2"/>
+        <rect x="132" y="422" width="66" height="66" rx="2"/>
+        <rect x="272" y="422" width="66" height="66" rx="2"/>
+        <rect x="62" y="492" width="66" height="66" rx="2"/>
+        <rect x="202" y="492" width="66" height="66" rx="2"/>
+        <rect x="272" y="492" width="66" height="66" rx="2"/>
+        <rect x="132" y="562" width="66" height="66" rx="2"/>
+        <rect x="272" y="562" width="66" height="66" rx="2"/>
+      </g>
+      <!-- Preset courses drawn as paths -->
+      <!-- Course 1: 여의도 한강 루프 (lime) -->
+      <path id="cm-course-1" d="M 95 310 Q 60 290 55 350 Q 50 420 95 430 Q 160 445 200 440 Q 260 445 310 425 Q 355 410 355 350 Q 355 290 310 275 Q 260 265 200 270 Q 160 265 95 310 Z" fill="rgba(200,240,80,.06)" stroke="#c8f050" stroke-width="2.5" stroke-dasharray="8 4" opacity="0.85"/>
+      <!-- Course 2: 남산 하트런 (purple) -->
+      <path id="cm-course-2" d="M 75 490 Q 55 470 65 450 Q 75 430 95 440 Q 110 430 120 445 Q 140 420 150 450 Q 160 470 130 495 Q 110 510 75 490 Z" fill="rgba(167,139,250,.06)" stroke="#a78bfa" stroke-width="2" stroke-dasharray="6 4" opacity="0.8"/>
+      <!-- Course 3: 나만의 코스 (blue) -->
+      <path id="cm-course-3" d="M 260 500 Q 290 470 330 490 Q 360 510 345 550 Q 330 580 295 575 Q 265 570 255 545 Q 248 520 260 500 Z" fill="rgba(96,165,250,.06)" stroke="#60a5fa" stroke-width="2" stroke-dasharray="6 4" opacity="0.75"/>
+
+      <!-- User location dot -->
+      <circle id="cm-user-dot" cx="200" cy="350" r="10" fill="rgba(200,240,80,.2)" stroke="none">
+        <animate attributeName="r" values="8;14;8" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="200" cy="350" r="5" fill="#c8f050" id="cm-user-center"/>
+
+      <!-- Draw path layer (user drawn) -->
+      <polyline id="cm-draw-path" points="" fill="none" stroke="#c8f050" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+      <circle id="cm-draw-cursor" cx="-50" cy="-50" r="8" fill="rgba(200,240,80,.3)" stroke="#c8f050" stroke-width="1.5" style="display:none"/>
+    </svg>
+  </div>
+
+  <!-- Course Cards (bottom sheet) -->
+  <div id="cm-bottom-sheet" style="position:absolute;bottom:0;left:0;right:0;z-index:20;background:linear-gradient(0deg,rgba(10,10,10,.98) 0%,rgba(10,10,10,.92) 80%,transparent);padding:0 0 8px">
+    <!-- Mode tabs -->
+    <div style="display:flex;gap:8px;padding:12px 16px 8px">
+      <button class="cm-tab on" data-cm="nearby" onclick="switchCmTab('nearby')" style="flex:1;height:32px;background:rgba(200,240,80,.12);border:1px solid rgba(200,240,80,.3);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;color:#c8f050;cursor:pointer">추천 코스</button>
+      <button class="cm-tab" data-cm="mine" onclick="switchCmTab('mine')" style="flex:1;height:32px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.45);cursor:pointer">내 코스</button>
+    </div>
+
+    <!-- Nearby recommended courses -->
+    <div id="cm-pane-nearby" style="overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
+      <div style="display:flex;gap:10px;padding:0 16px 16px;width:max-content">
+
+        <!-- Course 1 -->
+        <div class="cm-card" onclick="selectCourse(1)" style="width:200px;background:rgba(20,20,20,.95);border:1px solid rgba(200,240,80,.2);border-radius:16px;overflow:hidden;cursor:pointer;flex-shrink:0">
+          <div style="height:80px;position:relative;overflow:hidden;background:#111">
+            <svg width="200" height="80" viewBox="0 0 200 80">
+              <rect width="200" height="80" fill="#111"/>
+              <path d="M 48 38 Q 30 30 28 45 Q 25 62 48 66 Q 80 70 100 68 Q 130 70 155 62 Q 178 55 178 45 Q 178 33 155 27 Q 130 22 100 24 Q 80 22 48 38 Z" fill="rgba(200,240,80,.08)" stroke="#c8f050" stroke-width="2" stroke-dasharray="5 3"/>
+              <circle cx="100" cy="46" r="3" fill="#c8f050"/>
+            </svg>
+            <div style="position:absolute;top:8px;left:10px;background:rgba(200,240,80,.15);border:1px solid rgba(200,240,80,.3);border-radius:5px;padding:2px 7px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:#c8f050;letter-spacing:.06em">5.0 km</div>
+          </div>
+          <div style="padding:10px 12px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:#fff;line-height:1;margin-bottom:3px">여의도 한강 루프</div>
+            <div style="font-size:10px;font-weight:300;color:rgba(255,255,255,.4);letter-spacing:.04em;margin-bottom:8px">📍 여의도 한강공원 · 2.1km</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex">
+                <img src="" onerror="this.style.display='none'" style="width:20px;height:20px;border-radius:50%;border:1.5px solid #111;margin-right:-6px"/>
+                <div style="width:20px;height:20px;border-radius:50%;background:rgba(200,240,80,.15);border:1.5px solid rgba(200,240,80,.3);display:flex;align-items:center;justify-content:center;font-size:10px">🌙</div>
+                <div style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:10px;margin-left:-6px">🏃</div>
+              </div>
+              <span style="font-size:10px;font-weight:300;color:rgba(255,255,255,.35)">+76명 러닝 중</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course 2 -->
+        <div class="cm-card" onclick="selectCourse(2)" style="width:200px;background:rgba(20,20,20,.95);border:1px solid rgba(167,139,250,.2);border-radius:16px;overflow:hidden;cursor:pointer;flex-shrink:0">
+          <div style="height:80px;position:relative;overflow:hidden;background:#111">
+            <svg width="200" height="80" viewBox="0 0 200 80">
+              <rect width="200" height="80" fill="#111"/>
+              <path d="M 38 48 Q 28 35 35 22 Q 42 8 58 18 Q 66 8 75 18 Q 92 6 95 24 Q 98 38 78 52 Q 60 64 38 48 Z" fill="rgba(167,139,250,.08)" stroke="#a78bfa" stroke-width="2" stroke-dasharray="5 3"/>
+              <circle cx="65" cy="36" r="3" fill="#a78bfa"/>
+            </svg>
+            <div style="position:absolute;top:8px;left:10px;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);border-radius:5px;padding:2px 7px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:#a78bfa;letter-spacing:.06em">3.2 km</div>
+          </div>
+          <div style="padding:10px 12px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:#fff;line-height:1;margin-bottom:3px">남산 하트런</div>
+            <div style="font-size:10px;font-weight:300;color:rgba(255,255,255,.4);letter-spacing:.04em;margin-bottom:8px">📍 남산공원 · 4.3km</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex">
+                <div style="width:20px;height:20px;border-radius:50%;background:rgba(167,139,250,.15);border:1.5px solid rgba(167,139,250,.3);display:flex;align-items:center;justify-content:center;font-size:10px">⚡</div>
+                <div style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:10px;margin-left:-6px">💨</div>
+              </div>
+              <span style="font-size:10px;font-weight:300;color:rgba(255,255,255,.35)">+45명 러닝 중</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course 3 -->
+        <div class="cm-card" onclick="selectCourse(3)" style="width:200px;background:rgba(20,20,20,.95);border:1px solid rgba(96,165,250,.2);border-radius:16px;overflow:hidden;cursor:pointer;flex-shrink:0">
+          <div style="height:80px;position:relative;overflow:hidden;background:#111">
+            <svg width="200" height="80" viewBox="0 0 200 80">
+              <rect width="200" height="80" fill="#111"/>
+              <path d="M 80 50 Q 95 30 115 40 Q 135 50 128 66 Q 118 78 98 75 Q 78 72 80 50 Z" fill="rgba(96,165,250,.08)" stroke="#60a5fa" stroke-width="2" stroke-dasharray="5 3"/>
+              <circle cx="100" cy="55" r="3" fill="#60a5fa"/>
+            </svg>
+            <div style="position:absolute;top:8px;left:10px;background:rgba(96,165,250,.15);border:1px solid rgba(96,165,250,.3);border-radius:5px;padding:2px 7px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:#60a5fa;letter-spacing:.06em">2.1 km</div>
+          </div>
+          <div style="padding:10px 12px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:#fff;line-height:1;margin-bottom:3px">나만의 코스</div>
+            <div style="font-size:10px;font-weight:300;color:rgba(255,255,255,.4);letter-spacing:.04em;margin-bottom:8px">📍 잠실 · 1.8km</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex">
+                <div style="width:20px;height:20px;border-radius:50%;background:rgba(96,165,250,.15);border:1.5px solid rgba(96,165,250,.3);display:flex;align-items:center;justify-content:center;font-size:10px">👻</div>
+                <div style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:10px;margin-left:-6px">🌙</div>
+              </div>
+              <span style="font-size:10px;font-weight:300;color:rgba(255,255,255,.35)">+21명 러닝 중</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course 4 -->
+        <div class="cm-card" onclick="selectCourse(4)" style="width:200px;background:rgba(20,20,20,.95);border:1px solid rgba(251,191,36,.2);border-radius:16px;overflow:hidden;cursor:pointer;flex-shrink:0">
+          <div style="height:80px;position:relative;overflow:hidden;background:#111">
+            <svg width="200" height="80" viewBox="0 0 200 80">
+              <rect width="200" height="80" fill="#111"/>
+              <path d="M 20 60 L 50 20 L 90 45 L 130 15 L 170 40 L 190 60 L 130 70 L 80 68 Z" fill="rgba(251,191,36,.06)" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5 3"/>
+              <circle cx="100" cy="40" r="3" fill="#fbbf24"/>
+            </svg>
+            <div style="position:absolute;top:8px;left:10px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:5px;padding:2px 7px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:#fbbf24;letter-spacing:.06em">7.5 km</div>
+          </div>
+          <div style="padding:10px 12px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:#fff;line-height:1;margin-bottom:3px">강남 야경 런</div>
+            <div style="font-size:10px;font-weight:300;color:rgba(255,255,255,.4);letter-spacing:.04em;margin-bottom:8px">📍 강남구 · 0.9km</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex">
+                <div style="width:20px;height:20px;border-radius:50%;background:rgba(251,191,36,.15);border:1.5px solid rgba(251,191,36,.3);display:flex;align-items:center;justify-content:center;font-size:10px">🏅</div>
+              </div>
+              <span style="font-size:10px;font-weight:300;color:rgba(255,255,255,.35)">+12명 러닝 중</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- My courses pane -->
+    <div id="cm-pane-mine" style="display:none;padding:0 16px 16px">
+      <div id="cm-my-courses-list"></div>
+      <button onclick="toggleCourseDrawing()" style="width:100%;height:48px;background:rgba(200,240,80,.08);border:1.5px dashed rgba(200,240,80,.25);border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.06em;color:rgba(200,240,80,.6);cursor:pointer;margin-top:4px">+ 새 코스 그리기</button>
+    </div>
+  </div>
+
+  <!-- Drawing mode overlay -->
+  <div id="cm-draw-overlay" style="display:none;position:absolute;bottom:0;left:0;right:0;z-index:30;background:rgba(10,10,10,.95);padding:14px 16px 20px;border-top:1px solid rgba(200,240,80,.2)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:#c8f050;letter-spacing:.04em">코스 그리기 중</div>
+        <div id="cm-draw-dist" style="font-size:11px;font-weight:300;color:rgba(255,255,255,.4);margin-top:1px">지도를 탭해 경로를 그려주세요</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="undoDrawPoint()" style="height:34px;padding:0 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:9px;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer">↩ 되돌리기</button>
+        <button onclick="saveDrawnCourse()" style="height:34px;padding:0 16px;background:#c8f050;border:none;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;letter-spacing:.06em;color:#0a0a0a;cursor:pointer">저장</button>
+      </div>
+    </div>
+    <button onclick="cancelCourseDrawing()" style="width:100%;height:36px;background:none;border:none;font-size:12px;color:rgba(255,255,255,.3);cursor:pointer">취소</button>
+  </div>
+
+
+</div>
+
 <!-- RECORDS -->
 
 <!-- RECORDS -->
@@ -1259,9 +1481,10 @@ input[type=file]{display:none}
   <button class="btab" data-v="shot">
     <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>인증샷<div class="btab-dot"></div>
   </button>
-  <button class="btab" data-v="records">
-    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>내 기록<div class="btab-dot"></div>
+  <button class="btab" data-v="coursemap">
+    <svg viewBox="0 0 24 24"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3V7z"/><path d="M9 4v13M15 7v13"/></svg>코스<div class="btab-dot"></div>
   </button>
+
 </div>
 
 <!-- MODALS -->
@@ -1315,7 +1538,29 @@ input[type=file]{display:none}
 <div id="flash"></div>
 <div id="toast"></div>
 
+<div id="m-friends" class="modal" style="position:fixed;inset:0;z-index:210;background:rgba(0,0,0,.88);backdrop-filter:blur(16px);align-items:flex-end;justify-content:center">
+  <div style="width:100%;max-width:480px;background:#161616;border-radius:26px 26px 0 0;border:1px solid rgba(255,255,255,.08);padding:0 0 40px;max-height:85vh;overflow-y:auto">
+    <div style="display:flex;justify-content:center;padding:12px 0 0"><div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.15)"></div></div>
+    <div style="padding:18px 22px 0">
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:24px;font-weight:900;margin-bottom:4px">친구 추가</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:16px">닉네임 또는 GR 코드로 친구를 찾아보세요</div>
+      <div style="display:flex;gap:8px;margin-bottom:18px">
+        <input id="friend-search-input" type="text" placeholder="닉네임 또는 GR-XXXX 입력" maxlength="30"
+          style="flex:1;height:46px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:0 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#fff;outline:none;box-sizing:border-box"
+          oninput="searchFriends(this.value)">
+        <button onclick="searchFriends(document.getElementById('friend-search-input').value)" style="height:46px;padding:0 18px;background:#c8f050;border:none;border-radius:12px;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:800;color:#0a0a0a;cursor:pointer">검색</button>
+      </div>
+      <div id="friend-search-results"></div>
+      <div style="margin-top:6px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.35);margin-bottom:12px">추천 러너</div>
+        <div id="friend-suggest-container"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+
 // DATA
 const PAST_LOGS=[
   {date:'02.18',mo:'Feb',d:5.20,pace:"5'12\"",time:"26'58\"",cal:312,ri:0},
@@ -1624,7 +1869,7 @@ function renderPublicRooms(){
     const isFull=room.members>=room.max;
     const card=document.createElement('div');
     card.style.cssText='background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s';
-    card.innerHTML=`<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px"><div style="width:42px;height:42px;border-radius:12px;background:rgba(200,240,80,.08);border:1px solid rgba(200,240,80,.12);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${room.em}</div><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${room.name}</span>${room.hasPw?'<span style="font-size:10px">🔒</span>':''}</div><span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.1em;color:rgba(200,240,80,.5)">${room.id}</span></div><button onclick="tryJoinRoom('${room.id}')" ${isFull?'disabled':''} style="height:32px;padding:0 14px;background:${isFull?'rgba(255,255,255,.04)':'#c8f050'};border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:${isFull?'rgba(255,255,255,.2)':'#0a0a0a'};cursor:${isFull?'default':'pointer'};flex-shrink:0">${isFull?'마감':'입장'}</button></div><div style="display:flex;align-items:center;gap:16px;margin-bottom:10px"><div style="text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#c8f050;line-height:1">${room.goal}km</div><div style="font-size:8px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.3)">목표</div></div><div style="width:1px;height:28px;background:rgba(255,255,255,.08)"></div><div style="text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:rgba(255,255,255,.7);line-height:1">${room.period===0?'무제한':room.period+'일'}</div><div style="font-size:8px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.3)">기간</div></div><div style="width:1px;height:28px;background:rgba(255,255,255,.08)"></div><div style="text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:rgba(255,255,255,.7);line-height:1">${room.members}/${room.max===99?'∞':room.max}</div><div style="font-size:8px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.3)">인원</div></div></div><div style="background:rgba(255,255,255,.05);border-radius:3px;height:4px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,rgba(200,240,80,.5),#c8f050);border-radius:3px;width:${filled}%"></div></div>`;
+    card.innerHTML=`<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px"><div style="width:42px;height:42px;border-radius:12px;background:rgba(200,240,80,.08);border:1px solid rgba(200,240,80,.12);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${room.em}</div><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px"><span style="font-family:Barlow Condensed,sans-serif;font-size:17px;font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${room.name}</span>${room.hasPw?'<span style="font-size:10px">🔒</span>':''}</div><span style="font-family:Barlow Condensed,sans-serif;font-size:10px;font-weight:600;letter-spacing:.1em;color:rgba(200,240,80,.5)">${room.id}</span></div><button onclick="tryJoinRoom('${room.id}')" ${isFull?'disabled':''} style="height:32px;padding:0 14px;background:${isFull?'rgba(255,255,255,.04)':'#c8f050'};border:none;border-radius:8px;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:800;color:${isFull?'rgba(255,255,255,.2)':'#0a0a0a'};cursor:${isFull?'default':'pointer'};flex-shrink:0">${isFull?'마감':'입장'}</button></div><div style="display:flex;align-items:center;gap:16px;margin-bottom:10px"><div style="text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:800;color:#c8f050;line-height:1">${room.goal}km</div><div style="font-size:8px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.3)">목표</div></div><div style="width:1px;height:28px;background:rgba(255,255,255,.08)"></div><div style="text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:800;color:rgba(255,255,255,.7);line-height:1">${room.period===0?'무제한':room.period+'일'}</div><div style="font-size:8px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.3)">기간</div></div><div style="width:1px;height:28px;background:rgba(255,255,255,.08)"></div><div style="text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:800;color:rgba(255,255,255,.7);line-height:1">${room.members}/${room.max===99?'∞':room.max}</div><div style="font-size:8px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.3)">인원</div></div></div><div style="background:rgba(255,255,255,.05);border-radius:3px;height:4px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,rgba(200,240,80,.5),#c8f050);border-radius:3px;width:${filled}%"></div></div>`;
     card.addEventListener('mouseenter',()=>{card.style.borderColor='rgba(200,240,80,.2)';});
     card.addEventListener('mouseleave',()=>{card.style.borderColor='rgba(255,255,255,.07)';});
     el.appendChild(card);
@@ -1640,10 +1885,10 @@ function renderMyRooms(){
   mine.forEach(room=>{
     const card=document.createElement('div');
     card.style.cssText='background:rgba(200,240,80,.04);border:1px solid rgba(200,240,80,.12);border-radius:16px;padding:14px 16px;margin-bottom:10px';
-    card.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="width:40px;height:40px;border-radius:11px;background:rgba(200,240,80,.1);border:1px solid rgba(200,240,80,.2);display:flex;align-items:center;justify-content:center;font-size:20px">${room.em}</div><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:#fff">${room.name}</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.1em;color:rgba(200,240,80,.5)">${room.id}${room.hasPw?' · 🔒':''}</div></div><button onclick="deleteRoom('${room.id}')" style="width:28px;height:28px;background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.15);border-radius:8px;font-size:12px;cursor:pointer">🗑</button></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px"><div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:#c8f050">${room.goal}km</div><div style="font-size:8px;color:rgba(255,255,255,.3)">목표</div></div><div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:rgba(255,255,255,.7)">${room.period===0?'∞':room.period+'일'}</div><div style="font-size:8px;color:rgba(255,255,255,.3)">기간</div></div><div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:rgba(255,255,255,.7)">${room.members}</div><div style="font-size:8px;color:rgba(255,255,255,.3)">참여 중</div></div></div><div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(0,0,0,.3);border-radius:10px"><span style="font-size:11px;color:rgba(255,255,255,.4)">초대 코드</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:rgba(200,240,80,.7);flex:1">${room.id}</span><button onclick="copyRoomCode('${room.id}')" style="height:26px;padding:0 10px;background:rgba(200,240,80,.1);border:1px solid rgba(200,240,80,.2);border-radius:7px;font-size:10px;font-weight:700;color:#c8f050;cursor:pointer">복사</button></div>`;
+    card.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="width:40px;height:40px;border-radius:11px;background:rgba(200,240,80,.1);border:1px solid rgba(200,240,80,.2);display:flex;align-items:center;justify-content:center;font-size:20px">${room.em}</div><div style="flex:1"><div style="font-family:Barlow Condensed,sans-serif;font-size:17px;font-weight:800;color:#fff">${room.name}</div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;font-weight:600;letter-spacing:.1em;color:rgba(200,240,80,.5)">${room.id}${room.hasPw?' · 🔒':''}</div></div><button onclick="deleteRoom('${room.id}')" style="width:28px;height:28px;background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.15);border-radius:8px;font-size:12px;cursor:pointer">🗑</button></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px"><div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:800;color:#c8f050">${room.goal}km</div><div style="font-size:8px;color:rgba(255,255,255,.3)">목표</div></div><div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:800;color:rgba(255,255,255,.7)">${room.period===0?'∞':room.period+'일'}</div><div style="font-size:8px;color:rgba(255,255,255,.3)">기간</div></div><div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:800;color:rgba(255,255,255,.7)">${room.members}</div><div style="font-size:8px;color:rgba(255,255,255,.3)">참여 중</div></div></div><div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(0,0,0,.3);border-radius:10px"><span style="font-size:11px;color:rgba(255,255,255,.4)">초대 코드</span><span style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;color:rgba(200,240,80,.7);flex:1">${room.id}</span><button onclick="copyRoomCode('${room.id}')" style="height:26px;padding:0 10px;background:rgba(200,240,80,.1);border:1px solid rgba(200,240,80,.2);border-radius:7px;font-size:10px;font-weight:700;color:#c8f050;cursor:pointer">복사</button></div>`;
     el.appendChild(card);
   });
-  if(!mine.length) el.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:40px;margin-bottom:14px">🚪</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:rgba(255,255,255,.5);margin-bottom:6px">아직 만든 크루가 없어요</div><div style="font-size:12px;color:rgba(255,255,255,.25);margin-bottom:20px">크루를 만들어 함께 달려요</div><button onclick="openCreateRoom()" style="height:44px;padding:0 24px;background:#c8f050;border:none;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:#0a0a0a;cursor:pointer">크루 만들기</button></div>`;
+  if(!mine.length) el.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:40px;margin-bottom:14px">🚪</div><div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:800;color:rgba(255,255,255,.5);margin-bottom:6px">아직 만든 크루가 없어요</div><div style="font-size:12px;color:rgba(255,255,255,.25);margin-bottom:20px">크루를 만들어 함께 달려요</div><button onclick="openCreateRoom()" style="height:44px;padding:0 24px;background:#c8f050;border:none;border-radius:12px;font-family:Barlow Condensed,sans-serif;font-size:16px;font-weight:800;color:#0a0a0a;cursor:pointer">크루 만들기</button></div>`;
 }
 
 function renderRoomHistory(){
@@ -1655,11 +1900,11 @@ function renderRoomHistory(){
     const date=room.joinedAt?new Date(room.joinedAt).toLocaleDateString('ko-KR',{month:'long',day:'numeric'}):'';
     const row=document.createElement('div');
     row.style.cssText='display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer';
-    row.innerHTML=`<div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${room.em||'🏃'}</div><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:400;color:rgba(255,255,255,.8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${room.name}</div><div style="display:flex;gap:8px;margin-top:2px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.08em;color:rgba(200,240,80,.5)">${room.id}</span><span style="font-size:9px;color:rgba(255,255,255,.25)">${date}</span></div></div><div style="text-align:right;flex-shrink:0"><div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#c8f050">${room.goal}km</div><div style="font-size:8px;color:rgba(255,255,255,.3)">목표</div></div>`;
+    row.innerHTML=`<div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${room.em||'🏃'}</div><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:400;color:rgba(255,255,255,.8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${room.name}</div><div style="display:flex;gap:8px;margin-top:2px"><span style="font-family:Barlow Condensed,sans-serif;font-size:10px;font-weight:600;letter-spacing:.08em;color:rgba(200,240,80,.5)">${room.id}</span><span style="font-size:9px;color:rgba(255,255,255,.25)">${date}</span></div></div><div style="text-align:right;flex-shrink:0"><div style="font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:800;color:#c8f050">${room.goal}km</div><div style="font-size:8px;color:rgba(255,255,255,.3)">목표</div></div>`;
     row.addEventListener('click',()=>tryJoinRoom(room.id));
     el.appendChild(row);
   });
-  if(!hist.length) el.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:40px;margin-bottom:14px">📋</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:rgba(255,255,255,.5);margin-bottom:6px">참여 기록이 없어요</div><div style="font-size:12px;color:rgba(255,255,255,.25)">크루에 입장하면 기록됩니다</div></div>`;
+  if(!hist.length) el.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:40px;margin-bottom:14px">📋</div><div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:800;color:rgba(255,255,255,.5);margin-bottom:6px">참여 기록이 없어요</div><div style="font-size:12px;color:rgba(255,255,255,.25)">크루에 입장하면 기록됩니다</div></div>`;
 }
 
 function deleteRoom(roomId){
@@ -1691,7 +1936,7 @@ function showJoinPreview(roomId){
   if(!el){el=document.createElement('div');el.id='join-preview-sheet';el.style.cssText='position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.85);backdrop-filter:blur(20px);display:flex;align-items:flex-end;justify-content:center';el.addEventListener('click',e=>{if(e.target===el)closeJoinPreview();});document.body.appendChild(el);}
   const daysLeft=room.period===0?'무제한':room.period+'일 남음',pct=Math.min(Math.round(room.members/(room.max===99?room.members+10:room.max)*100),100);
   const memberEmojis=['\uD83D\uDC7B','\uD83C\uDFC3','\uD83C\uDF19','\u26A1','\uD83D\uDCA8'].slice(0,Math.min(room.members,5)).map((em,i)=>`<div style="width:30px;height:30px;border-radius:50%;background:#222;border:2px solid #161616;display:flex;align-items:center;justify-content:center;font-size:14px;margin-left:${i?'-7px':'0'}">${em}</div>`).join('');
-  el.innerHTML=`<div style="width:100%;max-width:480px;background:#161616;border-radius:28px 28px 0 0;border:1px solid rgba(255,255,255,.08);padding:0 0 48px;overflow:hidden"><div style="display:flex;justify-content:center;padding:12px 0 0"><div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.2)"></div></div><div style="padding:20px 22px 0"><div style="display:flex;align-items:center;gap:14px;margin-bottom:18px"><div style="width:60px;height:60px;border-radius:16px;background:rgba(200,240,80,.1);border:1.5px solid rgba(200,240,80,.18);display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0">${room.em}</div><div><div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:#fff;line-height:1.1">${room.name}</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:rgba(200,240,80,.55);letter-spacing:.1em;margin-top:3px">${room.id}${room.hasPw?' · 🔒':''}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px"><div style="background:rgba(255,255,255,.04);border-radius:12px;padding:14px;text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:#c8f050;line-height:1">${room.goal}<span style="font-size:13px;font-weight:400">km</span></div><div style="font-size:9px;color:rgba(255,255,255,.3);margin-top:3px">목표 거리</div></div><div style="background:rgba(255,255,255,.04);border-radius:12px;padding:14px;text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:rgba(255,255,255,.8);line-height:1">${room.period===0?'∞':room.period}<span style="font-size:12px;font-weight:400">${room.period===0?'':' 일'}</span></div><div style="font-size:9px;color:rgba(255,255,255,.3);margin-top:3px">${daysLeft}</div></div><div style="background:rgba(255,255,255,.04);border-radius:12px;padding:14px;text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:rgba(255,255,255,.8);line-height:1">${room.members}<span style="font-size:12px;font-weight:400">/${room.max===99?'∞':room.max}</span></div><div style="font-size:9px;color:rgba(255,255,255,.3);margin-top:3px">참여 인원</div></div></div><div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:10px;color:rgba(255,255,255,.35)">크루 현황</span><span style="font-size:10px;color:rgba(200,240,80,.6)">${pct}% 채워짐</span></div><div style="background:rgba(255,255,255,.06);border-radius:4px;height:6px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,rgba(200,240,80,.5),#c8f050);border-radius:4px;width:${pct}%"></div></div></div><div style="display:flex;align-items:center;margin-bottom:18px">${memberEmojis}<span style="font-size:11px;color:rgba(255,255,255,.35);margin-left:12px">함께 달리는 중</span></div><div style="background:rgba(200,240,80,.05);border:1px solid rgba(200,240,80,.12);border-radius:12px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px"><div style="font-size:22px">🎯</div><div><div style="font-size:12px;color:rgba(255,255,255,.7)">목표 <span style="color:#c8f050;font-weight:700">${room.goal}km</span> 달성 여부만 공유돼요</div><div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:2px">순위 없음 · 부담 없음</div></div></div><button onclick="confirmJoinRoom('${room.id}')" style="width:100%;height:56px;background:#c8f050;border:none;border-radius:16px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;letter-spacing:.08em;color:#0a0a0a;cursor:pointer;box-shadow:0 6px 20px rgba(200,240,80,.28)">이 크루 참여하기</button><button onclick="closeJoinPreview()" style="width:100%;height:42px;background:none;border:none;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:rgba(255,255,255,.3);cursor:pointer;margin-top:6px">취소</button></div></div>`;
+  el.innerHTML=`<div style="width:100%;max-width:480px;background:#161616;border-radius:28px 28px 0 0;border:1px solid rgba(255,255,255,.08);padding:0 0 48px;overflow:hidden"><div style="display:flex;justify-content:center;padding:12px 0 0"><div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.2)"></div></div><div style="padding:20px 22px 0"><div style="display:flex;align-items:center;gap:14px;margin-bottom:18px"><div style="width:60px;height:60px;border-radius:16px;background:rgba(200,240,80,.1);border:1.5px solid rgba(200,240,80,.18);display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0">${room.em}</div><div><div style="font-family:Barlow Condensed,sans-serif;font-size:24px;font-weight:900;color:#fff;line-height:1.1">${room.name}</div><div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:600;color:rgba(200,240,80,.55);letter-spacing:.1em;margin-top:3px">${room.id}${room.hasPw?' · 🔒':''}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px"><div style="background:rgba(255,255,255,.04);border-radius:12px;padding:14px;text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:28px;font-weight:900;color:#c8f050;line-height:1">${room.goal}<span style="font-size:13px;font-weight:400">km</span></div><div style="font-size:9px;color:rgba(255,255,255,.3);margin-top:3px">목표 거리</div></div><div style="background:rgba(255,255,255,.04);border-radius:12px;padding:14px;text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:28px;font-weight:900;color:rgba(255,255,255,.8);line-height:1">${room.period===0?'∞':room.period}<span style="font-size:12px;font-weight:400">${room.period===0?'':' 일'}</span></div><div style="font-size:9px;color:rgba(255,255,255,.3);margin-top:3px">${daysLeft}</div></div><div style="background:rgba(255,255,255,.04);border-radius:12px;padding:14px;text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:28px;font-weight:900;color:rgba(255,255,255,.8);line-height:1">${room.members}<span style="font-size:12px;font-weight:400">/${room.max===99?'∞':room.max}</span></div><div style="font-size:9px;color:rgba(255,255,255,.3);margin-top:3px">참여 인원</div></div></div><div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:10px;color:rgba(255,255,255,.35)">크루 현황</span><span style="font-size:10px;color:rgba(200,240,80,.6)">${pct}% 채워짐</span></div><div style="background:rgba(255,255,255,.06);border-radius:4px;height:6px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,rgba(200,240,80,.5),#c8f050);border-radius:4px;width:${pct}%"></div></div></div><div style="display:flex;align-items:center;margin-bottom:18px">${memberEmojis}<span style="font-size:11px;color:rgba(255,255,255,.35);margin-left:12px">함께 달리는 중</span></div><div style="background:rgba(200,240,80,.05);border:1px solid rgba(200,240,80,.12);border-radius:12px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px"><div style="font-size:22px">🎯</div><div><div style="font-size:12px;color:rgba(255,255,255,.7)">목표 <span style="color:#c8f050;font-weight:700">${room.goal}km</span> 달성 여부만 공유돼요</div><div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:2px">순위 없음 · 부담 없음</div></div></div><button onclick="confirmJoinRoom('${room.id}')" style="width:100%;height:56px;background:#c8f050;border:none;border-radius:16px;font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;letter-spacing:.08em;color:#0a0a0a;cursor:pointer;box-shadow:0 6px 20px rgba(200,240,80,.28)">이 크루 참여하기</button><button onclick="closeJoinPreview()" style="width:100%;height:42px;background:none;border:none;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:600;color:rgba(255,255,255,.3);cursor:pointer;margin-top:6px">취소</button></div></div>`;
   el.style.display='flex';
 }
 function closeJoinPreview(){const el=document.getElementById('join-preview-sheet');if(el)el.style.display='none';}
@@ -1923,11 +2168,11 @@ function buildLeaderboard(type){
   const COL=r=>r===1?'#d4b54a':r===2?'#a0aab4':r===3?'#b07444':'rgba(255,255,255,.35)';
   list.forEach((runner,i)=>{
     const rank=i+1,medal=rank<=3?['🥇','🥈','🥉'][rank-1]:rank;
-    const mainVal=type==='dist'?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;color:#fff;line-height:1">${runner.dist.toFixed(2)}<span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.35)"> km</span></span>`:`<span style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;color:#c8f050;line-height:1">${runner.paceStr}<span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.35)"> /km</span></span>`;
+    const mainVal=type==='dist'?`<span style="font-family:Barlow Condensed,sans-serif;font-size:24px;font-weight:800;color:#fff;line-height:1">${runner.dist.toFixed(2)}<span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.35)"> km</span></span>`:`<span style="font-family:Barlow Condensed,sans-serif;font-size:24px;font-weight:800;color:#c8f050;line-height:1">${runner.paceStr}<span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.35)"> /km</span></span>`;
     const subVal=type==='dist'?`<span style="font-size:10px;color:rgba(255,255,255,.3)">${runner.paceStr}/km · ${runner.time}분</span>`:`<span style="font-size:10px;color:rgba(255,255,255,.3)">${runner.dist.toFixed(2)}km · ${runner.time}분</span>`;
     const row=document.createElement('div');
     row.style.cssText='display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer';row.onclick=function(e){if(!e.target.closest('button'))showMemberProfile(r);};
-    row.innerHTML=`<div style="width:32px;text-align:center;font-size:${rank<=3?'20':'13'}px;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:${COL(rank)};flex-shrink:0">${medal}</div><div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${runner.em}</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:400;color:rgba(255,255,255,.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${runner.nick}</div><div>${subVal}</div></div><div style="text-align:right">${mainVal}</div>`;
+    row.innerHTML=`<div style="width:32px;text-align:center;font-size:${rank<=3?'20':'13'}px;font-family:Barlow Condensed,sans-serif;font-weight:800;color:${COL(rank)};flex-shrink:0">${medal}</div><div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${runner.em}</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:400;color:rgba(255,255,255,.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${runner.nick}</div><div>${subVal}</div></div><div style="text-align:right">${mainVal}</div>`;
     el.appendChild(row);
   });
 }
@@ -1945,7 +2190,7 @@ function buildInstaFeed(){
   INSTA_POSTS.forEach(post=>{
     const card=document.createElement('div');
     card.style.cssText='flex-shrink:0;width:160px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.07);cursor:pointer;transition:transform .15s;background:'+post.colors[0];
-    card.innerHTML=`<div style="height:160px;background:linear-gradient(${post.accentAngle},${post.colors[0]},${post.colors[1]});position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden"><div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 70%,rgba(200,240,80,.08),transparent 55%)"></div><div style="text-align:center;position:relative"><div style="font-size:42px">${post.em}</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:#c8f050;line-height:1">${post.dist.toFixed(2)}</div><div style="font-size:10px;color:rgba(200,240,80,.6);letter-spacing:.1em">km</div></div><div style="position:absolute;bottom:8px;left:10px;right:10px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,.7)">${post.pace}<span style="font-size:9px;opacity:.6"> /km</span></div></div></div><div style="padding:10px 11px 12px"><div style="font-size:11px;color:rgba(255,255,255,.75);margin-bottom:4px">${post.user}</div><div style="font-size:10px;color:rgba(255,255,255,.45);line-height:1.4">${post.caption}</div><div style="font-size:8px;color:rgba(255,255,255,.2);margin-top:5px">${post.date}</div></div>`;
+    card.innerHTML=`<div style="height:160px;background:linear-gradient(${post.accentAngle},${post.colors[0]},${post.colors[1]});position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden"><div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 70%,rgba(200,240,80,.08),transparent 55%)"></div><div style="text-align:center;position:relative"><div style="font-size:42px">${post.em}</div><div style="font-family:Barlow Condensed,sans-serif;font-size:28px;font-weight:900;color:#c8f050;line-height:1">${post.dist.toFixed(2)}</div><div style="font-size:10px;color:rgba(200,240,80,.6);letter-spacing:.1em">km</div></div><div style="position:absolute;bottom:8px;left:10px;right:10px"><div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,.7)">${post.pace}<span style="font-size:9px;opacity:.6"> /km</span></div></div></div><div style="padding:10px 11px 12px"><div style="font-size:11px;color:rgba(255,255,255,.75);margin-bottom:4px">${post.user}</div><div style="font-size:10px;color:rgba(255,255,255,.45);line-height:1.4">${post.caption}</div><div style="font-size:8px;color:rgba(255,255,255,.2);margin-top:5px">${post.date}</div></div>`;
     card.addEventListener('click',()=>showToast('👻 '+post.user+' · '+post.dist+'km'));
     card.addEventListener('mouseenter',()=>{card.style.transform='scale(.97)';});
     card.addEventListener('mouseleave',()=>{card.style.transform='';});
@@ -1995,6 +2240,7 @@ function goTab(v){
   const view=document.getElementById('v-'+v);if(view)view.classList.add('on');
   document.querySelectorAll('.btab').forEach(t=>t.classList.toggle('on',t.dataset.v===v));
   if(v==='crew'){switchRoomTab('browse');renderRoomTabs();}
+  if(v==='coursemap'){initCourseMap();}
   if(v==='records')initRec();
   if(v==='shot')applyRank();
 }
@@ -2073,7 +2319,7 @@ function showLocationModal(){
 function grantLocationAccess(){
   const m=document.getElementById('location-modal');if(m)m.style.display='none';
   locGranted=true;
-  if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>{userLat=pos.coords.latitude;userLng=pos.coords.longitude;},err=>{console.warn('GPS:',err);},{enableHighAccuracy:true,timeout:8000});}
+  if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>{userLat=pos.coords.latitude;userLng=pos.coords.longitude;},err=>{console.warn('GPS ('+err.code+'): 위치 권한이 없거나 사용 불가합니다. 시뮬레이션 모드로 전환합니다.');locGranted=false;},{enableHighAccuracy:true,timeout:8000});}
   showToast('📍 위치 서비스가 허용됐어요');startRun();
 }
 function denyLocationAccess(){
@@ -2081,6 +2327,22 @@ function denyLocationAccess(){
   locGranted=false;showToast('GPS 없이 시뮬레이션 모드로 진행됩니다');startRun();
 }
 
+function initRunSVG(){
+  const rp=document.getElementById('run-path');
+  const gp=document.getElementById('ghost-path');
+  if(!rp)return;
+  try{
+    const len=rp.getTotalLength();
+    rp.style.strokeDasharray=len;
+    rp.style.strokeDashoffset=len;
+    if(gp){gp.style.strokeDasharray=len;gp.style.strokeDashoffset=0;}
+    // Reset runner dot to start
+    const pt=rp.getPointAtLength(0);
+    const dot=document.getElementById('runner-dot'),glow=document.getElementById('runner-glow');
+    if(dot){dot.setAttribute('cx',pt.x);dot.setAttribute('cy',pt.y);}
+    if(glow){glow.setAttribute('cx',pt.x);glow.setAttribute('cy',pt.y);}
+  }catch(e){}
+}
 function updateRunSVG(pct){
   const rp=document.getElementById('run-path');if(!rp)return;
   try{
@@ -2112,6 +2374,656 @@ function updateRacingTrack(pct){
   const tf=document.getElementById('track-fill');if(tf)tf.style.width=Math.min(pct,100)+'%';
 }
 
+
+
+
+// ── COURSE SHARING ──
+function shareCourse(idOrCourse) {
+  var c = null;
+  if (typeof idOrCourse === 'object') {
+    c = idOrCourse;
+  } else {
+    c = COURSE_DATA.find(function(x){return x.id===idOrCourse;});
+  }
+  if (!c) { showToast('코스 정보를 찾을 수 없어요'); return; }
+
+  var sheet = document.getElementById('course-share-sheet');
+  if (!sheet) {
+    sheet = document.createElement('div');
+    sheet.id = 'course-share-sheet';
+    sheet.style.cssText = 'position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.88);backdrop-filter:blur(20px);display:none;align-items:flex-end;justify-content:center';
+    sheet.addEventListener('click', function(e){ if(e.target===sheet) closeShareSheet(); });
+    document.body.appendChild(sheet);
+  }
+
+  var color = c.color || '#c8f050';
+  var dist  = String(c.dist || c.distKm || '?');
+  var name  = c.name || '코스';
+  var area  = c.area || '내 코스';
+  var shareCode = 'GRC-' + (Math.abs(name.split('').reduce(function(a,ch){return (a*17+ch.charCodeAt(0))|0;},0)) % 90000 + 10000);
+
+  // Build sheet DOM
+  var wrap = document.createElement('div');
+  wrap.style.cssText = 'width:100%;max-width:440px;background:#161616;border-radius:24px 24px 0 0;border:1px solid rgba(255,255,255,.08);overflow:hidden;max-height:80vh;overflow-y:auto;padding-bottom:40px';
+
+  // Handle bar
+  var hb = document.createElement('div');
+  hb.style.cssText = 'display:flex;justify-content:center;padding:12px 0 0';
+  var hbd = document.createElement('div');
+  hbd.style.cssText = 'width:32px;height:4px;border-radius:2px;background:rgba(255,255,255,.2)';
+  hb.appendChild(hbd); wrap.appendChild(hb);
+
+  var body = document.createElement('div');
+  body.style.cssText = 'padding:16px 20px 0';
+
+  // Course preview
+  var preview = document.createElement('div');
+  preview.style.cssText = 'background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:18px';
+  var icon = document.createElement('div');
+  icon.style.cssText = 'width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;background:'+color+'22;border:1px solid '+color+'44';
+  icon.textContent = '🗺';
+  var pInfo = document.createElement('div');
+  pInfo.style.cssText = 'flex:1';
+  var pName = document.createElement('div');
+  pName.style.cssText = 'font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:900;color:#fff;line-height:1';
+  pName.textContent = name;
+  var pSub = document.createElement('div');
+  pSub.style.cssText = 'font-size:11px;font-weight:300;color:rgba(255,255,255,.4);margin-top:3px';
+  pSub.textContent = dist + 'km · ' + area;
+  pInfo.appendChild(pName); pInfo.appendChild(pSub);
+  var pKm = document.createElement('div');
+  pKm.style.cssText = 'font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;color:'+color;
+  pKm.textContent = dist + ' km';
+  preview.appendChild(icon); preview.appendChild(pInfo); preview.appendChild(pKm);
+  body.appendChild(preview);
+
+  // Share code label
+  var codeLbl = document.createElement('div');
+  codeLbl.style.cssText = 'font-size:10px;font-weight:400;letter-spacing:.14em;color:rgba(255,255,255,.35);margin-bottom:8px';
+  codeLbl.textContent = '공유 코드';
+  body.appendChild(codeLbl);
+
+  // Code box
+  var codeBox = document.createElement('div');
+  codeBox.style.cssText = 'background:rgba(200,240,80,.07);border:1.5px solid rgba(200,240,80,.2);border-radius:14px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:18px';
+  codeBox.onclick = function(){ copyRoomCode(shareCode); };
+  var codeSpan = document.createElement('span');
+  codeSpan.style.cssText = 'font-family:Barlow Condensed,sans-serif;font-size:24px;font-weight:900;letter-spacing:.12em;color:#c8f050';
+  codeSpan.textContent = shareCode;
+  var codeCopy = document.createElement('span');
+  codeCopy.style.cssText = 'font-size:12px;color:rgba(255,255,255,.4)';
+  codeCopy.textContent = '📋 복사';
+  codeBox.appendChild(codeSpan); codeBox.appendChild(codeCopy);
+  body.appendChild(codeBox);
+
+  // Share buttons grid
+  var grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px';
+  var btns = [
+    {emoji:'🔗', label:'링크 복사', bg:'rgba(255,255,255,.04)', border:'rgba(255,255,255,.08)', col:'rgba(255,255,255,.5)', fn: function(){ copyRoomCode('ghostrun://course/'+shareCode); }},
+    {emoji:'💬', label:'카카오',    bg:'rgba(254,229,0,.08)',   border:'rgba(254,229,0,.15)',   col:'rgba(254,229,0,.7)',   fn: function(){ shareToKakao(name,shareCode); }},
+    {emoji:'📸', label:'인스타',    bg:'rgba(225,48,108,.08)',  border:'rgba(225,48,108,.15)',  col:'rgba(225,48,108,.7)',  fn: function(){ shareToInsta(name); }},
+  ];
+  btns.forEach(function(b){
+    var btn = document.createElement('button');
+    btn.style.cssText = 'height:56px;background:'+b.bg+';border:1px solid '+b.border+';border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer';
+    btn.innerHTML = '<span style="font-size:20px">'+b.emoji+'</span><span style="font-size:9px;font-weight:500;color:'+b.col+';letter-spacing:.04em">'+b.label+'</span>';
+    btn.onclick = b.fn;
+    grid.appendChild(btn);
+  });
+  body.appendChild(grid);
+
+  // Friends section
+  var friendsLbl = document.createElement('div');
+  friendsLbl.style.cssText = 'font-size:10px;font-weight:400;letter-spacing:.14em;color:rgba(255,255,255,.35);margin-bottom:8px';
+  friendsLbl.textContent = '친구에게 보내기';
+  body.appendChild(friendsLbl);
+
+  var friends = getFriends();
+  if (friends.length === 0) {
+    var emptyDiv = document.createElement('div');
+    emptyDiv.style.cssText = 'text-align:center;padding:20px 0;font-size:12px;font-weight:300;color:rgba(255,255,255,.3)';
+    emptyDiv.textContent = '친구를 추가하면 코스를 공유할 수 있어요';
+    body.appendChild(emptyDiv);
+  } else {
+    friends.forEach(function(f){
+      var fid = f.id, fname = f.nick||'친구', fat = f.atCode||'AT-??????', fem = f.em||'👤';
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer';
+      row.onclick = function(){ sendCourseToFriend(fid, name, shareCode); };
+      var av = document.createElement('div');
+      av.style.cssText = 'width:40px;height:40px;border-radius:50%;background:rgba(200,240,80,.08);border:1.5px solid rgba(200,240,80,.15);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0';
+      av.textContent = fem;
+      var info = document.createElement('div');info.style.cssText='flex:1';
+      var nm = document.createElement('div');nm.style.cssText='font-size:14px;color:rgba(255,255,255,.85)';nm.textContent=fname;
+      var at = document.createElement('div');at.style.cssText='font-size:10px;font-weight:300;color:rgba(200,240,80,.5);letter-spacing:.06em';at.textContent=fat;
+      info.appendChild(nm);info.appendChild(at);
+      var arr = document.createElement('span');arr.style.cssText='font-size:12px;color:rgba(255,255,255,.3)';arr.textContent='›';
+      row.appendChild(av);row.appendChild(info);row.appendChild(arr);
+      body.appendChild(row);
+    });
+  }
+
+  wrap.appendChild(body);
+  sheet.innerHTML = '';
+  sheet.appendChild(wrap);
+  sheet.style.display = 'flex';
+  requestAnimationFrame(function(){
+    wrap.style.transform = 'translateY(100%)';
+    requestAnimationFrame(function(){
+      wrap.style.transition = 'transform .3s cubic-bezier(.22,1,.36,1)';
+      wrap.style.transform = 'translateY(0)';
+    });
+  });
+}
+
+
+function closeShareSheet() {
+  var sheet = document.getElementById('course-share-sheet');
+  if (sheet) sheet.style.display = 'none';
+}
+
+function sendCourseToFriend(friendId, courseName, code) {
+  var friends = getFriends();
+  var f = friends.find(function(x){return x.id===friendId;});
+  if (!f) return;
+  closeShareSheet();
+  showToast('✅ '+f.nick+'에게 '+courseName+' 공유됨!');
+  // Simulate message in crew room if one exists
+}
+
+function shareToKakao(name, code) {
+  closeShareSheet();
+  showToast('카카오로 공유: '+name+' ('+code+')');
+}
+function shareToInsta(name) {
+  closeShareSheet();
+  showToast('인스타그램 스토리 공유 준비 중');
+}
+
+// ══════════════════════════════════════════
+// COURSE MAP SYSTEM
+// ══════════════════════════════════════════
+let cmDrawing = false;
+let cmDrawPoints = [];
+let cmSelectedCourse = null;
+let myCourses = [];
+
+const COURSE_DATA = [
+  {id:1, name:'여의도 한강 루프', dist:'5.0', runners:76, color:'#c8f050', area:'여의도 한강공원', badge:'인기'},
+  {id:2, name:'남산 하트런',      dist:'3.2', runners:45, color:'#a78bfa', area:'남산공원', badge:'추천'},
+  {id:3, name:'나만의 코스',      dist:'2.1', runners:21, color:'#60a5fa', area:'잠실', badge:''},
+  {id:4, name:'강남 야경 런',     dist:'7.5', runners:12, color:'#fbbf24', area:'강남구', badge:''},
+];
+
+function switchCmTab(tab) {
+  document.querySelectorAll('.cm-tab').forEach(function(t){
+    var isOn = t.dataset.cm === tab;
+    t.style.background = isOn ? 'rgba(200,240,80,.12)' : 'rgba(255,255,255,.04)';
+    t.style.border = isOn ? '1px solid rgba(200,240,80,.3)' : '1px solid rgba(255,255,255,.08)';
+    t.style.color = isOn ? '#c8f050' : 'rgba(255,255,255,.45)';
+  });
+  document.getElementById('cm-pane-nearby').style.display = tab === 'nearby' ? 'block' : 'none';
+  document.getElementById('cm-pane-mine').style.display   = tab === 'mine'   ? 'block' : 'none';
+  if (tab === 'mine') renderMyCourses();
+  // Highlight relevant courses on map
+  highlightMapCourses(tab);
+}
+
+function highlightMapCourses(tab) {
+  if (tab === 'mine') {
+    ['cm-course-1','cm-course-2','cm-course-3'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.style.opacity = '0.2';
+    });
+  } else {
+    ['cm-course-1','cm-course-2','cm-course-3'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.style.opacity = '0.85';
+    });
+  }
+}
+
+function selectCourse(id) {
+  cmSelectedCourse = id;
+  var c = COURSE_DATA.find(function(x){return x.id===id;});
+  if (!c) return;
+  var detail = document.getElementById('cm-detail-content');
+  var sheet  = document.getElementById('cm-detail-sheet');
+  if (!detail || !sheet) return;
+  // Highlight on map
+  ['cm-course-1','cm-course-2','cm-course-3'].forEach(function(el){
+    var e = document.getElementById(el);
+    if (e) e.style.opacity = e.id === 'cm-course-'+id ? '1' : '0.25';
+  });
+  detail.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+    + '<div>'
+    +   '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;color:#fff;line-height:1">' + c.name + '</div>'
+    +   '<div style="font-size:10px;font-weight:300;color:rgba(255,255,255,.4);margin-top:3px;letter-spacing:.04em">📍 ' + c.area + '</div>'
+    + '</div>'
+    + (c.badge ? '<span style="font-size:10px;font-weight:700;background:' + c.color + '22;color:' + c.color + ';border:1px solid ' + c.color + '44;padding:3px 10px;border-radius:6px">' + c.badge + '</span>' : '')
+    + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">'
+    + '<div style="background:rgba(255,255,255,.04);border-radius:10px;padding:12px;text-align:center">'
+    +   '<div style="font-family:Barlow Condensed,sans-serif;font-size:26px;font-weight:900;color:' + c.color + ';line-height:1">' + c.dist + '</div>'
+    +   '<div style="font-size:9px;font-weight:300;color:rgba(255,255,255,.35);margin-top:3px">거리 km</div>'
+    + '</div>'
+    + '<div style="background:rgba(255,255,255,.04);border-radius:10px;padding:12px;text-align:center">'
+    +   '<div style="font-family:Barlow Condensed,sans-serif;font-size:26px;font-weight:900;color:rgba(255,255,255,.85);line-height:1">' + c.runners + '</div>'
+    +   '<div style="font-size:9px;font-weight:300;color:rgba(255,255,255,.35);margin-top:3px">러닝 중</div>'
+    + '</div>'
+    + '<div style="background:rgba(255,255,255,.04);border-radius:10px;padding:12px;text-align:center">'
+    +   '<div style="font-family:Barlow Condensed,sans-serif;font-size:26px;font-weight:900;color:rgba(255,255,255,.85);line-height:1">⭐4.' + (6 + id % 4) + '</div>'
+    +   '<div style="font-size:9px;font-weight:300;color:rgba(255,255,255,.35);margin-top:3px">평점</div>'
+    + '</div>'
+    + '</div>'
+    + '<div style="display:flex;gap:8px;margin-bottom:8px">'
+    + '<button onclick="closeCourseDetail()" style="height:46px;padding:0 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:12px;font-size:13px;font-weight:500;color:rgba(255,255,255,.4);cursor:pointer">닫기</button>'
+    + '<button onclick="shareCourse(' + id + ')" style="height:46px;padding:0 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;font-size:20px;cursor:pointer" title="공유">🔗</button>'
+    + '<button onclick="startCourseRun(' + id + ')" style="flex:1;height:46px;background:' + c.color + ';border:none;border-radius:12px;font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:900;letter-spacing:.06em;color:#0a0a0a;cursor:pointer">이 코스로 달리기</button>'
+    + '</div>';
+  sheet.style.display = 'block';
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      sheet.style.transform = 'translateY(0)';
+    });
+  });
+}
+
+function closeCourseDetail() {
+  var sheet = document.getElementById('cm-detail-sheet');
+  if (sheet) {
+    sheet.style.transform = 'translateY(100%)';
+    setTimeout(function(){ sheet.style.display = 'none'; }, 300);
+  }
+  highlightMapCourses('nearby');
+}
+
+function startCourseRun(id) {
+  var c = COURSE_DATA.find(function(x){return x.id===id;});
+  if (!c) return;
+  closeCourseDetail();
+  goalType = 'dist';
+  goalVal = String(parseFloat(c.dist));
+  goTab('run');
+  showToast('🏃 ' + c.name + ' 코스로 달리기 시작!');
+}
+
+// ── Drawing mode ──
+function toggleCourseDrawing() {
+  if (cmDrawing) { cancelCourseDrawing(); return; }
+  cmDrawing = true;
+  cmDrawPoints = [];
+  var svg = document.getElementById('cm-svg');
+  var drawPath = document.getElementById('cm-draw-path');
+  var cursor = document.getElementById('cm-draw-cursor');
+  var overlay = document.getElementById('cm-draw-overlay');
+  var btn = document.getElementById('cm-draw-btn');
+  if (drawPath) drawPath.setAttribute('points','');
+  if (cursor) { cursor.style.display='block'; }
+  if (overlay) overlay.style.display = 'block';
+  if (btn) { btn.textContent = '✏️ 그리는 중...'; btn.style.color = '#c8f050'; }
+  // Attach tap listener
+  if (svg) {
+    svg.style.cursor = 'crosshair';
+    svg.addEventListener('click', onMapTap);
+    svg.addEventListener('mousemove', onMapMove);
+    svg.addEventListener('touchmove', onMapTouchMove, {passive:false});
+    svg.addEventListener('touchend', onMapTouchEnd);
+  }
+  // Hide course detail
+  closeCourseDetail();
+  // Switch to mine tab
+  switchCmTab('mine');
+}
+
+function onMapTap(e) {
+  if (!cmDrawing) return;
+  var svg = document.getElementById('cm-svg');
+  var rect = svg.getBoundingClientRect();
+  var scaleX = 400 / rect.width;
+  var scaleY = 700 / rect.height;
+  var x = Math.round((e.clientX - rect.left) * scaleX);
+  var y = Math.round((e.clientY - rect.top)  * scaleY);
+  cmDrawPoints.push([x, y]);
+  updateDrawPath();
+}
+
+function onMapMove(e) {
+  if (!cmDrawing) return;
+  var svg = document.getElementById('cm-svg');
+  var cursor = document.getElementById('cm-draw-cursor');
+  if (!svg || !cursor) return;
+  var rect = svg.getBoundingClientRect();
+  var x = (e.clientX - rect.left) / rect.width  * 400;
+  var y = (e.clientY - rect.top)  / rect.height * 700;
+  cursor.setAttribute('cx', x); cursor.setAttribute('cy', y);
+}
+
+function onMapTouchMove(e) {
+  e.preventDefault();
+  if (!cmDrawing || !e.touches[0]) return;
+  var svg = document.getElementById('cm-svg');
+  var cursor = document.getElementById('cm-draw-cursor');
+  if (!svg || !cursor) return;
+  var t = e.touches[0];
+  var rect = svg.getBoundingClientRect();
+  var x = (t.clientX - rect.left) / rect.width  * 400;
+  var y = (t.clientY - rect.top)  / rect.height * 700;
+  cursor.setAttribute('cx', x); cursor.setAttribute('cy', y);
+  // Auto-add points while dragging
+  if (cmDrawPoints.length === 0 || Math.hypot(x - cmDrawPoints[cmDrawPoints.length-1][0], y - cmDrawPoints[cmDrawPoints.length-1][1]) > 15) {
+    cmDrawPoints.push([Math.round(x), Math.round(y)]);
+    updateDrawPath();
+  }
+}
+
+function onMapTouchEnd(e) {
+  if (!cmDrawing) return;
+  var t = e.changedTouches[0];
+  if (!t) return;
+  var svg = document.getElementById('cm-svg');
+  var rect = svg.getBoundingClientRect();
+  var x = Math.round((t.clientX - rect.left) / rect.width  * 400);
+  var y = Math.round((t.clientY - rect.top)  / rect.height * 700);
+  if (cmDrawPoints.length === 0 || Math.hypot(x - cmDrawPoints[cmDrawPoints.length-1][0], y - cmDrawPoints[cmDrawPoints.length-1][1]) > 10) {
+    cmDrawPoints.push([x, y]);
+    updateDrawPath();
+  }
+}
+
+function updateDrawPath() {
+  var drawPath = document.getElementById('cm-draw-path');
+  var distEl   = document.getElementById('cm-draw-dist');
+  if (!drawPath) return;
+  var pts = cmDrawPoints.map(function(p){return p[0]+','+p[1];}).join(' ');
+  drawPath.setAttribute('points', pts);
+  // Estimate distance (rough: 1 SVG unit ≈ 5m)
+  var totalPx = 0;
+  for (var i = 1; i < cmDrawPoints.length; i++) {
+    var dx = cmDrawPoints[i][0] - cmDrawPoints[i-1][0];
+    var dy = cmDrawPoints[i][1] - cmDrawPoints[i-1][1];
+    totalPx += Math.sqrt(dx*dx + dy*dy);
+  }
+  var estKm = (totalPx * 0.005).toFixed(2);
+  if (distEl) distEl.textContent = cmDrawPoints.length > 1 ? ('예상 거리: ' + estKm + ' km · ' + cmDrawPoints.length + '개 포인트') : '지도를 탭해 경로를 그려주세요';
+}
+
+function undoDrawPoint() {
+  if (cmDrawPoints.length > 0) {
+    cmDrawPoints.pop();
+    updateDrawPath();
+  }
+}
+
+function saveDrawnCourse() {
+  if (cmDrawPoints.length < 2) { showToast('최소 2개 포인트가 필요해요'); return; }
+  var name = '내 코스 ' + (myCourses.length + 1);
+  var totalPx = 0;
+  for (var i = 1; i < cmDrawPoints.length; i++) {
+    var dx = cmDrawPoints[i][0] - cmDrawPoints[i-1][0];
+    var dy = cmDrawPoints[i][1] - cmDrawPoints[i-1][1];
+    totalPx += Math.sqrt(dx*dx + dy*dy);
+  }
+  var distKm = (totalPx * 0.005).toFixed(2);
+  var course = {
+    id: 'mc_' + Date.now(),
+    name: name,
+    points: cmDrawPoints.slice(),
+    dist: distKm,
+    createdAt: new Date().toLocaleDateString('ko-KR'),
+    color: '#c8f050'
+  };
+  myCourses.push(course);
+  try { localStorage.setItem('ghostrun_courses', JSON.stringify(myCourses)); } catch(e){}
+  cancelCourseDrawing();
+  switchCmTab('mine');
+  showToast('✅ 코스 저장됨: ' + name + ' (' + distKm + 'km)');
+}
+
+function cancelCourseDrawing() {
+  cmDrawing = false;
+  var svg = document.getElementById('cm-svg');
+  var drawPath = document.getElementById('cm-draw-path');
+  var cursor = document.getElementById('cm-draw-cursor');
+  var overlay = document.getElementById('cm-draw-overlay');
+  var btn = document.getElementById('cm-draw-btn');
+  if (drawPath) drawPath.setAttribute('points','');
+  if (cursor) cursor.style.display = 'none';
+  if (overlay) overlay.style.display = 'none';
+  if (svg) {
+    svg.style.cursor = '';
+    svg.removeEventListener('click', onMapTap);
+    svg.removeEventListener('mousemove', onMapMove);
+    svg.removeEventListener('touchmove', onMapTouchMove);
+    svg.removeEventListener('touchend', onMapTouchEnd);
+  }
+  if (btn) { btn.textContent = '✏️ 코스 그리기'; }
+  cmDrawPoints = [];
+}
+
+function renderMyCourses() {
+  var list = document.getElementById('cm-my-courses-list');
+  if (!list) return;
+  try { myCourses = JSON.parse(localStorage.getItem('ghostrun_courses') || '[]'); } catch(e){}
+  if (myCourses.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:20px 0;font-size:12px;font-weight:300;color:rgba(255,255,255,.3)">아직 저장된 코스가 없어요<br>코스를 그려 저장해보세요</div>';
+    return;
+  }
+  list.innerHTML = myCourses.map(function(c){
+    var cid = c.id;
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer';
+    row.onclick = function(){startCourseRun(cid);};
+    var icon = document.createElement('div');
+    icon.style.cssText = 'width:44px;height:44px;border-radius:10px;background:rgba(200,240,80,.08);border:1px solid rgba(200,240,80,.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0';
+    icon.textContent = '🗺';
+    var info = document.createElement('div');info.style.cssText = 'flex:1';
+    var nm = document.createElement('div');nm.style.cssText='font-size:14px;font-weight:500;color:#fff';nm.textContent=c.name;
+    var dt = document.createElement('div');dt.style.cssText='font-size:10px;font-weight:300;color:rgba(255,255,255,.35);margin-top:2px';dt.textContent=c.dist+'km · '+c.createdAt;
+    info.appendChild(nm);info.appendChild(dt);
+    var delBtn = document.createElement('button');
+    delBtn.style.cssText='width:28px;height:28px;background:rgba(255,60,60,.07);border:1px solid rgba(255,60,60,.15);border-radius:7px;font-size:12px;color:rgba(255,80,80,.5);cursor:pointer';
+    var shareBtn=document.createElement('button');
+    shareBtn.style.cssText='width:28px;height:28px;background:rgba(200,240,80,.06);border:1px solid rgba(200,240,80,.12);border-radius:7px;font-size:13px;cursor:pointer;margin-right:4px';
+    shareBtn.textContent='🔗';
+    shareBtn.onclick=function(e){e.stopPropagation();shareCourse({id:cid,name:c.name,dist:c.dist,area:'내 코스',color:'#c8f050'});};
+    delBtn.textContent='✕';
+    delBtn.onclick=function(e){e.stopPropagation();deleteMyCourse(cid);};
+    row.appendChild(icon);row.appendChild(info);row.appendChild(shareBtn);row.appendChild(delBtn);
+    return row.outerHTML;
+  }).join('');
+}
+
+function deleteMyCourse(id) {
+  myCourses = myCourses.filter(function(c){return c.id !== id;});
+  try { localStorage.setItem('ghostrun_courses', JSON.stringify(myCourses)); } catch(e){}
+  renderMyCourses();
+}
+
+// Init course map when tab activated
+function initCourseMap() {
+  var locEl = document.getElementById('cm-location');
+  if (locEl && navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var lat = pos.coords.latitude.toFixed(4);
+      var lng = pos.coords.longitude.toFixed(4);
+      if (locEl) locEl.textContent = '📍 현재 위치 · ' + lat + ', ' + lng;
+    }, function(){
+      if (locEl) locEl.textContent = '📍 서울특별시';
+    });
+  } else if (locEl) {
+    locEl.textContent = '📍 서울특별시';
+  }
+}
+// ══════════════════════════════════════════
+// ── NEARBY GPS RUNNERS ──
+const NEARBY_RUNNERS = [
+  {id:'nr_1', nick:'새벽의 유령', em:'🌙', lat:37.5672, lng:126.9790, speed:0.000018, dir:0.8, color:'#a78bfa'},
+  {id:'nr_2', nick:'한강지킴이',  em:'🏃', lat:37.5658, lng:126.9775, speed:0.000022, dir:2.1, color:'#60a5fa'},
+  {id:'nr_3', nick:'도시유령',    em:'👻', lat:37.5681, lng:126.9803, speed:0.000015, dir:1.4, color:'#f472b6'},
+  {id:'nr_4', nick:'바람처럼',    em:'💨', lat:37.5649, lng:126.9762, speed:0.000025, dir:3.5, color:'#34d399'},
+  {id:'nr_5', nick:'새벽4시',     em:'⚡', lat:37.5690, lng:126.9815, speed:0.000012, dir:0.3, color:'#fbbf24'},
+];
+let nearbyRunnerTimer = null;
+let mapViewLat = 37.5665, mapViewLng = 126.978;
+let mapViewZoom = 0.008; // lat/lng span visible in map
+
+function updateNearbyRunners() {
+  // Drift each runner along their direction
+  NEARBY_RUNNERS.forEach(function(r) {
+    r.lat += Math.cos(r.dir) * r.speed + (Math.random()-.5)*0.000005;
+    r.lng += Math.sin(r.dir) * r.speed + (Math.random()-.5)*0.000007;
+    // Slight direction drift
+    r.dir += (Math.random()-.5) * 0.15;
+  });
+  renderNearbyOnSVG();
+  var badge = document.getElementById('nearby-count');
+  if (badge) {
+    var onScreen = NEARBY_RUNNERS.filter(function(r){
+      var pt = latLngToSVG(r.lat, r.lng);
+      return pt.x >= -20 && pt.x <= 420 && pt.y >= -20 && pt.y <= 340;
+    }).length;
+    badge.textContent = '주변 ' + onScreen + '명';
+  }
+}
+
+function latLngToSVG(lat, lng) {
+  // Map GPS coord to SVG viewBox 0 0 400 320
+  var spanLat = mapViewZoom;
+  var spanLng = mapViewZoom * (400/320);
+  var x = ((lng - (mapViewLng - spanLng/2)) / spanLng) * 400;
+  var y = (((mapViewLat + spanLat/2) - lat) / spanLat) * 320;
+  return {x: Math.round(x), y: Math.round(y)};
+}
+
+function renderNearbyOnSVG() {
+  var svg = document.getElementById('ra-svg');
+  if (!svg) return;
+
+  // Update my position if GPS active
+  if (locGranted && pathCoords.length > 0) {
+    var last = pathCoords[pathCoords.length-1];
+    mapViewLat = last[0]; mapViewLng = last[1];
+  }
+
+  // Remove old nearby markers
+  svg.querySelectorAll('.nearby-runner').forEach(function(el){el.remove();});
+
+  NEARBY_RUNNERS.forEach(function(r) {
+    var pt = latLngToSVG(r.lat, r.lng);
+    // Skip if off screen
+    if (pt.x < -30 || pt.x > 430 || pt.y < -30 || pt.y > 350) return;
+
+    // Glow ring
+    var glowEl = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    glowEl.setAttribute('cx', pt.x); glowEl.setAttribute('cy', pt.y);
+    glowEl.setAttribute('r', '14');
+    glowEl.setAttribute('fill', r.color.replace(')', ',.15)').replace('rgb','rgba').replace('#', 'rgba(').replace('a(','a(').replace(r.color.slice(1),''));
+    // simpler approach:
+    glowEl.setAttribute('fill', 'rgba(255,255,255,.07)');
+    glowEl.setAttribute('stroke', r.color);
+    glowEl.setAttribute('stroke-width', '1.5');
+    glowEl.setAttribute('opacity', '0.7');
+    glowEl.classList.add('nearby-runner');
+    svg.appendChild(glowEl);
+
+    // Dot
+    var dotEl = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    dotEl.setAttribute('cx', pt.x); dotEl.setAttribute('cy', pt.y);
+    dotEl.setAttribute('r', '5');
+    dotEl.setAttribute('fill', r.color);
+    dotEl.classList.add('nearby-runner');
+    svg.appendChild(dotEl);
+
+    // Emoji label
+    var fo = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+    fo.setAttribute('x', pt.x - 12); fo.setAttribute('y', pt.y - 28);
+    fo.setAttribute('width', '24'); fo.setAttribute('height', '24');
+    fo.classList.add('nearby-runner');
+    var div = document.createElement('div');
+    div.style.cssText = 'font-size:16px;line-height:1;text-align:center;pointer-events:none';
+    div.textContent = r.em;
+    fo.appendChild(div);
+    svg.appendChild(fo);
+
+    // Nick label
+    var text = document.createElementNS('http://www.w3.org/2000/svg','text');
+    text.setAttribute('x', pt.x); text.setAttribute('y', pt.y + 22);
+    text.setAttribute('text-anchor','middle');
+    text.setAttribute('font-size','8');
+    text.setAttribute('font-weight','600');
+    text.setAttribute('letter-spacing','0.04em');
+    text.setAttribute('fill', r.color);
+    text.setAttribute('opacity','0.85');
+    text.textContent = r.nick;
+    text.classList.add('nearby-runner');
+    svg.appendChild(text);
+  });
+
+  // Draw distance rings around my position
+  renderDistanceRings();
+}
+
+function renderDistanceRings() {
+  var svg = document.getElementById('ra-svg');
+  if (!svg) return;
+  svg.querySelectorAll('.dist-ring').forEach(function(el){el.remove();});
+
+  // My dot current position from runner-dot
+  var myDot = document.getElementById('runner-dot');
+  if (!myDot) return;
+  var cx = parseFloat(myDot.getAttribute('cx')) || 200;
+  var cy = parseFloat(myDot.getAttribute('cy')) || 160;
+
+  // 500m ring and 1km ring (in SVG units, roughly)
+  var ring500 = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  ring500.setAttribute('cx', cx); ring500.setAttribute('cy', cy);
+  ring500.setAttribute('r', '40');
+  ring500.setAttribute('fill','none');
+  ring500.setAttribute('stroke','rgba(255,255,255,.06)');
+  ring500.setAttribute('stroke-width','1');
+  ring500.setAttribute('stroke-dasharray','4 6');
+  ring500.classList.add('dist-ring');
+  svg.insertBefore(ring500, svg.firstChild);
+
+  var lbl500 = document.createElementNS('http://www.w3.org/2000/svg','text');
+  lbl500.setAttribute('x', cx + 42); lbl500.setAttribute('y', cy + 3);
+  lbl500.setAttribute('font-size','7'); lbl500.setAttribute('fill','rgba(255,255,255,.2)');
+  lbl500.textContent = '500m'; lbl500.classList.add('dist-ring');
+  svg.insertBefore(lbl500, svg.firstChild);
+
+  var ring1k = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  ring1k.setAttribute('cx', cx); ring1k.setAttribute('cy', cy);
+  ring1k.setAttribute('r', '80');
+  ring1k.setAttribute('fill','none');
+  ring1k.setAttribute('stroke','rgba(255,255,255,.04)');
+  ring1k.setAttribute('stroke-width','1');
+  ring1k.setAttribute('stroke-dasharray','4 8');
+  ring1k.classList.add('dist-ring');
+  svg.insertBefore(ring1k, svg.firstChild);
+
+  var lbl1k = document.createElementNS('http://www.w3.org/2000/svg','text');
+  lbl1k.setAttribute('x', cx + 82); lbl1k.setAttribute('y', cy + 3);
+  lbl1k.setAttribute('font-size','7'); lbl1k.setAttribute('fill','rgba(255,255,255,.15)');
+  lbl1k.textContent = '1km'; lbl1k.classList.add('dist-ring');
+  svg.insertBefore(lbl1k, svg.firstChild);
+}
+
+function startNearbyTracking() {
+  if (nearbyRunnerTimer) clearInterval(nearbyRunnerTimer);
+  renderNearbyOnSVG();
+  nearbyRunnerTimer = setInterval(updateNearbyRunners, 2500);
+}
+function stopNearbyTracking() {
+  if (nearbyRunnerTimer) { clearInterval(nearbyRunnerTimer); nearbyRunnerTimer = null; }
+  var svg = document.getElementById('ra-svg');
+  if (svg) {
+    svg.querySelectorAll('.nearby-runner,.dist-ring').forEach(function(el){el.remove();});
+  }
+}
+
 function startRun(){
   document.getElementById('rsetup').classList.remove('on');
   document.getElementById('rpaused').classList.remove('on');
@@ -2125,11 +3037,16 @@ function startRun(){
   if(locGranted){
     watchId=navigator.geolocation.watchPosition(
       pos=>{const lat=pos.coords.latitude,lng=pos.coords.longitude;if(pathCoords.length>0){const prev=pathCoords[pathCoords.length-1];runDist+=haversine(prev[0],prev[1],lat,lng);}pathCoords.push([lat,lng]);},
-      err=>{console.warn('GPS error:',err.code);},
+      err=>{
+        var msg={1:'권한 거부됨',2:'위치 불가',3:'시간 초과'}[err.code]||'알 수 없음';
+        console.warn('GPS 오류 ('+err.code+'): '+msg);
+        locGranted=false;
+      },
       {enableHighAccuracy:true,maximumAge:1000,timeout:10000}
     );
   }
   runTimer=setInterval(runTick,1000);
+  startNearbyTracking();
 }
 
 function runTick(){
@@ -2203,6 +3120,7 @@ function stopRun(){
 }
 
 function resetRun(){
+  stopNearbyTracking();
   document.getElementById('rfinish').classList.remove('on');document.getElementById('ractive').classList.remove('on');document.getElementById('rpaused').classList.remove('on');document.getElementById('rsetup').classList.add('on');
   runSec=0;runDist=0;clapCount=0;const ccEl=document.getElementById('clap-count');if(ccEl)ccEl.textContent='0';
 }
@@ -2376,9 +3294,114 @@ function onLoginSuccess(user){
   hideLoginScreen();setSrvBadge(true);
 }
 function openProfile(){
-  if(!currentUser){showLoginScreen();return;}const u=currentUser,box=document.getElementById('prof-box');if(!box)return;
-  const _myAt=u.atCode||('AT-'+u.id.replace(/\D/g,'').slice(-6).padStart(6,'0'));
-  box.innerHTML=`<div class="prof-hd"><div class="prof-avatar">${u.avatar||'👻'}</div><div><div class="prof-name">${u.nickname}</div><div class="prof-email">${u.email}</div><div class="prof-joined">가입일 ${new Date(u.joinedAt).toLocaleDateString('ko-KR')}</div><div onclick="copyRoomCode('${_myAt}')" style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;background:rgba(200,240,80,.08);border:1px solid rgba(200,240,80,.18);border-radius:8px;padding:5px 10px;cursor:pointer"><span style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#c8f050">${_myAt}</span><span style="font-size:11px;color:rgba(255,255,255,.35)">📋 내 코드</span></div></div></div><div class="prof-stats-row"><div class="prof-st"><span class="prof-sl">총 거리</span><span class="prof-sv">${(u.totalKm||312.4).toFixed(1)}<span style="font-size:12px;color:var(--dim)"> km</span></span></div><div class="prof-st"><span class="prof-sl">런 횟수</span><span class="prof-sv">${u.runCount||62}<span style="font-size:12px;color:var(--dim)"> 회</span></span></div></div><div class="prof-menu-item" onclick="editNickname()"><span class="prof-menu-em">✏️</span><span class="prof-menu-txt">닉네임 변경</span><span class="prof-menu-arrow">›</span></div><div class="prof-menu-item" onclick="editAvatar()"><span class="prof-menu-em">👻</span><span class="prof-menu-txt">아바타 변경</span><span class="prof-menu-arrow">›</span></div><button class="prof-logout" onclick="doLogout()">로그아웃</button>`;
+  if(!currentUser){showLoginScreen();return;}
+  var u=currentUser;
+  var box=document.getElementById('prof-box');
+  if(!box)return;
+  box.innerHTML='';
+
+  var _myAt=u.atCode||('AT-'+u.id.replace(/\D/g,'').slice(-6).padStart(6,'0'));
+  var totalKm=(u.totalKm||312.4).toFixed(1);
+  var runCnt=u.runCount||62;
+
+  function el(tag,css,txt){
+    var e=document.createElement(tag);
+    if(css)e.style.cssText=css;
+    if(txt!=null)e.textContent=txt;
+    return e;
+  }
+  function div(css,txt){return el('div',css,txt);}
+  function span(css,txt){return el('span',css,txt);}
+
+  // ── HEADER ──
+  var hd=div('padding:22px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:14px');
+  var av=div('width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(200,240,80,.25);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0');
+  av.textContent=u.avatar||'👻';
+  var info=div('flex:1');
+  var nm=div('font-family:Barlow Condensed,sans-serif;font-style:italic;font-size:20px;font-weight:300',u.nickname);
+  var em=div('font-size:10px;font-weight:200;color:rgba(255,255,255,.4);margin-top:2px',u.email);
+  var jn=div('font-size:9px;font-weight:200;color:rgba(200,240,80,.6);margin-top:3px','가입일 '+new Date(u.joinedAt).toLocaleDateString('ko-KR'));
+  var atBox=div('margin-top:6px;display:inline-flex;align-items:center;gap:6px;background:rgba(200,240,80,.08);border:1px solid rgba(200,240,80,.18);border-radius:8px;padding:4px 10px;cursor:pointer');
+  atBox.onclick=function(){copyRoomCode(_myAt);};
+  atBox.appendChild(span('font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:700;letter-spacing:.08em;color:#c8f050',_myAt));
+  atBox.appendChild(span('font-size:10px;color:rgba(255,255,255,.35)','📋'));
+  info.appendChild(nm);info.appendChild(em);info.appendChild(jn);info.appendChild(atBox);
+  hd.appendChild(av);hd.appendChild(info);
+  box.appendChild(hd);
+
+  // ── STATS GRID ──
+  var sg=div('display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:1px solid rgba(255,255,255,.07)');
+  [{val:totalKm,lbl:'총 거리 km',c:'#c8f050'},{val:runCnt+'',lbl:'완주 횟수',c:'rgba(255,255,255,.85)'},{val:"5'18\"",lbl:'평균 페이스',c:'rgba(255,255,255,.85)'},{val:'47h',lbl:'총 시간',c:'rgba(255,255,255,.85)'}].forEach(function(s,i){
+    var cell=div('padding:14px 0;display:flex;flex-direction:column;align-items:center;gap:2px'+(i<3?';border-right:1px solid rgba(255,255,255,.07)':''));
+    cell.appendChild(span('font-family:Barlow Condensed,sans-serif;font-size:'+(i<2?'28':'22')+'px;font-weight:900;color:'+s.c+';line-height:1',s.val));
+    cell.appendChild(span('font-size:8px;font-weight:300;letter-spacing:.08em;color:rgba(255,255,255,.35)',s.lbl));
+    sg.appendChild(cell);
+  });
+  box.appendChild(sg);
+
+  // ── 이번 달 목표 ──
+  var goalSec=div('padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.07)');
+  var goalTop=div('display:flex;justify-content:space-between;align-items:center;margin-bottom:8px');
+  goalTop.appendChild(span('font-size:10px;font-weight:300;letter-spacing:.1em;color:rgba(255,255,255,.4)','이번 달 목표'));
+  goalTop.appendChild(span('font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:700;color:#c8f050','38%'));
+  var barWrap=div('height:4px;background:rgba(255,255,255,.08);border-radius:2px');
+  var barFill=div('width:38%;height:100%;background:linear-gradient(90deg,rgba(200,240,80,.4),#c8f050);border-radius:2px');
+  barWrap.appendChild(barFill);
+  goalSec.appendChild(goalTop);goalSec.appendChild(barWrap);
+  goalSec.appendChild(div('font-size:10px;font-weight:300;color:rgba(255,255,255,.3);margin-top:5px','37.8 / 100 km'));
+  box.appendChild(goalSec);
+
+  // ── 최근 런 ──
+  var logSec=div('padding:16px 18px 0');
+  logSec.appendChild(div('font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:900;letter-spacing:.04em;color:#fff;margin-bottom:12px','최근 런'));
+  (PAST_LOGS||[]).slice(0,5).forEach(function(r){
+    var row=div('display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06)');
+    var dt=div('flex-shrink:0;text-align:center;width:32px');
+    dt.appendChild(div('font-size:7px;font-weight:200;color:rgba(255,255,255,.3);letter-spacing:.06em',r.mo));
+    dt.appendChild(div('font-family:Barlow Condensed,sans-serif;font-size:26px;font-weight:900;color:#fff;line-height:1',r.date.split('.')[1]));
+    var inf=div('flex:1');
+    var kmLine=document.createElement('div');
+    kmLine.style.cssText='font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:800;color:#c8f050;line-height:1';
+    kmLine.innerHTML=r.d.toFixed(2)+'<span style="font-size:13px;font-weight:300;color:rgba(255,255,255,.4)"> km</span>';
+    inf.appendChild(kmLine);
+    inf.appendChild(div('font-size:11px;font-weight:300;color:rgba(255,255,255,.35);margin-top:2px',r.pace+'/km · '+r.time));
+    row.appendChild(dt);row.appendChild(inf);
+    row.appendChild(div('font-size:11px;font-weight:300;color:rgba(255,255,255,.3)',r.cal+' kcal'));
+    logSec.appendChild(row);
+  });
+  box.appendChild(logSec);
+
+  // ── 참여한 크루 ──
+  var crewSec=div('padding:16px 18px 0');
+  crewSec.appendChild(div('font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:900;letter-spacing:.04em;color:#fff;margin-bottom:10px','참여한 크루'));
+  [{em:'🌙',name:'새벽 5km 챌린지',dist:'24.5 km',period:'7일'},{em:'🏃',name:'한강 10K 런',dist:'10.1 km',period:'14일'},{em:'⚡',name:'번개 달리기단',dist:'15.3 km',period:'30일'}].forEach(function(c){
+    var row=div('display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)');
+    var ico=div('width:38px;height:38px;border-radius:10px;background:rgba(200,240,80,.07);border:1px solid rgba(200,240,80,.12);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0');
+    ico.textContent=c.em;
+    var ci=div('flex:1');
+    ci.appendChild(div('font-size:13px;font-weight:400;color:rgba(255,255,255,.85)',c.name));
+    ci.appendChild(div('font-size:10px;font-weight:300;color:rgba(255,255,255,.35);margin-top:2px',c.dist+' · '+c.period));
+    row.appendChild(ico);row.appendChild(ci);crewSec.appendChild(row);
+  });
+  box.appendChild(crewSec);
+
+  // ── 설정 메뉴 ──
+  var menuSec=div('margin-top:12px;border-top:1px solid rgba(255,255,255,.07)');
+  [{em:'✏️',txt:'닉네임 변경',fn:editNickname},{em:'👻',txt:'아바타 변경',fn:editAvatar}].forEach(function(m){
+    var item=div('display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer;transition:background .15s');
+    item.onclick=m.fn;
+    item.appendChild(span('font-size:16px;width:22px;text-align:center',m.em));
+    item.appendChild(span('flex:1;font-size:13px;font-weight:200',m.txt));
+    item.appendChild(span('font-size:11px;color:rgba(255,255,255,.35)','›'));
+    menuSec.appendChild(item);
+  });
+  box.appendChild(menuSec);
+
+  // ── 로그아웃 ──
+  var logoutBtn=document.createElement('button');
+  logoutBtn.className='prof-logout';logoutBtn.textContent='로그아웃';logoutBtn.onclick=doLogout;
+  box.appendChild(logoutBtn);
+
   openModal('m-profile');
 }
 async function doLogout(){await GR_API.logout();currentUser=null;recInited=false;const np=document.getElementById('nav-profile');if(np)np.textContent='👤';closeModal('m-profile');showLoginScreen();showToast('로그아웃됐어요');}
@@ -2393,33 +3416,12 @@ async function checkServer(){const online=await GR_API.ping();setSrvBadge(online
   const session=GR_API.currentUser();
   if(session){currentUser=session;const np=document.getElementById('nav-profile');if(np)np.textContent=session.avatar||'👻';['nm-g','nm-p','nm-s'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=session.nickname;});}
 })();
-
 </script>
 
-
-<!-- ── 친구 추가 모달 ── -->
-<div id="m-friends" class="modal" style="position:fixed;inset:0;z-index:210;background:rgba(0,0,0,.88);backdrop-filter:blur(20px);align-items:flex-end;justify-content:center">
-  <div style="width:100%;max-width:480px;background:#161616;border-radius:26px 26px 0 0;border:1px solid rgba(255,255,255,.08);padding:0 0 40px;max-height:85vh;overflow-y:auto">
-    <div style="display:flex;justify-content:center;padding:12px 0 0"><div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.15)"></div></div>
-    <div style="padding:18px 22px 0">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;margin-bottom:4px">친구 추가</div>
-      <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:16px">닉네임 또는 GR 코드로 친구를 찾아보세요</div>
-      <!-- Search bar -->
-      <div style="display:flex;gap:8px;margin-bottom:18px">
-        <input id="friend-search-input" type="text" placeholder="닉네임 또는 GR-XXXX 입력" maxlength="30"
-          style="flex:1;height:46px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:0 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#fff;outline:none;box-sizing:border-box"
-          oninput="searchFriends(this.value)">
-        <button onclick="searchFriends(document.getElementById('friend-search-input').value)" style="height:46px;padding:0 18px;background:#c8f050;border:none;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:#0a0a0a;cursor:pointer">검색</button>
-      </div>
-      <div id="friend-search-results"></div>
-      <!-- Suggested runners -->
-      <div style="margin-top:6px">
-        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.35);margin-bottom:12px">추천 러너</div>
-        <div id="friend-suggest-container"></div>
-      </div>
-    </div>
-  </div>
+<!-- Course detail sheet (fixed overlay) -->
+<div id="cm-detail-sheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:#161616;border-top:1.5px solid rgba(255,255,255,.08);border-radius:22px 22px 0 0;padding:0 0 40px;max-height:60vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.22,1,.36,1)">
+  <div style="display:flex;justify-content:center;padding:10px 0 0"><div style="width:32px;height:4px;border-radius:2px;background:rgba(255,255,255,.2)"></div></div>
+  <div id="cm-detail-content" style="padding:16px 20px 0"></div>
 </div>
-
 </body>
 </html>
