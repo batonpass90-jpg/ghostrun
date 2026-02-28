@@ -1401,6 +1401,7 @@ input[type=file]{display:none}
       <!-- 버튼들 -->
       <div style="display:flex;gap:10px;pointer-events:auto">
         <button onclick="undoDrawPoint()" style="flex:1;height:52px;background:rgba(255,255,255,.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.04em;color:rgba(255,255,255,.6);cursor:pointer;touch-action:manipulation">↩ 되돌리기</button>
+        <button onclick="clearDrawPoints()" style="width:52px;height:52px;background:rgba(255,70,70,.08);backdrop-filter:blur(12px);border:1px solid rgba(255,70,70,.2);border-radius:14px;font-size:18px;cursor:pointer;touch-action:manipulation;flex-shrink:0" title="전체 지우기">🗑</button>
         <button onclick="saveDrawnCourse()" style="flex:2;height:52px;background:#c8f050;border:none;border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:.08em;color:#0a0a0a;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 20px rgba(200,240,80,.4)">저장하기</button>
       </div>
     </div>
@@ -3274,14 +3275,25 @@ function updateDrawPath() {
 }
 
 function undoDrawPoint() {
-  if (courseMapboxMap && drawLatLngs.length > 0) {
-    drawLatLngs.pop();
-    if (drawPolyline) drawPolyline.setPath(drawLatLngs);
-    updateDrawDistFromLatLngs();
-  } else if (cmDrawPoints.length > 0) {
-    cmDrawPoints.pop();
-    updateDrawPath();
+  if (drawLatLngs.length === 0) return;
+  drawLatLngs.pop();
+  if (courseMapboxMap) {
+    var src = courseMapboxMap.getSource('draw-path');
+    if (src) src.setData({ type:'Feature', geometry:{ type:'LineString', coordinates: drawLatLngs } });
   }
+  updateDrawDistFromLatLngs();
+}
+
+function clearDrawPoints() {
+  if (drawLatLngs.length === 0) return;
+  if (!confirm('경로를 전부 지울까요?')) return;
+  drawLatLngs = [];
+  cmDrawPoints = [];
+  if (courseMapboxMap) {
+    var src = courseMapboxMap.getSource('draw-path');
+    if (src) src.setData({ type:'Feature', geometry:{ type:'LineString', coordinates:[] } });
+  }
+  updateDrawDistFromLatLngs();
 }
 
 function saveDrawnCourse() {
