@@ -3171,6 +3171,13 @@ function toggleCourseDrawing() {
   if (cmDrawing) { cancelCourseDrawing(); return; }
   cmDrawing = true;
   cmMode = 'draw';
+  if (courseMapboxMap) {
+    courseMapboxMap.dragPan.disable();
+    courseMapboxMap.scrollZoom.disable();
+    courseMapboxMap.touchZoomRotate.disable();
+    courseMapboxMap.touchPitch.disable();
+    courseMapboxMap.dragRotate.disable();
+  }
   cmDrawPoints = [];
   drawLatLngs = [];
 
@@ -3321,33 +3328,52 @@ function setCmMode(mode) {
   var btnMove = document.getElementById('cm-mode-move');
   var btnDraw = document.getElementById('cm-mode-draw');
   if (!btnMove || !btnDraw) return;
-  
+
   if (mode === 'draw') {
-    // 그리기 모드
     btnDraw.style.background = 'rgba(200,240,80,.15)';
     btnDraw.style.borderColor = 'rgba(200,240,80,.5)';
     btnDraw.style.color = '#c8f050';
     btnMove.style.background = 'rgba(10,10,10,.85)';
     btnMove.style.borderColor = 'rgba(255,255,255,.2)';
     btnMove.style.color = 'rgba(255,255,255,.5)';
-    if (courseMapboxMap) courseMapboxMap.getCanvas().style.cursor = 'crosshair';
-    if (courseMapboxMap) courseMapboxMap.dragPan.enable();
+    if (courseMapboxMap) {
+      courseMapboxMap.getCanvas().style.cursor = 'crosshair';
+      courseMapboxMap.dragPan.disable();
+      courseMapboxMap.scrollZoom.disable();
+      courseMapboxMap.touchZoomRotate.disable();
+      courseMapboxMap.touchPitch.disable();
+      courseMapboxMap.dragRotate.disable();
+    }
   } else {
-    // 이동 모드
     btnMove.style.background = 'rgba(200,240,80,.15)';
     btnMove.style.borderColor = 'rgba(200,240,80,.5)';
     btnMove.style.color = '#c8f050';
     btnDraw.style.background = 'rgba(10,10,10,.85)';
     btnDraw.style.borderColor = 'rgba(255,255,255,.2)';
     btnDraw.style.color = 'rgba(255,255,255,.5)';
-    if (courseMapboxMap) courseMapboxMap.getCanvas().style.cursor = 'grab';
-    if (courseMapboxMap) courseMapboxMap.dragPan.enable();
+    if (courseMapboxMap) {
+      courseMapboxMap.getCanvas().style.cursor = 'grab';
+      courseMapboxMap.dragPan.enable();
+      courseMapboxMap.scrollZoom.enable();
+      courseMapboxMap.touchZoomRotate.enable();
+      courseMapboxMap.touchPitch.enable();
+      courseMapboxMap.dragRotate.enable();
+    }
   }
 }
+
 
 function cancelCourseDrawing() {
   cmDrawing = false;
   drawLatLngs = [];
+  if (courseMapboxMap) {
+    courseMapboxMap.dragPan.enable();
+    courseMapboxMap.scrollZoom.enable();
+    courseMapboxMap.touchZoomRotate.enable();
+    courseMapboxMap.touchPitch.enable();
+    courseMapboxMap.dragRotate.enable();
+    courseMapboxMap.getCanvas().style.cursor = '';
+  }
 
   // 오버레이 숨기기
   var overlay = document.getElementById('cm-draw-overlay');
@@ -3792,9 +3818,18 @@ function initCourseKakaoMap() {
 
   // 드래그로 연속 그리기 (touchmove)
   var _lastDrawTime = 0;
+
+  // touchstart: 그리기 모드일 때 지도 드래그 원천 차단
+  courseMapboxMap.getCanvas().addEventListener('touchstart', function(e) {
+    if (!cmDrawing || cmMode !== 'draw') return;
+    e.preventDefault();
+    e.stopPropagation();
+  }, { passive: false });
+
   courseMapboxMap.getCanvas().addEventListener('touchmove', function(e) {
     if (!cmDrawing || cmMode !== 'draw') return;
     e.preventDefault();
+    e.stopPropagation();
     var now = Date.now();
     if (now - _lastDrawTime < 80) return; // 80ms 간격으로 포인트 추가
     _lastDrawTime = now;
