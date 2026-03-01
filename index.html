@@ -60,7 +60,7 @@ html,body{height:100%;overflow:hidden;background:#0a0a0d}
   --hi:#ede9e1;--acc:#c8f050;
   --gold:#d4b54a;--silver:#a0aab4;--bronze:#b07444;
   --fd:"Playfair Display","Barlow Condensed",serif;
-  --fb:"Barlow","Noto Sans KR",system-ui,sans-serif;
+  --fb:"Space Grotesk","Noto Sans KR",system-ui,sans-serif;
 }
 body{background:var(--bg);color:var(--hi);font-family:var(--fb);
   display:flex;flex-direction:column;height:100dvh;max-width:430px;margin:0 auto;position:relative}
@@ -79,7 +79,7 @@ body{background:var(--bg);color:var(--hi);font-family:var(--fb);
 @keyframes clapBeat{0%,100%{transform:scale(1) rotate(-4deg)}40%{transform:scale(1.18) rotate(4deg)}70%{transform:scale(.96) rotate(-2deg)}}
 @keyframes clapDrift{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(8deg)}}
 50%{transform:translateY(-11px)}}
-.sp-logo{font-family:var(--fd);font-style:italic;font-size:72px;font-weight:300;letter-spacing:-.02em;margin-bottom:14px;position:relative;line-height:1}
+.sp-logo{font-family:var(--fd);font-style:italic;font-size:72px;font-weight:300;letter-spacing:1px;margin-bottom:14px;position:relative;line-height:1}
 .sp-sub{font-size:15px;font-weight:300;color:var(--mid);letter-spacing:.04em;margin-bottom:8px;position:relative}
 .sp-desc{font-size:12px;font-weight:200;color:var(--dim);letter-spacing:.07em;line-height:1.9;margin-bottom:54px;position:relative}
 .sp-btn{background:var(--hi);border:none;border-radius:99px;padding:17px 58px;font-family:var(--fb);font-size:15px;font-weight:300;color:var(--bg);cursor:pointer;letter-spacing:.04em;transition:all .2s;position:relative;box-shadow:0 8px 30px rgba(237,233,225,.1)}
@@ -389,7 +389,6 @@ body{background:var(--bg);color:var(--hi);font-family:var(--fb);
 .g-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
 .g-brand{font-size:9px;font-weight:200;letter-spacing:.16em;color:rgba(255,255,255,.1)}
 .g-tag{font-size:9px;font-weight:200;color:rgba(200,240,80,.42)}
-#mmg{width:40px;height:40px;border-radius:5px;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.4);position:absolute;right:16px;bottom:20px}
 .p-logo{font-family:var(--fd);font-style:italic;font-size:15px;font-weight:400;color:rgba(255,255,255,.55)}
 .p-mapbg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 #mmp{width:62%;max-width:220px;aspect-ratio:1;opacity:.25}
@@ -415,7 +414,6 @@ body{background:var(--bg);color:var(--hi);font-family:var(--fb);
 .st-badge{position:absolute;bottom:14px;right:14px;width:60px;height:60px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.44);backdrop-filter:blur(8px)}
 .st-badge::before{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(200,240,80,.1)}
 .sb-em{font-size:23px;line-height:1}.sb-done{font-size:7px;font-weight:200;letter-spacing:.12em;color:rgba(200,240,80,.5)}.sb-date{font-size:7px;font-weight:200;color:rgba(255,255,255,.18)}
-#mms{position:absolute;top:70px;right:18px;width:42px;height:42px;border-radius:6px;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.4)}
 #tbar{flex-shrink:0;display:flex;gap:6px;padding:8px 14px 5px;overflow-x:auto;scrollbar-width:none}
 #tbar::-webkit-scrollbar{display:none}
 #tbar::-webkit-scrollbar{display:none}
@@ -637,13 +635,16 @@ input[type=file]{display:none}
 .bsm { font-size: 10px; font-weight: 300; letter-spacing: .08em }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5fe69b6f593b050ab5a4ba1ae791c0fc&libraries=services,clusterer"></script>
 <style>
-/* Mapbox CSS 오버라이드 - 흰 배경 방지 */
-.mapboxgl-map { background:#0a0a0d !important; }
-.mapboxgl-canvas-container, .mapboxgl-canvas { background:#0a0a0d !important; }
+/* Kakao Maps */
 </style>
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ── Supabase 초기화 ──
+const _SB = supabase.createClient('https://imjcmmqsafeyfshgybji.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltamNtbXFzYWZleWZzaGd5YmppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTQ0NjQsImV4cCI6MjA4Nzg5MDQ2NH0.AQpyjjCTBh4xsX4WRRZlXAvZGCnNNF5NYwTxBAd_By8');
+</script>
 </head>
 <body>
 
@@ -655,7 +656,7 @@ input[type=file]{display:none}
     <span class="sp-clap-l">👏</span>
     <span class="sp-clap-r">👏</span>
   </div>
-  <div class="sp-logo"><span style="font-style:italic;font-weight:900;letter-spacing:-.02em;font-size:72px"><span style="color:#c8f050">Clap</span>Run</span></div>
+  <div class="sp-logo"><span style="font-style:italic;font-weight:900;letter-spacing:1px;font-size:72px"><span style="color:#c8f050">Clap</span>Run</span></div>
   <div class="sp-sub">오늘도 뛰는 모든 러너에게</div>
   <div class="sp-desc">느슨한 연대를 위한<br>비대면 매칭 플랫폼</div>
   <button class="sp-btn" onclick="hideSplash()">시작하기</button>
@@ -715,15 +716,15 @@ input[type=file]{display:none}
       <div style="font-size:12px;font-weight:300;color:rgba(255,255,255,.3);letter-spacing:.04em;margin-bottom:22px">지금 이 순간, 당신도 혼자가 아닙니다</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,.06);border-radius:14px;overflow:hidden">
         <div style="background:#111;padding:14px 12px;text-align:center">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:#fff;line-height:1" id="hm-total-km">187.4</div>
+          <div style="font-family:'DM Sans',sans-serif;font-size:26px;font-weight:900;color:#fff;line-height:1" id="hm-total-km">187.4</div>
           <div style="font-size:9px;font-weight:300;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-top:3px">총 km (오늘)</div>
         </div>
         <div style="background:#111;padding:14px 12px;text-align:center">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:#fff;line-height:1" id="hm-avg-pace">5'14"</div>
+          <div style="font-family:'DM Sans',sans-serif;font-size:26px;font-weight:900;color:#fff;line-height:1" id="hm-avg-pace">5'14"</div>
           <div style="font-size:9px;font-weight:300;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-top:3px">평균 페이스</div>
         </div>
         <div style="background:#111;padding:14px 12px;text-align:center">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:rgba(200,240,80,.85);line-height:1" id="hm-active-now">8</div>
+          <div style="font-family:'DM Sans',sans-serif;font-size:26px;font-weight:900;color:rgba(200,240,80,.85);line-height:1" id="hm-active-now">8</div>
           <div style="font-size:9px;font-weight:300;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-top:3px">지금 러닝 중</div>
         </div>
       </div>
@@ -731,7 +732,7 @@ input[type=file]{display:none}
   </div>
   <!-- CTA -->
   <div style="padding:16px 16px 0;flex-shrink:0">
-    <button onclick="goTab('run')" style="width:100%;height:60px;background:#c8f050;border:none;border-radius:18px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:.1em;color:#0a0a0a;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 6px 24px rgba(200,240,80,.25);-webkit-tap-highlight-color:transparent">
+    <button onclick="goTab('run')" style="width:100%;height:60px;background:#c8f050;border:none;border-radius:18px;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:900;letter-spacing:.02em;color:#0a0a0a;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 6px 24px rgba(200,240,80,.25);-webkit-tap-highlight-color:transparent">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="#0a0a0a"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       지금 함께 달리기
     </button>
@@ -753,8 +754,8 @@ input[type=file]{display:none}
     </div>
     <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:16px">모두 익명 · 오늘 기준</div>
     <div style="display:flex;gap:6px;margin-bottom:14px" id="lb-tabs">
-      <button class="lb-tab on" data-lb="dist" onclick="switchLbTab('dist')" style="flex:1;height:36px;border-radius:10px;border:1px solid rgba(200,240,80,.3);background:rgba(200,240,80,.1);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;color:#c8f050;cursor:pointer">📍 거리 TOP 10</button>
-      <button class="lb-tab" data-lb="pace" onclick="switchLbTab('pace')" style="flex:1;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.4);cursor:pointer">⚡ 페이스 TOP 10</button>
+      <button class="lb-tab on" data-lb="dist" onclick="switchLbTab('dist')" style="flex:1;height:36px;border-radius:10px;border:1px solid rgba(200,240,80,.3);background:rgba(200,240,80,.1);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:900;letter-spacing:.06em;color:#c8f050;cursor:pointer">📍 거리 TOP 10</button>
+      <button class="lb-tab" data-lb="pace" onclick="switchLbTab('pace')" style="flex:1;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:900;letter-spacing:.06em;color:rgba(255,255,255,.4);cursor:pointer">⚡ 페이스 TOP 10</button>
     </div>
     <div id="lb-dist"></div>
     <div id="lb-pace" style="display:none"></div>
@@ -827,7 +828,7 @@ input[type=file]{display:none}
     </div>
     <!-- START RUN -->
     <div style="padding:0 16px 36px;flex-shrink:0">
-      <button id="start-btn" onclick="requestHealthAccess()" style="width:100%;height:72px;background:#c8f050;border:none;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;letter-spacing:.12em;color:#0a0a0a;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:14px;box-shadow:0 8px 32px rgba(200,240,80,.32);-webkit-tap-highlight-color:transparent" onmousedown="this.style.transform='scale(.97)'" onmouseup="this.style.transform=''" ontouchstart="this.style.transform='scale(.97)'" ontouchend="this.style.transform=''">
+      <button id="start-btn" onclick="requestHealthAccess()" style="width:100%;height:72px;background:#c8f050;border:none;border-radius:20px;font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;letter-spacing:.02em;color:#0a0a0a;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:14px;box-shadow:0 8px 32px rgba(200,240,80,.32);-webkit-tap-highlight-color:transparent" onmousedown="this.style.transform='scale(.97)'" onmouseup="this.style.transform=''" ontouchstart="this.style.transform='scale(.97)'" ontouchend="this.style.transform=''">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="#0a0a0a"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         START RUN
       </button>
@@ -864,8 +865,8 @@ input[type=file]{display:none}
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;padding:20px 24px 28px">
-        <button onclick="grantHealthAccess()" style="width:100%;height:56px;background:#c8f050;border:none;border-radius:16px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:.07em;color:#0a0a0a;cursor:pointer">허용</button>
-        <button onclick="denyHealthAccess()" style="width:100%;height:48px;background:none;border:1.5px solid rgba(255,255,255,.1);border-radius:16px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:600;color:rgba(255,255,255,.4);cursor:pointer">허용 안 함</button>
+        <button onclick="grantHealthAccess()" style="width:100%;height:56px;background:#c8f050;border:none;border-radius:16px;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:.07em;color:#0a0a0a;cursor:pointer">허용</button>
+        <button onclick="denyHealthAccess()" style="width:100%;height:48px;background:none;border:1.5px solid rgba(255,255,255,.1);border-radius:16px;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:rgba(255,255,255,.4);cursor:pointer">허용 안 함</button>
       </div>
     </div>
   </div>
@@ -964,11 +965,11 @@ input[type=file]{display:none}
         <div style="width:1px;background:rgba(255,255,255,.08)"></div>
         <div style="text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:rgba(255,255,255,.7)" id="ps-pace">--'--"</div><div style="font-size:9px;letter-spacing:.14em;color:rgba(255,255,255,.3)">PACE</div></div>
       </div>
-      <button onclick="resumeRun()" style="width:100%;height:64px;background:#c8f050;border:none;border-radius:18px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:.08em;color:#0a0a0a;cursor:pointer;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:12px;-webkit-tap-highlight-color:transparent;box-shadow:0 6px 24px rgba(200,240,80,.28);position:relative;z-index:2;pointer-events:auto">
+      <button onclick="resumeRun()" style="width:100%;height:64px;background:#c8f050;border:none;border-radius:18px;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;letter-spacing:.08em;color:#0a0a0a;cursor:pointer;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:12px;-webkit-tap-highlight-color:transparent;box-shadow:0 6px 24px rgba(200,240,80,.28);position:relative;z-index:2;pointer-events:auto">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#0a0a0a"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         RE-START RUN
       </button>
-      <button onclick="stopRun()" style="width:100%;height:56px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:18px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:rgba(255,255,255,.55);cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;z-index:2;pointer-events:auto">FINISH RUN</button>
+      <button onclick="stopRun()" style="width:100%;height:56px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:18px;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:900;color:rgba(255,255,255,.55);cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;z-index:2;pointer-events:auto">FINISH RUN</button>
     </div>
   </div>
 
@@ -1006,11 +1007,11 @@ input[type=file]{display:none}
     <!-- 받은 clap 표시 -->
     <div id="rf-clap-row" style="display:none;align-items:center;justify-content:center;gap:4px;padding:14px 16px 0;border-top:1px solid rgba(200,240,80,.08)"></div>
     <div style="display:flex;gap:10px;padding:12px 16px 28px;flex-shrink:0">
-      <button onclick="goTab('shot')" style="flex:1;height:56px;background:#c8f050;border:none;border-radius:16px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:.07em;color:#080808;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;-webkit-tap-highlight-color:transparent">
+      <button onclick="goTab('shot')" style="flex:1;height:56px;background:#c8f050;border:none;border-radius:16px;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:.07em;color:#080808;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;-webkit-tap-highlight-color:transparent">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
         인증샷
       </button>
-      <button onclick="resetRun()" style="height:56px;padding:0 24px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:16px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:rgba(255,255,255,.45);cursor:pointer;-webkit-tap-highlight-color:transparent">완료</button>
+      <button onclick="resetRun()" style="height:56px;padding:0 24px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:16px;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:900;color:rgba(255,255,255,.45);cursor:pointer;-webkit-tap-highlight-color:transparent">완료</button>
     </div>
   </div>
 
@@ -1026,20 +1027,20 @@ input[type=file]{display:none}
       <div style="font-size:10px;font-weight:300;color:rgba(255,255,255,.3);letter-spacing:.04em;margin-top:1px">사회적 피로감 없는 건강한 연결</div>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:12px">
-      <button onclick="openFriendsModal()" style="flex:1;height:40px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.6);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;-webkit-tap-highlight-color:transparent">
+      <button onclick="openFriendsModal()" style="flex:1;height:40px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:900;letter-spacing:.06em;color:rgba(255,255,255,.6);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;-webkit-tap-highlight-color:transparent">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/><line x1="20" y1="8" x2="20" y2="14"/></svg>
           친구 추가
         </button>
-        <button onclick="openCreateRoom()" style="flex:1;height:40px;background:#c8f050;border:none;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:.08em;color:#0a0a0a;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;-webkit-tap-highlight-color:transparent">
+        <button onclick="openCreateRoom()" style="flex:1;height:40px;background:#c8f050;border:none;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;letter-spacing:.08em;color:#0a0a0a;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;-webkit-tap-highlight-color:transparent">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M12 5v14M5 12h14"/></svg>
           크루 만들기
         </button>
     </div>
     <div style="display:flex;gap:6px" id="room-tabs">
-      <button class="rtab on" data-rt="browse" onclick="switchRoomTab('browse')" style="flex:1;height:32px;border-radius:8px;border:1px solid rgba(200,240,80,.3);background:rgba(200,240,80,.1);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;color:#c8f050;cursor:pointer">공개 크루</button>
-      <button class="rtab" data-rt="mine" onclick="switchRoomTab('mine')" style="flex:1;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.4);cursor:pointer">내 크루</button>
-      <button class="rtab" data-rt="friends" onclick="switchRoomTab('friends')" style="flex:1;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.4);cursor:pointer">친구</button>
-      <button class="rtab" data-rt="history" onclick="switchRoomTab('history')" style="flex:1;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.4);cursor:pointer">기록</button>
+      <button class="rtab on" data-rt="browse" onclick="switchRoomTab('browse')" style="flex:1;height:32px;border-radius:8px;border:1px solid rgba(200,240,80,.3);background:rgba(200,240,80,.1);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:900;letter-spacing:.06em;color:#c8f050;cursor:pointer">공개 크루</button>
+      <button class="rtab" data-rt="mine" onclick="switchRoomTab('mine')" style="flex:1;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:900;letter-spacing:.06em;color:rgba(255,255,255,.4);cursor:pointer">내 크루</button>
+      <button class="rtab" data-rt="friends" onclick="switchRoomTab('friends')" style="flex:1;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:900;letter-spacing:.06em;color:rgba(255,255,255,.4);cursor:pointer">친구</button>
+      <button class="rtab" data-rt="history" onclick="switchRoomTab('history')" style="flex:1;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:900;letter-spacing:.06em;color:rgba(255,255,255,.4);cursor:pointer">기록</button>
     </div>
   </div>
 
@@ -1084,7 +1085,7 @@ input[type=file]{display:none}
       <div style="margin-bottom:14px">
         <div style="font-size:10px;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.4);margin-bottom:7px">크루 이름</div>
         <input id="cr-name" type="text" placeholder="예: 새벽 달리기 크루" maxlength="20"
-          style="width:100%;height:46px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:0 14px;font-family:'Barlow',sans-serif;font-size:15px;font-weight:300;color:#fff;outline:none;box-sizing:border-box;-webkit-tap-highlight-color:transparent"
+          style="width:100%;height:46px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:0 14px;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:300;color:#fff;outline:none;box-sizing:border-box;-webkit-tap-highlight-color:transparent"
           oninput="updateRoomCode(this.value)">
       </div>
 
@@ -1114,7 +1115,7 @@ input[type=file]{display:none}
           </div>
         </div>
         <input id="cr-custom-km" type="number" placeholder="직접 입력 (km)" min="1" max="999"
-          style="display:none;width:100%;height:40px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:0 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#fff;outline:none;box-sizing:border-box;margin-top:8px">
+          style="display:none;width:100%;height:40px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:0 14px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;outline:none;box-sizing:border-box;margin-top:8px">
       </div>
 
       <!-- 기간 -->
@@ -1143,7 +1144,7 @@ input[type=file]{display:none}
           </div>
         </div>
         <input id="cr-custom-period" type="number" placeholder="직접 입력 (일)" min="1" max="365"
-          style="display:none;width:100%;height:40px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:0 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#fff;outline:none;box-sizing:border-box;margin-top:8px">
+          style="display:none;width:100%;height:40px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:0 14px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;outline:none;box-sizing:border-box;margin-top:8px">
       </div>
 
       <!-- 최대 인원 -->
@@ -1169,7 +1170,7 @@ input[type=file]{display:none}
           </div>
         </div>
         <input id="cr-custom-max" type="number" placeholder="직접 입력 (명)" min="2" max="999"
-          style="display:none;width:100%;height:40px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:0 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#fff;outline:none;box-sizing:border-box;margin-top:8px">
+          style="display:none;width:100%;height:40px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:0 14px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;outline:none;box-sizing:border-box;margin-top:8px">
       </div>
 
       <!-- 비밀번호 토글 -->
@@ -1183,7 +1184,7 @@ input[type=file]{display:none}
         </div>
       </div>
       <input id="cr-pw" type="password" placeholder="비밀번호 입력 (4~12자)" maxlength="12"
-        style="display:none;width:100%;height:44px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:0 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#fff;outline:none;box-sizing:border-box;margin-bottom:8px">
+        style="display:none;width:100%;height:44px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:0 14px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;outline:none;box-sizing:border-box;margin-bottom:8px">
 
       <!-- 크루 코드 미리보기 -->
       <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(200,240,80,.05);border:1px solid rgba(200,240,80,.12);border-radius:10px;margin-bottom:20px">
@@ -1193,8 +1194,8 @@ input[type=file]{display:none}
         <span style="font-size:10px;color:rgba(255,255,255,.25)">(자동생성)</span>
       </div>
 
-      <button onclick="createRoom()" style="width:100%;height:52px;background:#c8f050;border:none;border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:900;letter-spacing:.08em;color:#0a0a0a;cursor:pointer;-webkit-tap-highlight-color:transparent">만들기</button>
-      <button onclick="closeModal('m-create-room')" style="width:100%;height:38px;background:none;border:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.3);cursor:pointer;margin-top:4px">취소</button>
+      <button onclick="createRoom()" style="width:100%;height:52px;background:#c8f050;border:none;border-radius:14px;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:800;letter-spacing:.08em;color:#0a0a0a;cursor:pointer;-webkit-tap-highlight-color:transparent">만들기</button>
+      <button onclick="closeModal('m-create-room')" style="width:100%;height:38px;background:none;border:none;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:rgba(255,255,255,.3);cursor:pointer;margin-top:4px">취소</button>
     </div>
   </div>
 </div>
@@ -1206,10 +1207,10 @@ input[type=file]{display:none}
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;margin-bottom:4px" id="pw-modal-name">비공개 크루</div>
     <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:20px">비밀번호를 입력하세요</div>
     <input id="pw-input" type="password" placeholder="비밀번호" maxlength="12"
-      style="width:100%;height:48px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:0 16px;font-family:'Barlow',sans-serif;font-size:16px;color:#fff;outline:none;box-sizing:border-box;text-align:center;letter-spacing:.2em;margin-bottom:8px">
+      style="width:100%;height:48px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:0 16px;font-family:'Space Grotesk',sans-serif;font-size:16px;color:#fff;outline:none;box-sizing:border-box;text-align:center;letter-spacing:.2em;margin-bottom:8px">
     <div id="pw-modal-err" style="font-size:11px;color:rgba(255,80,80,.8);min-height:16px;margin-bottom:12px"></div>
-    <button onclick="submitRoomPw()" style="width:100%;height:48px;background:#c8f050;border:none;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;color:#0a0a0a;cursor:pointer">입장</button>
-    <button onclick="closeModal('m-room-pw')" style="width:100%;height:36px;background:none;border:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.3);cursor:pointer;margin-top:4px">취소</button>
+    <button onclick="submitRoomPw()" style="width:100%;height:48px;background:#c8f050;border:none;border-radius:12px;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:800;color:#0a0a0a;cursor:pointer">입장</button>
+    <button onclick="closeModal('m-room-pw')" style="width:100%;height:36px;background:none;border:none;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:rgba(255,255,255,.3);cursor:pointer;margin-top:4px">취소</button>
   </div>
 </div>
 
@@ -1234,9 +1235,8 @@ input[type=file]{display:none}
             <div class="g-s"><span class="g-sl">Time</span><span class="g-sv">26'58"</span></div>
             <div class="g-s"><span class="g-sl">Cal</span><span class="g-sv">312</span></div>
           </div>
-          <div class="g-foot"><span class="g-brand">ClapRun · 따로 또 같이</span><span class="g-tag"># Ghost</span></div>
+          <div class="g-foot"><span class="g-brand">ClapRun · 따로 또 같이</span></div>
         </div>
-        <canvas id="mmg" width="40" height="40"></canvas>
       </div>
 
       <!-- Path overlay -->
@@ -1256,43 +1256,67 @@ input[type=file]{display:none}
 
       <!-- Stamp overlay -->
       <div class="ov off" id="ov-s">
-        <div class="st-vign"></div>
-        <div style="position:absolute;bottom:0;left:0;right:0;height:300px;background:linear-gradient(0deg,rgba(0,0,0,.95),rgba(0,0,0,.5) 60%,transparent)"></div>
-        <div class="ov-hd" style="background:linear-gradient(180deg,rgba(0,0,0,.6),transparent);padding-bottom:10px">
-          <div class="runner" onclick="openAv()"><span class="r-em" id="em-s">🦊</span><span class="r-nm" id="nm-s">Runner</span></div>
-          <span class="st-logo"><span style="font-style:italic;font-weight:900;letter-spacing:-.02em"><span style="color:#c8f050">Clap</span>Run</span></span>
+
+        <!-- 배경 그라디언트 -->
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,transparent 35%,transparent 50%,rgba(0,0,0,.92) 100%)"></div>
+
+        <!-- 상단: 러너 + 로고 -->
+        <div class="ov-hd">
+          <div class="runner" onclick="openAv()">
+            <span class="r-em" id="em-s">👏</span>
+            <span class="r-nm" id="nm-s">Runner</span>
+          </div>
+          <span class="st-logo">
+            <span style="font-style:italic;font-weight:900;letter-spacing:-.02em">
+              <span style="color:#c8f050">Clap</span>Run
+            </span>
+          </span>
         </div>
+
+        <!-- 중앙 COMPLETED 스탬프 -->
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-54%) rotate(-12deg);pointer-events:none;z-index:10">
+          <div style="position:relative;border:3px solid rgba(200,240,80,.65);border-radius:14px;padding:14px 28px 12px;text-align:center;background:rgba(0,0,0,.18);backdrop-filter:blur(3px);box-shadow:0 0 40px rgba(200,240,80,.12),inset 0 0 30px rgba(200,240,80,.04)">
+            <!-- 스탬프 코너 장식 -->
+            <div style="position:absolute;top:5px;left:5px;width:10px;height:10px;border-top:1.5px solid rgba(200,240,80,.4);border-left:1.5px solid rgba(200,240,80,.4);border-radius:2px 0 0 0"></div>
+            <div style="position:absolute;top:5px;right:5px;width:10px;height:10px;border-top:1.5px solid rgba(200,240,80,.4);border-right:1.5px solid rgba(200,240,80,.4);border-radius:0 2px 0 0"></div>
+            <div style="position:absolute;bottom:5px;left:5px;width:10px;height:10px;border-bottom:1.5px solid rgba(200,240,80,.4);border-left:1.5px solid rgba(200,240,80,.4);border-radius:0 0 0 2px"></div>
+            <div style="position:absolute;bottom:5px;right:5px;width:10px;height:10px;border-bottom:1.5px solid rgba(200,240,80,.4);border-right:1.5px solid rgba(200,240,80,.4);border-radius:0 0 2px 0"></div>
+            <!-- 상단 라벨 -->
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:.28em;color:rgba(200,240,80,.45);margin-bottom:6px">CERTIFIED</div>
+            <!-- 메인 텍스트 -->
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;letter-spacing:.04em;color:rgba(200,240,80,.88);line-height:.85;text-shadow:0 0 24px rgba(200,240,80,.25)">COMPLETED</div>
+            <!-- 날짜 -->
+            <div id="bd" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:500;letter-spacing:.22em;color:rgba(200,240,80,.45);margin-top:8px"></div>
+            <!-- 박수 아이콘 -->
+            <div style="font-size:26px;margin-top:6px;filter:drop-shadow(0 0 8px rgba(200,240,80,.4))">👏</div>
+          </div>
+        </div>
+
+        <!-- 하단 스탯 -->
         <div class="st-bot">
-          <!-- Goal vs Achieved -->
-          <div style="margin-bottom:10px">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:.18em;color:rgba(200,240,80,.6);margin-bottom:5px">GOAL vs ACHIEVED</div>
-            <div style="display:flex;align-items:center;gap:10px">
-              <div style="display:flex;flex-direction:column;gap:1px">
-                <span style="font-size:8px;font-weight:300;color:rgba(255,255,255,.35);letter-spacing:.08em">목표</span>
-                <span id="st-goal-val" style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:rgba(255,255,255,.45);line-height:1">5.0<span style="font-size:14px;font-weight:400"> km</span></span>
+          <!-- GOAL vs ACHIEVED -->
+          <div style="margin-bottom:12px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:.2em;color:rgba(200,240,80,.55);margin-bottom:6px">GOAL vs ACHIEVED</div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:8px;font-weight:300;color:rgba(255,255,255,.3);letter-spacing:.08em">목표</span>
+                <span id="st-goal-val" style="font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:800;color:rgba(255,255,255,.35);line-height:1">5.0<span style="font-size:14px;font-weight:400"> km</span></span>
               </div>
-              <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;color:rgba(200,240,80,.4);font-weight:700">→</div>
-              <div style="display:flex;flex-direction:column;gap:1px">
-                <span style="font-size:8px;font-weight:300;color:rgba(200,240,80,.6);letter-spacing:.08em">달성</span>
-                <span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:#c8f050;line-height:1">5.20<span style="font-size:14px;font-weight:400"> km</span></span>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;color:rgba(200,240,80,.35);font-weight:700">→</div>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:8px;font-weight:300;color:rgba(200,240,80,.55);letter-spacing:.08em">달성</span>
+                <span id="st-ach-val" style="font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:800;color:#c8f050;line-height:1">5.20<span style="font-size:14px;font-weight:400"> km</span></span>
               </div>
             </div>
           </div>
+          <!-- 세부 스탯 -->
           <div class="st-sub">
-            <div class="ss"><span class="ss-l">Pace</span><span class="ss-v">5'12"</span></div>
-            <div class="ss"><span class="ss-l">Time</span><span class="ss-v">26'58"</span></div>
-            <div class="ss"><span class="ss-l">Cal</span><span class="ss-v">312</span></div>
+            <div class="ss"><span class="ss-l">Pace</span><span class="ss-v" id="st-pace">5'12"</span></div>
+            <div class="ss"><span class="ss-l">Time</span><span class="ss-v" id="st-time">26'58"</span></div>
+            <div class="ss"><span class="ss-l">Cal</span><span class="ss-v" id="st-cal">312</span></div>
           </div>
         </div>
-        <!-- BIG COMPLETED STAMP -->
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-18deg);pointer-events:none;z-index:10">
-          <div style="border:4px solid rgba(200,240,80,.72);border-radius:10px;padding:10px 16px;text-align:center;background:rgba(0,0,0,.1);backdrop-filter:blur(2px)">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;letter-spacing:.06em;color:rgba(200,240,80,.82);line-height:.9;text-shadow:0 0 16px rgba(200,240,80,.3)">COMPLETED</div>
-            <div id="bd" style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.2em;color:rgba(200,240,80,.5);margin-top:5px"></div>
-            <div id="em-b" style="font-size:28px;margin-top:4px">🦊</div>
-          </div>
-        </div>
-        <canvas id="mms" width="40" height="40"></canvas>
+
       </div>
     </div>
   </div>
@@ -1322,7 +1346,7 @@ input[type=file]{display:none}
         <div id="cm-location" style="font-size:10px;font-weight:300;color:rgba(255,255,255,.4);letter-spacing:.06em;margin-top:2px">📍 위치 확인 중...</div>
       </div>
       <div style="display:flex;gap:6px;pointer-events:all">
-        <button id="cm-draw-btn" onclick="toggleCourseDrawing()" style="height:34px;padding:0 14px;background:rgba(200,240,80,.12);border:1.5px solid rgba(200,240,80,.3);border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;color:#c8f050;cursor:pointer">✏️ 코스 그리기</button>
+        <button id="cm-draw-btn" onclick="toggleCourseDrawing()" style="height:34px;padding:0 14px;background:rgba(200,240,80,.12);border:1.5px solid rgba(200,240,80,.3);border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:900;letter-spacing:.06em;color:#c8f050;cursor:pointer">✏️ 코스 그리기</button>
       </div>
     </div>
   </div>
@@ -1348,8 +1372,8 @@ input[type=file]{display:none}
   <div id="cm-bottom-sheet" style="position:absolute;bottom:0;left:0;right:0;z-index:20;background:linear-gradient(0deg,rgba(10,10,10,.98) 0%,rgba(10,10,10,.92) 80%,transparent);padding:0 0 8px">
     <!-- Mode tabs -->
     <div style="display:flex;gap:8px;padding:12px 16px 8px">
-      <button class="cm-tab on" data-cm="nearby" onclick="switchCmTab('nearby')" style="flex:1;height:32px;background:rgba(200,240,80,.12);border:1px solid rgba(200,240,80,.3);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;color:#c8f050;cursor:pointer">추천 코스</button>
-      <button class="cm-tab" data-cm="mine" onclick="switchCmTab('mine')" style="flex:1;height:32px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.45);cursor:pointer">내 코스</button>
+      <button class="cm-tab on" data-cm="nearby" onclick="switchCmTab('nearby')" style="flex:1;height:32px;background:rgba(200,240,80,.12);border:1px solid rgba(200,240,80,.3);border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:900;letter-spacing:.08em;color:#c8f050;cursor:pointer">추천 코스</button>
+      <button class="cm-tab" data-cm="mine" onclick="switchCmTab('mine')" style="flex:1;height:32px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:900;letter-spacing:.08em;color:rgba(255,255,255,.45);cursor:pointer">내 코스</button>
     </div>
 
     <!-- Nearby recommended courses -->
@@ -1362,7 +1386,7 @@ input[type=file]{display:none}
     <!-- My courses pane -->
     <div id="cm-pane-mine" style="display:none;padding:0 16px 16px">
       <div id="cm-my-courses-list"></div>
-      <button onclick="toggleCourseDrawing()" style="width:100%;height:48px;background:rgba(200,240,80,.08);border:1.5px dashed rgba(200,240,80,.25);border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.06em;color:rgba(200,240,80,.6);cursor:pointer;margin-top:4px">+ 새 코스 그리기</button>
+      <button onclick="toggleCourseDrawing()" style="width:100%;height:48px;background:rgba(200,240,80,.08);border:1.5px dashed rgba(200,240,80,.25);border-radius:14px;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:900;letter-spacing:.06em;color:rgba(200,240,80,.6);cursor:pointer;margin-top:4px">+ 새 코스 그리기</button>
     </div>
   </div>
 
@@ -1375,11 +1399,11 @@ input[type=file]{display:none}
         <!-- 왼쪽: 모드 전환 버튼 -->
         <div style="display:flex;gap:8px;align-items:center;pointer-events:auto">
           <button id="cm-mode-move" onclick="setCmMode('move')"
-            style="height:38px;padding:0 14px;background:rgba(10,10,10,.85);backdrop-filter:blur(12px);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s">
+            style="height:38px;padding:0 14px;background:rgba(10,10,10,.85);backdrop-filter:blur(12px);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:900;letter-spacing:.08em;color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s">
             🗺 이동
           </button>
           <button id="cm-mode-draw" onclick="setCmMode('draw')"
-            style="height:38px;padding:0 14px;background:rgba(200,240,80,.15);backdrop-filter:blur(12px);border:1.5px solid rgba(200,240,80,.5);border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:.08em;color:#c8f050;cursor:pointer;transition:all .2s">
+            style="height:38px;padding:0 14px;background:rgba(200,240,80,.15);backdrop-filter:blur(12px);border:1.5px solid rgba(200,240,80,.5);border-radius:12px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;letter-spacing:.08em;color:#c8f050;cursor:pointer;transition:all .2s">
             ✏️ 그리기
           </button>
           <div id="cm-draw-dist" style="font-size:10px;font-weight:300;color:rgba(255,255,255,.45);background:rgba(10,10,10,.7);padding:4px 10px;border-radius:8px;backdrop-filter:blur(8px)">0.0 km</div>
@@ -1400,9 +1424,9 @@ input[type=file]{display:none}
       </div>
       <!-- 버튼들 -->
       <div style="display:flex;gap:10px;pointer-events:auto">
-        <button onclick="undoDrawPoint()" style="flex:1;height:52px;background:rgba(255,255,255,.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.04em;color:rgba(255,255,255,.6);cursor:pointer;touch-action:manipulation">↩ 되돌리기</button>
+        <button onclick="undoDrawPoint()" style="flex:1;height:52px;background:rgba(255,255,255,.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:14px;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:900;letter-spacing:.04em;color:rgba(255,255,255,.6);cursor:pointer;touch-action:manipulation">↩ 되돌리기</button>
         <button onclick="clearDrawPoints()" style="width:52px;height:52px;background:rgba(255,70,70,.08);backdrop-filter:blur(12px);border:1px solid rgba(255,70,70,.2);border-radius:14px;font-size:18px;cursor:pointer;touch-action:manipulation;flex-shrink:0" title="전체 지우기">🗑</button>
-        <button onclick="saveDrawnCourse()" style="flex:2;height:52px;background:#c8f050;border:none;border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:.08em;color:#0a0a0a;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 20px rgba(200,240,80,.4)">저장하기</button>
+        <button onclick="saveDrawnCourse()" style="flex:2;height:52px;background:#c8f050;border:none;border-radius:14px;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:.08em;color:#0a0a0a;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 20px rgba(200,240,80,.4)">저장하기</button>
       </div>
     </div>
   </div>
@@ -1536,7 +1560,7 @@ input[type=file]{display:none}
       <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:16px">닉네임 또는 GR 코드로 친구를 찾아보세요</div>
       <div style="display:flex;gap:8px;margin-bottom:18px">
         <input id="friend-search-input" type="text" placeholder="닉네임 또는 AF-XXXXXX 입력" maxlength="30"
-          style="flex:1;height:46px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:0 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#fff;outline:none;box-sizing:border-box"
+          style="flex:1;height:46px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:0 14px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;outline:none;box-sizing:border-box"
           oninput="searchFriends(this.value)">
         <button onclick="searchFriends(document.getElementById('friend-search-input').value)" style="height:46px;padding:0 18px;background:#c8f050;border:none;border-radius:12px;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:800;color:#0a0a0a;cursor:pointer">검색</button>
       </div>
@@ -2381,10 +2405,10 @@ function openCaptionSheet(post) {
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:#fff;margin-bottom:4px">피드에 올리기</div>
       <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:16px">${post.dist}km · ${post.pace}/km · ${post.time}</div>
       <textarea id="caption-input" placeholder="한 줄 메시지를 남겨보세요 (선택)" maxlength="60"
-        style="width:100%;height:64px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;font-size:13px;color:#fff;font-family:'Barlow',sans-serif;resize:none;outline:none;margin-bottom:14px"></textarea>
+        style="width:100%;height:64px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;font-size:13px;color:#fff;font-family:'Space Grotesk',sans-serif;resize:none;outline:none;margin-bottom:14px"></textarea>
       <div style="display:flex;gap:10px">
         <button onclick="document.getElementById('caption-sheet').remove()" style="flex:1;height:48px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:13px;font-size:14px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;touch-action:manipulation">취소</button>
-        <button onclick="confirmUpload()" style="flex:2;height:48px;background:#c8f050;border:none;border-radius:13px;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;color:#0a0a0a;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 16px rgba(200,240,80,.3)">올리기 👏</button>
+        <button onclick="confirmUpload()" style="flex:2;height:48px;background:#c8f050;border:none;border-radius:13px;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:800;color:#0a0a0a;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 16px rgba(200,240,80,.3)">올리기 👏</button>
       </div>
     </div>`;
 
@@ -3029,29 +3053,29 @@ function showGuideOnRunMap(c) {
   function doAdd() {
     if (runMapboxMap.getLayer('guide-layer')) runMapboxMap.removeLayer('guide-layer');
     if (runMapboxMap.getSource('guide-path')) runMapboxMap.removeSource('guide-path');
-    runMapboxMap.addSource('guide-path', {
-      type: 'geojson',
-      data: { type:'Feature', geometry:{ type:'LineString', coordinates: coords } }
-    });
-    runMapboxMap.addLayer({
-      id: 'guide-layer', type: 'line', source: 'guide-path',
-      layout: { 'line-join':'round', 'line-cap':'round' },
-      paint: { 'line-color':'rgba(200,240,80,.5)', 'line-width':4, 'line-dasharray':[3,2] }
-    });
+    // Kakao: 소스/레이어 불필요
+    // Kakao: 소스/레이어 불필요
     // 시작점 마커
     var startEl = document.createElement('div');
     startEl.style.cssText = 'width:12px;height:12px;border-radius:50%;background:#c8f050;border:2px solid #fff;box-shadow:0 0 8px rgba(200,240,80,.8)';
-    new mapboxgl.Marker({ element: startEl }).setLngLat(coords[0]).addTo(runMapboxMap);
+    new kakao.maps.CustomOverlay({
+      position: new kakao.maps.LatLng(coords[0][1], coords[0][0]),
+      content: startEl, zIndex: 10
+    }).setMap(runMapboxMap);
     // 끝점 마커
     var endEl = document.createElement('div');
     endEl.style.cssText = 'width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid #c8f050';
-    new mapboxgl.Marker({ element: endEl }).setLngLat(coords[coords.length-1]).addTo(runMapboxMap);
+    new kakao.maps.CustomOverlay({
+      position: new kakao.maps.LatLng(coords[coords.length-1][1], coords[coords.length-1][0]),
+      content: endEl, zIndex: 10
+    }).setMap(runMapboxMap);
     // 경로 전체 보이게 bounds 조정
-    var bounds = coords.reduce(function(b,c){ return b.extend(c); }, new mapboxgl.LngLatBounds(coords[0], coords[0]));
-    runMapboxMap.fitBounds(bounds, { padding: 40, duration: 800 });
+    var bounds = coords.reduce(function(b,c){
+      b.extend(new kakao.maps.LatLng(c[1],c[0])); return b;
+    }, new kakao.maps.LatLngBounds());
+    runMapboxMap.setBounds(bounds, 40);
   }
-  if (runMapboxMap.isStyleLoaded()) { doAdd(); }
-  else { runMapboxMap.on('load', doAdd); }
+  doAdd();
 }
 
 function highlightMapCourses(tab) {
@@ -3143,7 +3167,8 @@ function startCourseRun(id) {
       if (runMapboxMap.isStyleLoaded()) {
         addGuideLayerToRunMap(coords);
       } else {
-        runMapboxMap.on('load', function(){ addGuideLayerToRunMap(coords); });
+        // Kakao: 맵 로드 완료 시 바로 실행
+  (function() { addGuideLayerToRunMap(coords); });
       }
     }
   }, 500);
@@ -3154,15 +3179,8 @@ function addGuideLayerToRunMap(coords) {
   // 기존 가이드 레이어 제거
   if (runMapboxMap.getLayer('guide-layer')) runMapboxMap.removeLayer('guide-layer');
   if (runMapboxMap.getSource('guide-path')) runMapboxMap.removeSource('guide-path');
-  runMapboxMap.addSource('guide-path', {
-    type: 'geojson',
-    data: { type:'Feature', geometry:{ type:'LineString', coordinates: coords } }
-  });
-  runMapboxMap.addLayer({
-    id: 'guide-layer', type: 'line', source: 'guide-path',
-    layout: { 'line-join':'round', 'line-cap':'round' },
-    paint: { 'line-color':'rgba(200,240,80,.35)', 'line-width':4, 'line-dasharray':[2,2] }
-  });
+  // Kakao: 소스/레이어 불필요
+  // Kakao: 소스/레이어 불필요
   // 시작점으로 지도 이동
   if (coords.length > 0) runMapboxMap.setCenter(coords[0]);
 }
@@ -3173,11 +3191,11 @@ function toggleCourseDrawing() {
   cmDrawing = true;
   cmMode = 'draw';
   if (courseMapboxMap) {
-    courseMapboxMap.dragPan.disable();
-    courseMapboxMap.scrollZoom.disable();
-    courseMapboxMap.touchZoomRotate.disable();
-    courseMapboxMap.touchPitch.disable();
-    courseMapboxMap.dragRotate.disable();
+    courseMapboxMap.setDraggable(false); courseMapboxMap.setZoomable(false);
+    courseMapboxMap.setDraggable(false); courseMapboxMap.setZoomable(false);
+    courseMapboxMap.setDraggable(false); courseMapboxMap.setZoomable(false);
+    courseMapboxMap.setDraggable(false); courseMapboxMap.setZoomable(false);
+    courseMapboxMap.setDraggable(false); courseMapboxMap.setZoomable(false);
   }
   cmDrawPoints = [];
   drawLatLngs = [];
@@ -3193,11 +3211,10 @@ function toggleCourseDrawing() {
 
   // Mapbox: 경로 초기화 + 커서
   if (courseMapboxMap) {
-    var src = courseMapboxMap.getSource('draw-path');
-    if (src) src.setData({ type:'Feature', geometry:{ type:'LineString', coordinates:[] } });
-    courseMapboxMap.getCanvas().style.cursor = 'crosshair';
+    if (drawPolyline) { drawPolyline.setPath(drawLatLngs.map(function(c){ return new kakao.maps.LatLng(c[1],c[0]); })); }
+    courseMapboxMap.getNode().style.cursor = 'crosshair';
     // 지도 리사이즈 (전체화면으로 늘어났으므로)
-    setTimeout(function(){ courseMapboxMap.resize(); }, 250);
+    setTimeout(function(){ courseMapboxMap.relayout(); }, 250);
   }
   closeCourseDetail();
 }
@@ -3278,8 +3295,9 @@ function undoDrawPoint() {
   if (drawLatLngs.length === 0) return;
   drawLatLngs.pop();
   if (courseMapboxMap) {
-    var src = courseMapboxMap.getSource('draw-path');
-    if (src) src.setData({ type:'Feature', geometry:{ type:'LineString', coordinates: drawLatLngs } });
+    if (drawPolyline) {
+      drawPolyline.setPath(drawLatLngs.map(function(c){ return new kakao.maps.LatLng(c[1],c[0]); }));
+    }
   }
   updateDrawDistFromLatLngs();
 }
@@ -3290,8 +3308,7 @@ function clearDrawPoints() {
   drawLatLngs = [];
   cmDrawPoints = [];
   if (courseMapboxMap) {
-    var src = courseMapboxMap.getSource('draw-path');
-    if (src) src.setData({ type:'Feature', geometry:{ type:'LineString', coordinates:[] } });
+    if (drawPolyline) { drawPolyline.setPath(drawLatLngs.map(function(c){ return new kakao.maps.LatLng(c[1],c[0]); })); }
   }
   updateDrawDistFromLatLngs();
 }
@@ -3349,12 +3366,12 @@ function setCmMode(mode) {
     btnMove.style.borderColor = 'rgba(255,255,255,.2)';
     btnMove.style.color = 'rgba(255,255,255,.5)';
     if (courseMapboxMap) {
-      courseMapboxMap.getCanvas().style.cursor = 'crosshair';
-      courseMapboxMap.dragPan.disable();
-      courseMapboxMap.scrollZoom.disable();
-      courseMapboxMap.touchZoomRotate.disable();
-      courseMapboxMap.touchPitch.disable();
-      courseMapboxMap.dragRotate.disable();
+      courseMapboxMap.getNode().style.cursor = 'crosshair';
+      courseMapboxMap.setDraggable(false); courseMapboxMap.setZoomable(false);
+      courseMapboxMap.setDraggable(false); courseMapboxMap.setZoomable(false);
+      courseMapboxMap.setDraggable(false); courseMapboxMap.setZoomable(false);
+      courseMapboxMap.setDraggable(false); courseMapboxMap.setZoomable(false);
+      courseMapboxMap.setDraggable(false); courseMapboxMap.setZoomable(false);
     }
   } else {
     btnMove.style.background = 'rgba(200,240,80,.15)';
@@ -3364,12 +3381,12 @@ function setCmMode(mode) {
     btnDraw.style.borderColor = 'rgba(255,255,255,.2)';
     btnDraw.style.color = 'rgba(255,255,255,.5)';
     if (courseMapboxMap) {
-      courseMapboxMap.getCanvas().style.cursor = 'grab';
-      courseMapboxMap.dragPan.enable();
-      courseMapboxMap.scrollZoom.enable();
-      courseMapboxMap.touchZoomRotate.enable();
-      courseMapboxMap.touchPitch.enable();
-      courseMapboxMap.dragRotate.enable();
+      courseMapboxMap.getNode().style.cursor = 'grab';
+      courseMapboxMap.setDraggable(true); courseMapboxMap.setZoomable(true);
+      courseMapboxMap.setDraggable(true); courseMapboxMap.setZoomable(true);
+      courseMapboxMap.setDraggable(true); courseMapboxMap.setZoomable(true);
+      courseMapboxMap.setDraggable(true); courseMapboxMap.setZoomable(true);
+      courseMapboxMap.setDraggable(true); courseMapboxMap.setZoomable(true);
     }
   }
 }
@@ -3379,12 +3396,12 @@ function cancelCourseDrawing() {
   cmDrawing = false;
   drawLatLngs = [];
   if (courseMapboxMap) {
-    courseMapboxMap.dragPan.enable();
-    courseMapboxMap.scrollZoom.enable();
-    courseMapboxMap.touchZoomRotate.enable();
-    courseMapboxMap.touchPitch.enable();
-    courseMapboxMap.dragRotate.enable();
-    courseMapboxMap.getCanvas().style.cursor = '';
+    courseMapboxMap.setDraggable(true); courseMapboxMap.setZoomable(true);
+    courseMapboxMap.setDraggable(true); courseMapboxMap.setZoomable(true);
+    courseMapboxMap.setDraggable(true); courseMapboxMap.setZoomable(true);
+    courseMapboxMap.setDraggable(true); courseMapboxMap.setZoomable(true);
+    courseMapboxMap.setDraggable(true); courseMapboxMap.setZoomable(true);
+    courseMapboxMap.getNode().style.cursor = '';
   }
 
   // 오버레이 숨기기
@@ -3398,10 +3415,9 @@ function cancelCourseDrawing() {
   if (cmHeader) { cmHeader.style.display = ''; cmHeader.style.opacity = ''; }
 
   if (courseMapboxMap) {
-    courseMapboxMap.getCanvas().style.cursor = '';
-    var src = courseMapboxMap.getSource('draw-path');
-    if (src) src.setData({ type:'Feature', geometry:{ type:'LineString', coordinates:[] } });
-    setTimeout(function(){ courseMapboxMap.resize(); }, 100);
+    courseMapboxMap.getNode().style.cursor = '';
+    if (drawPolyline) { drawPolyline.setPath(drawLatLngs.map(function(c){ return new kakao.maps.LatLng(c[1],c[0]); })); }
+    setTimeout(function(){ courseMapboxMap.relayout(); }, 100);
   }
 }
 
@@ -3719,24 +3735,27 @@ function initRunKakaoMap() {
   var container = document.getElementById('run-mapbox-map');
   if (!container || runMapboxMap) return;
   if (typeof mapboxgl === 'undefined') { setTimeout(initRunKakaoMap, 400); return; }
-  mapboxgl.accessToken = 'pk.eyJ1IjoiYmF0b25wYXNzOTAiLCJhIjoiY21tNTJrY2Q3MDI5bDJ3bjNydjM4b2o2dCJ9.GNMhSDMLoT13hmD9Phigmg';
-  runMapboxMap = new mapboxgl.Map({
-    container: 'run-mapbox-map',
-    style: 'mapbox://styles/mapbox/dark-v11',
-    center: [userLng, userLat],
-    zoom: 16,
-    attributionControl: false
+    var runMapContainer = document.getElementById('run-mapbox-map');
+  runMapboxMap = new kakao.maps.Map(runMapContainer, {
+    center: new kakao.maps.LatLng(userLat, userLng),
+    level: 3
   });
+  // 다크 스타일 배경
+  runMapContainer.style.background = '#0a0a0d';
   // 현재 위치 마커
   var el = document.createElement('div');
   el.style.cssText = 'width:20px;height:20px;border-radius:50%;background:#c8f050;border:3px solid #0a0a0a;box-shadow:0 0 12px rgba(200,240,80,.6)';
-  runMapMarker = new mapboxgl.Marker({ element: el }).setLngLat([userLng, userLat]).addTo(runMapboxMap);
+  runMapMarker = new kakao.maps.CustomOverlay({
+      position: new kakao.maps.LatLng(userLat, userLng),
+      content: el, zIndex: 10
+    }).setMap(runMapboxMap);
   runLatLngs = [];
   // 경로 레이어 추가
-  runMapboxMap.on('load', function() {
+  // Kakao: 맵 로드 완료 시 바로 실행
+  (function() {
     // 내 경로 레이어
-    runMapboxMap.addSource('run-path', { type: 'geojson', data: { type: 'Feature', geometry: { type: 'LineString', coordinates: [] } } });
-    runMapboxMap.addLayer({ id: 'run-path-layer', type: 'line', source: 'run-path', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#c8f050', 'line-width': 5, 'line-opacity': 0.9 } });
+    // Kakao: 소스/레이어 불필요
+    // Kakao: 소스/레이어 불필요
     // 가이드 코스 있으면 바로 그리기
     if (activeGuideCourse) {
       showGuideOnRunMap(activeGuideCourse);
@@ -3748,9 +3767,11 @@ function updateRunKakaoMap(lat, lng) {
   if (!runMapboxMap) return;
   runMapMarker.setLngLat([lng, lat]);
   runLatLngs.push([lng, lat]);
-  runMapboxMap.setCenter([lng, lat]);
-  var src = runMapboxMap.getSource('run-path');
-  if (src) src.setData({ type: 'Feature', geometry: { type: 'LineString', coordinates: runLatLngs } });
+  runMapboxMap.setCenter(new kakao.maps.LatLng(lat, lng));
+  if (runPolyline) {
+    runPolyline.setPath(runLatLngs.map(function(c){ return new kakao.maps.LatLng(c[1], c[0]); }));
+    if (!runPolyline.getMap()) runPolyline.setMap(runMapboxMap);
+  }
 }
 
 function resetRunKakaoMap() {
@@ -3776,18 +3797,37 @@ function initCourseKakaoMap() {
   if (!container) return;
   if (typeof mapboxgl === 'undefined') { setTimeout(initCourseKakaoMap, 400); return; }
   courseMapInited = true;
-  mapboxgl.accessToken = 'pk.eyJ1IjoiYmF0b25wYXNzOTAiLCJhIjoiY21tNTJrY2Q3MDI5bDJ3bjNydjM4b2o2dCJ9.GNMhSDMLoT13hmD9Phigmg';
-  courseMapboxMap = new mapboxgl.Map({
-    container: 'course-mapbox-map',
-    style: 'mapbox://styles/mapbox/dark-v11',
-    center: [userLng, userLat],
-    zoom: 14,
-    attributionControl: false
+    var courseMapContainer = document.getElementById('course-mapbox-map');
+  courseMapboxMap = new kakao.maps.Map(courseMapContainer, {
+    center: new kakao.maps.LatLng(userLat, userLng),
+    level: 4
+  });
+  courseMapContainer.style.background = '#0a0a0d';
+  // 코스 그리기용 폴리라인
+  drawPolyline = new kakao.maps.Polyline({
+    map: courseMapboxMap,
+    path: [],
+    strokeWeight: 4,
+    strokeColor: '#c8f050',
+    strokeOpacity: 0.9,
+    strokeStyle: 'solid'
+  });
+  // 런 경로 폴리라인
+  runPolyline = new kakao.maps.Polyline({
+    map: courseMapboxMap,
+    path: [],
+    strokeWeight: 3,
+    strokeColor: '#c8f050',
+    strokeOpacity: 0.7,
+    strokeStyle: 'solid'
   });
   // 현재 위치 마커
   var el = document.createElement('div');
   el.style.cssText = 'width:16px;height:16px;border-radius:50%;background:#c8f050;border:2px solid #fff;box-shadow:0 0 8px rgba(200,240,80,.5)';
-  courseMapMarker = new mapboxgl.Marker({ element: el }).setLngLat([userLng, userLat]).addTo(courseMapboxMap);
+  courseMapMarker = new kakao.maps.CustomOverlay({
+      position: new kakao.maps.LatLng(userLat, userLng),
+      content: el, zIndex: 10
+    }).setMap(courseMapboxMap);
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(pos) {
@@ -3809,22 +3849,22 @@ function initCourseKakaoMap() {
   }
 
   // 코스 그리기 클릭 이벤트
-  courseMapboxMap.on('load', function() {
+  // Kakao: 맵 로드 완료 시 바로 실행
+  (function() {
     // 드로잉 경로 소스
-    courseMapboxMap.addSource('draw-path', { type: 'geojson', data: { type: 'Feature', geometry: { type: 'LineString', coordinates: [] } } });
-    courseMapboxMap.addLayer({ id: 'draw-path-layer', type: 'line', source: 'draw-path', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#c8f050', 'line-width': 5, 'line-opacity': 0.9 } });
+    // Kakao: 소스/레이어 불필요
+    // Kakao: 소스/레이어 불필요
     drawLatLngs = [];
     // 추천 코스 표시
     highlightMapCourses(null);
     renderNearbyCourses();
   });
 
-  courseMapboxMap.on('click', function(e) {
+  kakao.maps.event.addListener(courseMapboxMap, 'click', function(mouseEvent) {
     if (!cmDrawing || cmMode !== 'draw') return;
-    var lngLat = [e.lngLat.lng, e.lngLat.lat];
-    drawLatLngs.push(lngLat);
-    var src = courseMapboxMap.getSource('draw-path');
-    if (src) src.setData({ type: 'Feature', geometry: { type: 'LineString', coordinates: drawLatLngs } });
+    var latlng = mouseEvent.latLng;
+    drawLatLngs.push([latlng.getLng(), latlng.getLat()]);
+    // Kakao: 폴리라인 업데이트는 setPath로 처리
     updateDrawDistFromLatLngs();
   });
 
@@ -3832,13 +3872,13 @@ function initCourseKakaoMap() {
   var _lastDrawTime = 0;
 
   // touchstart: 그리기 모드일 때 지도 드래그 원천 차단
-  courseMapboxMap.getCanvas().addEventListener('touchstart', function(e) {
+  courseMapboxMap.getNode().addEventListener('touchstart', function(e) {
     if (!cmDrawing || cmMode !== 'draw') return;
     e.preventDefault();
     e.stopPropagation();
   }, { passive: false });
 
-  courseMapboxMap.getCanvas().addEventListener('touchmove', function(e) {
+  courseMapboxMap.getNode().addEventListener('touchmove', function(e) {
     if (!cmDrawing || cmMode !== 'draw') return;
     e.preventDefault();
     e.stopPropagation();
@@ -3846,30 +3886,33 @@ function initCourseKakaoMap() {
     if (now - _lastDrawTime < 80) return; // 80ms 간격으로 포인트 추가
     _lastDrawTime = now;
     var touch = e.touches[0];
-    var rect = courseMapboxMap.getCanvas().getBoundingClientRect();
+    var rect = courseMapboxMap.getNode().getBoundingClientRect();
     var x = touch.clientX - rect.left;
     var y = touch.clientY - rect.top;
-    var lngLat = courseMapboxMap.unproject([x, y]);
-    drawLatLngs.push([lngLat.lng, lngLat.lat]);
-    var src = courseMapboxMap.getSource('draw-path');
-    if (src) src.setData({ type:'Feature', geometry:{ type:'LineString', coordinates: drawLatLngs } });
+    var proj = courseMapboxMap.getProjection();
+    var lngLat = proj.coordsFromContainerPoint(new kakao.maps.Point(x, y));
+    drawLatLngs.push([lngLat.getLng(), lngLat.getLat()]);
+    if (drawPolyline) {
+      drawPolyline.setPath(drawLatLngs.map(function(c){ return new kakao.maps.LatLng(c[1],c[0]); }));
+    }
     updateDrawDistFromLatLngs();
   }, { passive: false });
 
   // 마우스 드래그로 연속 그리기 (desktop)
   var _mouseDown = false;
-  courseMapboxMap.getCanvas().addEventListener('mousedown', function(e) { if (cmDrawing) _mouseDown = true; });
-  courseMapboxMap.getCanvas().addEventListener('mouseup',   function()  { _mouseDown = false; });
-  courseMapboxMap.getCanvas().addEventListener('mousemove', function(e) {
+  courseMapboxMap.getNode().addEventListener('mousedown', function(e) { if (cmDrawing) _mouseDown = true; });
+  courseMapboxMap.getNode().addEventListener('mouseup',   function()  { _mouseDown = false; });
+  courseMapboxMap.getNode().addEventListener('mousemove', function(e) {
     if (!cmDrawing || !_mouseDown) return;
     var now = Date.now();
     if (now - _lastDrawTime < 60) return;
     _lastDrawTime = now;
-    var rect = courseMapboxMap.getCanvas().getBoundingClientRect();
+    var rect = courseMapboxMap.getNode().getBoundingClientRect();
     var lngLat = courseMapboxMap.unproject([e.clientX - rect.left, e.clientY - rect.top]);
     drawLatLngs.push([lngLat.lng, lngLat.lat]);
-    var src = courseMapboxMap.getSource('draw-path');
-    if (src) src.setData({ type:'Feature', geometry:{ type:'LineString', coordinates: drawLatLngs } });
+    if (drawPolyline) {
+      drawPolyline.setPath(drawLatLngs.map(function(c){ return new kakao.maps.LatLng(c[1],c[0]); }));
+    }
     updateDrawDistFromLatLngs();
   });
 }
@@ -4084,10 +4127,8 @@ function applyRank(){
   // Date
   var now=new Date();var ds=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][now.getDay()]+', '+(now.getMonth()+1)+'/'+now.getDate();
   document.querySelectorAll('.ov-dt').forEach(function(e){e.textContent=ds;});
-  drawRoute(document.getElementById('mmg'),{ri:0});
-  drawRoute(document.getElementById('mmp'),{lw:3,pad:18,alpha:.2,ri:0});
-  drawRoute(document.getElementById('mms'),{ri:0});
-}
+    drawRoute(document.getElementById('mmp'),{lw:3,pad:18,alpha:.2,ri:0});
+  }
 
 function drawRoute(canvas,opts={}){
   if(!canvas)return;
@@ -4319,45 +4360,123 @@ let toastTimer=null;
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('on'),2400);}
 
 // GR_API
-const GR_API={
-  _DB_KEY:'claprun_users',_SESSION_KEY:'claprun_session',_SRV_URL:null,
-  _getDB(){try{return JSON.parse(localStorage.getItem(this._DB_KEY)||'{}')}catch{return{}}},
-  _saveDB(db){localStorage.setItem(this._DB_KEY,JSON.stringify(db))},
-  _getSession(){try{return JSON.parse(localStorage.getItem(this._SESSION_KEY)||'null')}catch{return null}},
-  _saveSession(s){localStorage.setItem(this._SESSION_KEY,JSON.stringify(s))},
-  _clearSession(){localStorage.removeItem(this._SESSION_KEY)},
-  _delay(ms=320){return new Promise(r=>setTimeout(r,ms))},
-  async register(email,password,nickname){
-    await this._delay();const db=this._getDB();
-    if(db[email])throw new Error('이미 사용 중인 이메일이에요');
-    if(password.length<6)throw new Error('비밀번호는 6자 이상이어야 해요');
-    if(nickname.trim().length<2)throw new Error('닉네임은 2자 이상이어야 해요');
-    const _uid='GR_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
-    const _atc='AF-'+Math.random().toString(36).toUpperCase().slice(2,8).replace(/[^A-Z0-9]/g,'X').padEnd(6,'X');
-    const user={id:_uid,email,nickname:nickname.trim(),avatar:'🦊',totalKm:0,runCount:0,joinedAt:new Date().toISOString(),atCode:_atc,_pw:btoa(password)};
-    db[email]=user;this._saveDB(db);const session={...user};delete session._pw;this._saveSession(session);return session;
+const GR_API = {
+  // ── 현재 세션 유저 반환 ──
+  currentUser() {
+    try { return JSON.parse(localStorage.getItem('claprun_session') || 'null'); } catch { return null; }
   },
-  async login(email,password){
-    await this._delay();const db=this._getDB(),user=db[email];
-    if(!user)throw new Error('등록된 이메일이 없어요');
-    if(atob(user._pw||'')!==password)throw new Error('비밀번호가 맞지 않아요');
-    const session={...user};delete session._pw;this._saveSession(session);return session;
+  _saveSession(u) { localStorage.setItem('claprun_session', JSON.stringify(u)); },
+  _clearSession() { localStorage.removeItem('claprun_session'); },
+
+  // ── 회원가입 ──
+  async register(email, password, nickname) {
+    if (nickname.trim().length < 2) throw new Error('닉네임은 2자 이상이어야 해요');
+    const { data, error } = await _SB.auth.signUp({ email, password });
+    if (error) throw new Error(error.message === 'User already registered' ? '이미 사용 중인 이메일이에요' : error.message);
+    const uid = data.user.id;
+    const atCode = 'AF-' + Math.random().toString(36).toUpperCase().slice(2, 8).replace(/[^A-Z0-9]/g, 'X').padEnd(6, 'X');
+    await _SB.from('profiles').insert({ id: uid, nickname: nickname.trim(), avatar: '🦊', at_code: atCode });
+    const user = { id: uid, email, nickname: nickname.trim(), avatar: '🦊', atCode, totalKm: 0, runCount: 0, joinedAt: new Date().toISOString() };
+    this._saveSession(user);
+    return user;
   },
-  async logout(){await this._delay(100);this._clearSession();},
-  async socialLogin(provider){
-    await this._delay(500);const mockNames={kakao:'카카오러너',naver:'네이버러너',google:'구글러너'};
-    const mockEmail=provider+'_'+Date.now()+'@claprun.mock';const db=this._getDB();
-    if(!db[mockEmail]){const _satc='AF-'+Math.random().toString(36).toUpperCase().slice(2,8).replace(/[^A-Z0-9]/g,'X').padEnd(6,'X');
-    const user={id:'GR_'+provider+'_'+Date.now(),email:mockEmail,nickname:mockNames[provider]||provider,avatar:'🦊',totalKm:0,runCount:0,joinedAt:new Date().toISOString(),atCode:_satc,provider};db[mockEmail]=user;this._saveDB(db);}
-    const session={...db[mockEmail]};delete session._pw;this._saveSession(session);return session;
+
+  // ── 로그인 ──
+  async login(email, password) {
+    const { data, error } = await _SB.auth.signInWithPassword({ email, password });
+    if (error) throw new Error('이메일 또는 비밀번호가 맞지 않아요');
+    const uid = data.user.id;
+    const { data: profile } = await _SB.from('profiles').select('*').eq('id', uid).single();
+    const { data: runs } = await _SB.from('runs').select('distance').eq('user_id', uid);
+    const totalKm = runs ? runs.reduce((s, r) => s + (r.distance || 0), 0) : 0;
+    const user = {
+      id: uid, email,
+      nickname: profile?.nickname || email.split('@')[0],
+      avatar: profile?.avatar || '🦊',
+      atCode: profile?.at_code || '',
+      totalKm: parseFloat(totalKm.toFixed(1)),
+      runCount: runs?.length || 0,
+      joinedAt: profile?.joined_at || new Date().toISOString()
+    };
+    this._saveSession(user);
+    return user;
   },
-  async updateUser(fields){
-    await this._delay(200);const session=this._getSession();if(!session)return;
-    const db=this._getDB();if(db[session.email])Object.assign(db[session.email],fields);this._saveDB(db);
-    const updated={...session,...fields};this._saveSession(updated);return updated;
+
+  // ── 소셜 로그인 (Google) ──
+  async socialLogin(provider) {
+    if (provider === 'google') {
+      const { error } = await _SB.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+      if (error) throw new Error(error.message);
+      return null;
+    }
+    // kakao/naver: mock 유지
+    const mockNames = { kakao: '카카오러너', naver: '네이버러너' };
+    const mockEmail = provider + '_' + Date.now() + '@claprun.mock';
+    const atCode = 'AF-' + Math.random().toString(36).toUpperCase().slice(2, 8).replace(/[^A-Z0-9]/g, 'X').padEnd(6, 'X');
+    const user = { id: 'mock_' + Date.now(), email: mockEmail, nickname: mockNames[provider] || provider, avatar: '🦊', atCode, totalKm: 0, runCount: 0, joinedAt: new Date().toISOString() };
+    this._saveSession(user);
+    return user;
   },
-  currentUser(){return this._getSession();},
-  async ping(){if(this._SRV_URL){try{const r=await fetch(this._SRV_URL+'/ping',{signal:AbortSignal.timeout(3000)});return r.ok;}catch{return false;}}return true;}
+
+  // ── 로그아웃 ──
+  async logout() {
+    await _SB.auth.signOut();
+    this._clearSession();
+  },
+
+  // ── 유저 정보 업데이트 ──
+  async updateUser(fields) {
+    const session = this.currentUser();
+    if (!session) return;
+    const dbFields = {};
+    if (fields.nickname) dbFields.nickname = fields.nickname;
+    if (fields.avatar) dbFields.avatar = fields.avatar;
+    if (Object.keys(dbFields).length) {
+      await _SB.from('profiles').update(dbFields).eq('id', session.id);
+    }
+    const updated = { ...session, ...fields };
+    this._saveSession(updated);
+    return updated;
+  },
+
+  // ── 런 기록 저장 ──
+  async saveRun(runData) {
+    const session = this.currentUser();
+    if (!session) return;
+    const { error } = await _SB.from('runs').insert({
+      user_id: session.id,
+      distance: runData.distance,
+      pace: runData.pace,
+      time: runData.time,
+      cal: runData.cal
+    });
+    if (error) console.error('런 저장 실패:', error.message);
+  },
+
+  // ── Clap 저장 ──
+  async saveClap(toUserId, runId) {
+    const session = this.currentUser();
+    if (!session) return;
+    await _SB.from('claps').insert({ from_user: session.id, to_user: toUserId, run_id: runId });
+  },
+
+  // ── 내 런 기록 불러오기 ──
+  async getMyRuns() {
+    const session = this.currentUser();
+    if (!session) return [];
+    const { data } = await _SB.from('runs').select('*').eq('user_id', session.id).order('created_at', { ascending: false }).limit(20);
+    return data || [];
+  },
+
+  // ── 받은 Clap 수 ──
+  async getReceivedClaps() {
+    const session = this.currentUser();
+    if (!session) return 0;
+    const { count } = await _SB.from('claps').select('*', { count: 'exact', head: true }).eq('to_user', session.id);
+    return count || 0;
+  },
+
+  async ping() { return true; }
 };
 
 // AUTH
@@ -4387,12 +4506,23 @@ async function submitAuth(){
   finally{if(btn){btn.textContent=authMode==='register'?'가입하기':'로그인';btn.style.opacity='1';btn.disabled=false;}}
 }
 async function socialLogin(provider){
-  const errEl=document.getElementById('ls-err');if(errEl)errEl.textContent=provider+' 로그인 처리 중...';
-  try{const user=await GR_API.socialLogin(provider);showToast('어서오세요, '+user.nickname+'님!');onLoginSuccess(user);}catch(e){if(errEl)errEl.textContent=e.message;}
+  const errEl=document.getElementById('ls-err');
+  if(provider==='kakao'||provider==='naver'){
+    showToast(provider==='kakao'?'카카오 로그인은 준비 중이에요':'네이버 로그인은 준비 중이에요');
+    return;
+  }
+  if(errEl)errEl.textContent=provider+' 로그인 처리 중...';
+  try{
+    const user=await GR_API.socialLogin(provider);
+    if(user){showToast('어서오세요, '+(user.nickname||'러너')+'님!');onLoginSuccess(user);}
+  }catch(e){if(errEl)errEl.textContent=e.message;}
 }
 function onLoginSuccess(user){
-  currentUser=user;const np=document.getElementById('nav-profile');if(np)np.textContent=user.avatar||'🦊';
-  ['nm-g','nm-p','nm-s'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=user.nickname;});
+  if(!user) return;
+  currentUser=user;
+  const np=document.getElementById('nav-profile');
+  if(np)np.textContent=user.avatar||'🦊';
+  ['nm-g','nm-p','nm-s'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=user.nickname||'러너';});
   hideLoginScreen();setSrvBadge(true);
 }
 function openProfile(){
@@ -4431,13 +4561,35 @@ function openProfile(){
   hd.appendChild(av);hd.appendChild(info);
   box.appendChild(hd);
 
-  // ── STATS GRID ──
-  var sg=div('display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:1px solid rgba(255,255,255,.07)');
+  // ── 총 러닝 거리 (대형 히어로) ──
   var totalClapVal = getTotalClap();
-  [{val:totalKm,lbl:'총 거리 km',c:'#c8f050'},{val:runCnt+'',lbl:'완주 횟수',c:'rgba(255,255,255,.85)'},{val:"5'18\"",lbl:'평균 페이스',c:'rgba(255,255,255,.85)'},{val:totalClapVal+'',lbl:'받은 CLAP',c:'#c8f050'}].forEach(function(s,i){
-    var cell=div('padding:14px 0;display:flex;flex-direction:column;align-items:center;gap:2px'+(i<3?';border-right:1px solid rgba(255,255,255,.07)':''));
-    cell.appendChild(span('font-family:Barlow Condensed,sans-serif;font-size:'+(i<2?'28':'22')+'px;font-weight:900;color:'+s.c+';line-height:1',s.val));
-    cell.appendChild(span('font-size:8px;font-weight:300;letter-spacing:.08em;color:rgba(255,255,255,.35)',s.lbl));
+  // 총 시간 계산 (PAST_LOGS 기반)
+  var totalMinutes = (PAST_LOGS||[]).reduce(function(sum, r){
+    var parts = (r.time||'0:00').split(':');
+    return sum + (parseInt(parts[0]||0)*60 + parseInt(parts[1]||0));
+  }, 0);
+  var totalTimeStr = totalMinutes >= 60
+    ? Math.floor(totalMinutes/60) + 'h ' + (totalMinutes%60) + 'm'
+    : totalMinutes + 'm';
+
+  var distHero = div('padding:22px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07);text-align:center;background:linear-gradient(180deg,rgba(200,240,80,.04),transparent)');
+  distHero.appendChild(span('font-size:9px;font-weight:300;letter-spacing:.18em;color:rgba(200,240,80,.6)', '총 러닝 거리'));
+  var distRow = div('display:flex;align-items:baseline;justify-content:center;gap:6px;margin-top:6px');
+  distRow.appendChild(span('font-family:Barlow Condensed,sans-serif;font-size:72px;font-weight:300;color:#c8f050;line-height:.85;letter-spacing:-.02em', totalKm));
+  distRow.appendChild(span('font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:300;color:rgba(200,240,80,.5)', 'km'));
+  distHero.appendChild(distRow);
+  box.appendChild(distHero);
+
+  // ── STATS 4칸: 완주 횟수 / 평균 페이스 / 총 시간 / 받은 CLAP ──
+  var sg = div('display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:1px solid rgba(255,255,255,.07)');
+  [{val:runCnt+'', lbl:'완주 횟수', c:'rgba(255,255,255,.9)'},
+   {val:"5'18\"",   lbl:'평균 페이스', c:'rgba(255,255,255,.9)'},
+   {val:totalTimeStr, lbl:'총 시간',   c:'rgba(255,255,255,.9)'},
+   {val:totalClapVal+'', lbl:'받은 CLAP', c:'#c8f050'}
+  ].forEach(function(s, i){
+    var cell = div('padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:3px' + (i<3?';border-right:1px solid rgba(255,255,255,.07)':''));
+    cell.appendChild(span('font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:400;color:'+s.c+';line-height:1', s.val));
+    cell.appendChild(span('font-size:8px;font-weight:300;letter-spacing:.07em;color:rgba(255,255,255,.35);text-align:center', s.lbl));
     sg.appendChild(cell);
   });
   box.appendChild(sg);
@@ -4461,18 +4613,19 @@ function openProfile(){
     var row=div('display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06)');
     var dt=div('flex-shrink:0;text-align:center;width:32px');
     dt.appendChild(div('font-size:7px;font-weight:200;color:rgba(255,255,255,.3);letter-spacing:.06em',r.mo));
-    dt.appendChild(div('font-family:Barlow Condensed,sans-serif;font-size:26px;font-weight:900;color:#fff;line-height:1',r.date.split('.')[1]));
+    dt.appendChild(div('font-family:Barlow Condensed,sans-serif;font-size:26px;font-weight:300;color:#fff;line-height:1;letter-spacing:1px',r.date.split('.')[1]));
     var inf=div('flex:1');
     var kmLine=document.createElement('div');
-    kmLine.style.cssText='font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:800;color:#c8f050;line-height:1';
-    kmLine.innerHTML=r.d.toFixed(2)+'<span style="font-size:13px;font-weight:300;color:rgba(255,255,255,.4)"> km</span>';
+    kmLine.style.cssText='font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:300;color:#c8f050;line-height:1';
+    kmLine.innerHTML=r.d.toFixed(2)+'<span style="font-size:13px;font-weight:300;color:rgba(255,255,255,.35)"> km</span>';
     inf.appendChild(kmLine);
-    inf.appendChild(div('font-size:11px;font-weight:300;color:rgba(255,255,255,.35);margin-top:2px',r.pace+'/km · '+r.time));
+    inf.appendChild(div('font-size:11px;font-weight:200;color:rgba(255,255,255,.3);margin-top:3px',r.pace+'/km · '+r.time));
     row.appendChild(dt);row.appendChild(inf);
-    var rightCol = div('text-align:right;flex-shrink:0');
-    rightCol.appendChild(div('font-size:11px;font-weight:300;color:rgba(255,255,255,.3)',r.cal+' kcal'));
+    var rightCol = div('text-align:right;flex-shrink:0;display:flex;flex-direction:column;gap:3px');
+    rightCol.appendChild(div('font-size:11px;font-weight:200;color:rgba(255,255,255,.25)',r.time));
+    rightCol.appendChild(div('font-size:11px;font-weight:300;color:rgba(255,255,255,.35)',r.cal+' kcal'));
     if(r.receivedClap){
-      rightCol.appendChild(div('font-size:11px;font-weight:600;color:rgba(200,240,80,.7);margin-top:2px','👏 '+r.receivedClap));
+      rightCol.appendChild(div('font-size:11px;font-weight:400;color:rgba(200,240,80,.6)','👏 '+r.receivedClap));
     }
     row.appendChild(rightCol);
     logSec.appendChild(row);
@@ -4574,6 +4727,39 @@ function openProfile(){
 
   openModal('m-profile');
 }
+
+// ── Supabase 세션 복원 ──
+(async function() {
+  const { data: { session } } = await _SB.auth.getSession();
+  if (session && !GR_API.currentUser()) {
+    const uid = session.user.id;
+    const { data: profile } = await _SB.from('profiles').select('*').eq('id', uid).single();
+    if (profile) {
+      const user = {
+        id: uid,
+        email: session.user.email,
+        nickname: profile.nickname,
+        avatar: profile.avatar || '🦊',
+        atCode: profile.at_code || '',
+        totalKm: 0, runCount: 0,
+        joinedAt: profile.joined_at
+      };
+      GR_API._saveSession(user);
+    }
+  }
+  // OAuth 리다이렉트 후 처리
+  _SB.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      const uid = session.user.id;
+      const { data: profile } = await _SB.from('profiles').select('*').eq('id', uid).single();
+      if (profile && !GR_API.currentUser()) {
+        const user = { id: uid, email: session.user.email, nickname: profile.nickname, avatar: profile.avatar || '🦊', atCode: profile.at_code || '', totalKm: 0, runCount: 0, joinedAt: profile.joined_at };
+        GR_API._saveSession(user);
+        onLoginSuccess(user);
+      }
+    }
+  });
+})();
 async function doLogout(){await GR_API.logout();currentUser=null;recInited=false;const np=document.getElementById('nav-profile');if(np)np.textContent='👤';closeModal('m-profile');showLoginScreen();showToast('로그아웃됐어요');}
 function editNickname(){
   var existing = document.getElementById('nickname-sheet');
@@ -4592,7 +4778,7 @@ function editNickname(){
         <button onclick="document.getElementById('nickname-sheet').remove()"
           style="flex:1;height:48px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:13px;font-size:14px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;touch-action:manipulation">취소</button>
         <button onclick="confirmNickname()"
-          style="flex:2;height:48px;background:#c8f050;border:none;border-radius:13px;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;color:#0a0a0a;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 16px rgba(200,240,80,.3)">변경하기</button>
+          style="flex:2;height:48px;background:#c8f050;border:none;border-radius:13px;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:800;color:#0a0a0a;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 16px rgba(200,240,80,.3)">변경하기</button>
       </div>
     </div>`;
   document.body.appendChild(sheet);
